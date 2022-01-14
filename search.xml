@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>A Brief Tutorial to Use PySC2 Learning Environment</title>
+    <url>/project/2022/A-Brief-Instruction-to-Use-PySC2-Learning-Environment/</url>
+    <content><![CDATA[<p><code>PySC2</code> is DeepMind's Python component of the StarCraft II
+Learning Environment (SC2LE). This is a brief tutorial about how to use
+the interface as an interactable environment. You can also refer to the
+<a href="https://github.com/mhz2180572509/HowToUsePySC2/">repo on
+GitHub</a>.</p>
+<span id="more"></span>
+<h1 id="installation">Installation</h1>
+<p><strong>It's strongly recommended to use virtual environments to
+manage packages.</strong></p>
+<p>You may need to run <code>pip install --upgrade pip</code> before all
+the following steps.</p>
+<h2 id="install-on-windows">Install on Windows</h2>
+<ul>
+<li><p>Get <code>PySC2</code></p>
+<p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pip install pysc2</span><br></pre></td></tr></table></figure> <strong>Not recommended unless you need:</strong>
+download from source, please refer to: <a
+href="https://github.com/deepmind/pysc2#from-source"
+class="uri">https://github.com/deepmind/pysc2#from-source</a></p></li>
+<li><p>Get <em>StarCraft II</em> game</p>
+<ul>
+<li>Download from Blizzard official network: <a
+href="https://starcraft2.com/"
+class="uri">https://starcraft2.com/</a>.</li>
+<li>You can firstly install the Battle.net Agent/Desktop and install the
+StarCraft II game in the game launcher: <a
+href="https://www.blizzard.com/en-us/apps/battle.net/desktop"
+class="uri">https://www.blizzard.com/en-us/apps/battle.net/desktop</a></li>
+<li>If you customized the install-location, you might need to set the
+<code>SC2PATH</code> environment variable with your new location.</li>
+</ul></li>
+<li><p>Get maps</p>
+<p>Create a folder named <code>Maps</code> in the game root folder. Then
+download the maps and mini-maps and extract them into <code>Maps</code>.
+You can start from the mini-games. For example, after you extract the
+maps in the folder, the path should be like this:
+<code>GameFolder/Maps/Melee/XXX.SC2Map</code>.</p>
+<ul>
+<li>All map packs: <a
+href="https://github.com/Blizzard/s2client-proto#downloads"
+class="uri">https://github.com/Blizzard/s2client-proto#downloads</a></li>
+<li>Mini-games: <a
+href="https://github.com/deepmind/pysc2/releases/download/v1.2/mini_games.zip"
+class="uri">https://github.com/deepmind/pysc2/releases/download/v1.2/mini_games.zip</a></li>
+<li>Melee maps: <a
+href="http://blzdistsc2-a.akamaihd.net/MapPacks/Melee.zip"
+class="uri">http://blzdistsc2-a.akamaihd.net/MapPacks/Melee.zip</a></li>
+</ul>
+<p>The password to extract the packages is
+<strong>iagreetotheeula</strong></p></li>
+</ul>
+<h2 id="install-on-linux">Install on Linux</h2>
+<ul>
+<li>Install <code>PySC2</code>: <code>pip install pysc2</code></li>
+<li>Install StarCraft II game:
+<ul>
+<li>Download the linux package: <a
+href="https://github.com/Blizzard/s2client-proto/blob/master/README.md#linux-packages"
+class="uri">https://github.com/Blizzard/s2client-proto/blob/master/README.md#linux-packages</a>
+<ul>
+<li>Can using the command: <code>wget
+http://blzdistsc2-a.akamaihd.net/Linux/SC2.4.10.zip</code></li>
+</ul></li>
+<li>Unzip the file at the home path: <code>unzip -o SC.X.X.zip</code>
+<ul>
+<li>The password is <strong>iagreetotheeula</strong></li>
+</ul></li>
+<li>It seems that the maps are already included in the
+<code>[StarCraftII]/Maps/</code> folder, if you need to install the
+replays, you need to download and unzip them into the
+<code>[StarCraftII]/Replays/</code> folder manually.</li>
+</ul></li>
+</ul>
+<h1 id="run-some-built-in-examples">Run Some Built-in Examples</h1>
+<ul>
+<li>Run the built-in agent example: <code>python -m pysc2.bin.agent
+--map Simple64</code></li>
+<li>Run your own agent: <code>python -m pysc2.bin.agent --map
+CollectMineralShards --agent
+pysc2.agents.scripted_agent.CollectMineralShards</code>
+<ul>
+<li>Will have more detailed instructions to write and run our
+self-defined agents later.</li>
+</ul></li>
+<li>Run two agents against each other <code>python -m pysc2.bin.agent
+--map Simple64 --agent2
+pysc2.agents.random_agent.RandomAgent</code></li>
+<li>Play the games as a human: <code>python -m pysc2.bin.play --map
+Simple64</code></li>
+<li>List the maps: <code>python -m pysc2.bin.map_list</code></li>
+<li>Watch the replay: <code>python -m pysc2.bin.play --replay
+&lt;path-to-replay&gt;</code>
+<ul>
+<li>Running an agent and playing as a human save a replay by default.
+You can watch that replay by running the above command.</li>
+</ul></li>
+</ul>
+<h1 id="official-doc-of-pysc2-and-useful-links">Official Doc of PySC2
+and Useful Links</h1>
+<ul>
+<li>Before we start, it's very <strong>important</strong> to read the
+official document from <code>PySC2</code>: <a
+href="https://github.com/deepmind/pysc2/blob/master/docs/environment.md"
+class="uri">https://github.com/deepmind/pysc2/blob/master/docs/environment.md</a>
+<ul>
+<li>You can briefly know about (but you may still be very confused
+with): the structure of <code>pysc2</code>, the observations and actions
+provided by <code>pysc2</code>, the environment for reinforcement
+learning, and so on.</li>
+</ul></li>
+<li>Introductions to the mini-games (read it when you need): <a
+href="https://github.com/deepmind/pysc2/blob/master/docs/mini_games.md"
+class="uri">https://github.com/deepmind/pysc2/blob/master/docs/mini_games.md</a></li>
+</ul>
+<h1 id="start-to-use-pysc2">Start to Use PySC2</h1>
+<h2 id="approach-1">Approach 1</h2>
+<p>In thie approach, you can only customize the agent, and run the agent
+by running the above commands.</p>
+<ul>
+<li>In this approach, your agent gets observation from the environment
+and returns actions to interact with it.</li>
+<li>You need to run the agent using the built-in module
+<code>pysc2.bib.agent</code></li>
+<li>It's hard to realize a learning agent.</li>
+<li>It's a good way to start to know about the environment.</li>
+<li>Detailed instructions at <a href="/project/2022/A-Brief-Instruction-to-Use-PySC2-Learning-Environment/" title="A Brief Tutorial to Use PySC2 Learning Environment">A Brief Tutorial to Use PySC2 Learning Environment</a> and <a
+href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">example
+codes</a>.</li>
+</ul>
+<h2 id="approach-2">Approach 2</h2>
+<p>In thie approach, you can customize both the environment and the
+agent, run your codes independently without any built-in modules. * More
+flexible. * Can define our logics in your agent, like learning and doing
+inference. * Can run the codes directly without any built-in modules. *
+Can debug easily. * <a href="/project/2022/A-Brief-Instruction-to-Use-PySC2-Learning-Environment/" title="A Brief Tutorial to Use PySC2 Learning Environment">A Brief Tutorial to Use PySC2 Learning Environment</a> and <a
+href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_2.py">example
+codes</a>.</p>
+<h1 id="main-reference">Main Reference</h1>
+<ul>
+<li>PySC2 introduction and documents by DeepMind: <a
+href="https://github.com/deepmind/pysc2"
+class="uri">https://github.com/deepmind/pysc2</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>RL</tag>
+        <tag>PySC2</tag>
+        <tag>Tools</tag>
+      </tags>
+  </entry>
+</search>
