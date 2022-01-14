@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>A Brief Tutorial to Use PySC2 Learning Environment</title>
-    <url>/project/2022/A-Brief-Instruction-to-Use-PySC2-Learning-Environment/</url>
+    <url>/2022/A-Brief-Instruction-to-Use-PySC2-Learning-Environment/</url>
     <content><![CDATA[<p><code>PySC2</code> is DeepMind's Python component of the StarCraft II
 Learning Environment (SC2LE). This is a brief tutorial about how to use
 the interface as an interactable environment. You can also refer to the
@@ -127,7 +127,7 @@ and returns actions to interact with it.</li>
 <code>pysc2.bib.agent</code></li>
 <li>It's hard to realize a learning agent.</li>
 <li>It's a good way to start to know about the environment.</li>
-<li>Detailed instructions at <a href="/project/2022/A-Brief-Instruction-to-Use-PySC2-Learning-Environment/" title="A Brief Tutorial to Use PySC2 Learning Environment">A Brief Tutorial to Use PySC2 Learning Environment</a> and <a
+<li>Detailed instructions at <a href="/2022/A-Brief-Instruction-to-Use-PySC2-Learning-Environment/" title="A Brief Tutorial to Use PySC2 Learning Environment">A Brief Tutorial to Use PySC2 Learning Environment</a> and <a
 href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">example
 codes</a>.</li>
 </ul>
@@ -136,7 +136,7 @@ codes</a>.</li>
 agent, run your codes independently without any built-in modules. * More
 flexible. * Can define our logics in your agent, like learning and doing
 inference. * Can run the codes directly without any built-in modules. *
-Can debug easily. * <a href="/project/2022/A-Brief-Instruction-to-Use-PySC2-Learning-Environment/" title="A Brief Tutorial to Use PySC2 Learning Environment">A Brief Tutorial to Use PySC2 Learning Environment</a> and <a
+Can debug easily. * <a href="/2022/A-Brief-Instruction-to-Use-PySC2-Learning-Environment/" title="A Brief Tutorial to Use PySC2 Learning Environment">A Brief Tutorial to Use PySC2 Learning Environment</a> and <a
 href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_2.py">example
 codes</a>.</p>
 <h1 id="main-reference">Main Reference</h1>
