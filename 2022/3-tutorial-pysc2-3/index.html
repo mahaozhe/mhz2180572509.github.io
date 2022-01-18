@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="This is a brief introduction to an more comprehensive approach to use the PySC2 by defining both your own environment and agent, and you can also control the interaction between the agent and the e">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Use PySC2 Learning Environment - Control Your Own Environment and Agent">
+<meta property="og:url" content="http://example.com/2022/3-tutorial-pysc2-3/">
+<meta property="og:site_name" content="Life like Wine">
+<meta property="og:description" content="This is a brief introduction to an more comprehensive approach to use the PySC2 by defining both your own environment and agent, and you can also control the interaction between the agent and the e">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-01-19T09:36:52.000Z">
+<meta property="article:modified_time" content="2022-01-18T09:43:02.223Z">
+<meta property="article:author" content="Ma Haozhe">
+<meta property="article:tag" content="Reinforcement Learning">
+<meta property="article:tag" content="PySC2">
+<meta property="article:tag" content="Tools">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/3-tutorial-pysc2-3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/3-tutorial-pysc2-3/","path":"2022/3-tutorial-pysc2-3/","title":"Use PySC2 Learning Environment - Control Your Own Environment and Agent"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Use PySC2 Learning Environment - Control Your Own Environment and Agent | Life like Wine</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life like Wine</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#to-instantiate-an-environment"><span class="nav-number">1.</span> <span class="nav-text">To Instantiate An
+Environment</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#define-a-function-to-interact-with-the-environment"><span class="nav-number">2.</span> <span class="nav-text">Define A
+Function to Interact with The Environment</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#run-the-program"><span class="nav-number">3.</span> <span class="nav-text">Run the Program</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#template-codes"><span class="nav-number">4.</span> <span class="nav-text">Template Codes</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ma Haozhe"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ma Haozhe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/mhz2180572509" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;mhz2180572509" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:haozhe.ma@u.nus.edu" title="E-Mail → mailto:haozhe.ma@u.nus.edu" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/3-tutorial-pysc2-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ma Haozhe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life like Wine">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Use PySC2 Learning Environment - Control Your Own Environment and Agent
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-01-19 17:36:52" itemprop="dateCreated datePublished" datetime="2022-01-19T17:36:52+08:00">2022-01-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-01-18 17:43:02" itemprop="dateModified" datetime="2022-01-18T17:43:02+08:00">2022-01-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tutorial/" itemprop="url" rel="index"><span itemprop="name">Tutorial</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>This is a brief introduction to an more comprehensive approach to use
+the <code>PySC2</code> by defining both your own environment and agent,
+and you can also control the interaction between the agent and the
+environment. A basic template can be found <a
+target="_blank" rel="noopener" href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_2.py">here</a>.
+(The codes are also attached at the end).</p>
+<ul>
+<li>For an overview of <code>PySC2</code>, you can proceed to
+<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
+<li>For an simpler approach to only define your own agent, you can
+proceed to <a href="/2022/2-tutorial-pysc2-2/" title="Use PySC2 Learning Environment - Define Your Own Agent">Use PySC2 Learning Environment - Define Your Own Agent</a></li>
+</ul>
+<span id="more"></span>
+<p>The environment of PySC2 is defined in
+<code>pysc2.env.sc2_env</code>, while the actions and observations are
+defined in <code>pysc2.lib.features</code>. The class of
+<code>PySC2</code> environment is <code>SC2Env</code>, which Inherits
+from <code>pysc2.env.environment.Base</code>. <strong>You can use the
+<code>SC2Env</code> just like any other <em>OpenAI Gym</em>
+environments.</strong></p>
+<p>A basic template to instantiate the environment and an agent, and run
+the codes to make the agent interact with the environment can be found
+<a
+target="_blank" rel="noopener" href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.</p>
+<h1 id="to-instantiate-an-environment">To Instantiate An
+Environment</h1>
+<p>Import the <code>SC2Env</code> from <code>pysc2.env.sc2_env</code>
+and instantiate it by <code>env = SC2Env([parameters])</code>.</p>
+<p>The definition of the class and all its parameters can be found <a
+target="_blank" rel="noopener" href="https://github.com/deepmind/pysc2/blob/master/pysc2/env/sc2_env.py#L121">here</a>.</p>
+<p>Some important arguments:</p>
+<ul>
+<li><code>map_name</code>: the name of the map.
+<ul>
+<li>You can find the namelist in <code>pysc2.bin.map_list</code> or by
+running <code>python -m pysc2.bin.map_list</code></li>
+<li>Or you can find them under the <code>pysc2/maps/</code> folder, like
+the script <code>pysc2/maps/melee.py</code> lists all the maps of
+<em>Melee</em>: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">melee_maps = [&quot;Flat32&quot;, &quot;Flat48&quot;, &quot;Flat64&quot;, &quot;Flat96&quot;, &quot;Flat128&quot;, &quot;Simple64&quot;, &quot;Simple96&quot;, &quot;Simple128&quot;,]</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><code>players</code>：a list, containing one or two instances of
+<code>pysc2.env.sc2_env.Agent</code> or
+<code>pysc2.env.sc2_env.Bot</code>, some maps only allow one agent.
+<ul>
+<li>Note: the <code>Agent</code> and <code>Bot</code> is different from
+the <code>pysc2.agents.base_agent</code> we mentioned before, here is an
+example for these two classes: <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Agent</span>(<span class="params">collections.namedtuple(<span class="params"><span class="string">&quot;Agent&quot;</span>, [<span class="string">&quot;race&quot;</span>, <span class="string">&quot;name&quot;</span>]</span>)</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Define an Agent. It can have a single race or a list of races.&quot;&quot;&quot;</span></span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, race, name=<span class="literal">None</span></span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(Agent, cls).__new__(cls, to_list(race), name <span class="keyword">or</span> <span class="string">&quot;&lt;unknown&gt;&quot;</span>)</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bot</span>(<span class="params">collections.namedtuple(<span class="params"><span class="string">&quot;Bot&quot;</span>, [<span class="string">&quot;race&quot;</span>, <span class="string">&quot;difficulty&quot;</span>, <span class="string">&quot;build&quot;</span>]</span>)</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Define a Bot. It can have a single or list of races or builds.&quot;&quot;&quot;</span></span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, race, difficulty, build=<span class="literal">None</span></span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(Bot, cls).__new__(cls, to_list(race), difficulty, to_list(build <span class="keyword">or</span> BotBuild.random))</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><code>agent_interface_format</code>: to define the format of
+observation and action, like the resolution of the feature maps. It
+takes an instance of
+<code>pysc2.lib.features.AgentInterfaceFormat</code> or an instance of
+<code>pysc2.env.sc2_env.AgentInterfaceFormat</code>.
+<ul>
+<li>The number of <code>AgentInterfaceFormat</code> should be the same
+as the length of the list for the above <code>player</code> argument,
+with the same order.</li>
+<li>Please refer to <a
+target="_blank" rel="noopener" href="https://github.com/deepmind/pysc2/blob/master/pysc2/lib/features.py#L470">the
+definition</a> of <code>AgentInterfaceFormat</code> for more
+details.</li>
+</ul></li>
+<li><code>step_mul</code>: an int to identify after how many steps to
+take one observation and apply one action. (not the real number of
+frames). 1 second equals to 16 steps, which means if we set 16 here, we
+will get the observations every 1 second.</li>
+<li><code>game_steps_per_episode</code>: how many steps of one episode.
+For example, if we set <code>200*16</code> here, it means one episode
+will last for 200 seconds.</li>
+<li><code>save_replay_episodes</code>: how many episodes to save one
+replay.</li>
+<li><code>replay_dir</code>: the location to save replays.</li>
+</ul>
+<h1 id="define-a-function-to-interact-with-the-environment">Define A
+Function to Interact with The Environment</h1>
+<p>To define a function to interact with the environment, you can refer
+to the <code>run_loop</code> function in <a
+target="_blank" rel="noopener" href="https://github.com/deepmind/pysc2/blob/master/pysc2/env/run_loop.py#L23">pysc2/env/run_loop.py</a></p>
+<p>Here is also a good reference to instantiate an <code>SC2Env</code>
+and an <code>Agent</code>, and use the above <code>run_loop</code>
+function to test them in <a
+target="_blank" rel="noopener" href="https://github.com/deepmind/pysc2/blob/master/pysc2/tests/easy_scripted_test.py">pysc2/tests/easy_scripted_test.py</a>.</p>
+<h1 id="run-the-program">Run the Program</h1>
+<p>To actually run the codes above, we need the <code>run</code>
+function in <code>absl.app</code> package. The function takes in our
+running function as a parameter, like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pysc2.env <span class="keyword">import</span> run_loop, sc2_env</span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> random_agent</span><br><span class="line"><span class="keyword">from</span> absl <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">args</span>):</span></span><br><span class="line">    agent = random_agent.RandomAgent()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> sc2_env.SC2Env(map_name=<span class="string">&quot;MoveToBeacon&quot;</span>, </span><br><span class="line">	                players=[sc2_env.Agent(sc2_env.Race.terran)],</span><br><span class="line">			agent_interface_format=sc2_env.AgentInterfaceFormat(feature_dimensions=sc2_env.Dimensions(screen=<span class="number">84</span>, minimap=<span class="number">64</span>)), </span><br><span class="line">			step_mul=<span class="number">16</span>,</span><br><span class="line">			game_steps_per_episode=<span class="number">200</span> * <span class="number">16</span>, </span><br><span class="line">			visualize=<span class="literal">True</span>) <span class="keyword">as</span> env:</span><br><span class="line">	run_loop.run_loop([agent], env, <span class="number">200</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    app.run(main)</span><br></pre></td></tr></table></figure>
+<p><strong>Notes</strong>: When we define the <code>main</code>
+function, it must have at lest one argument, like <code>args</code>
+here. You may not use it, but you have to define it.</p>
+<h1 id="template-codes">Template Codes</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template  for approach 2.</span></span><br><span class="line"><span class="string">Agent: using the random agent, referring to: pysc2.agent.random_agent.RandomAgent</span></span><br><span class="line"><span class="string">Environment: using the &#x27;Simple64&#x27; environment, both the player and the build-in AI are the race of terran.</span></span><br><span class="line"><span class="string">You can simply run the agent in the environment by the command:</span></span><br><span class="line"><span class="string">    python Approach_2.py</span></span><br><span class="line"><span class="string">Or you can use the `pysc2.bin.agent` module to run the MyAgent individually like the approach 1:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent Approach_2.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib.features <span class="keyword">import</span> AgentInterfaceFormat, Dimensions</span><br><span class="line"><span class="comment"># import the SC2Env environment</span></span><br><span class="line"><span class="keyword">from</span> pysc2.env.sc2_env <span class="keyword">import</span> SC2Env, Agent, Bot, Race, Difficulty</span><br><span class="line"><span class="comment"># import absl</span></span><br><span class="line"><span class="keyword">from</span> absl <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define the agent, overriding the `step` function</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    My customized agent, simply copied from `pysc2.agents.random_agent.RandomAgent`.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes] <span class="keyword">for</span> arg <span class="keyword">in</span></span><br><span class="line">                self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="keyword">return</span> actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define a loop function for only one agent</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loop</span>(<span class="params">agent, env, max_steps=<span class="number">200</span></span>):</span></span><br><span class="line">    <span class="comment"># Set up the agent</span></span><br><span class="line">    <span class="comment"># ! Important: here, to setup the agent, the `env.observation_spec()` and `env.action_spec()` return tuples,</span></span><br><span class="line">    <span class="comment"># ! however, we want the elements inside, so we need the indexes `[0]` form them respectively.</span></span><br><span class="line">    observation_spec = env.observation_spec()[<span class="number">0</span>]</span><br><span class="line">    action_spec = env.action_spec()[<span class="number">0</span>]</span><br><span class="line">    agent.setup(observation_spec, action_spec)</span><br><span class="line">    <span class="comment"># reset the environment and the agent</span></span><br><span class="line">    <span class="comment"># ! Note: the `env.reset()` returns a tuple,</span></span><br><span class="line">    <span class="comment"># ? each element for each agent/bot.</span></span><br><span class="line">    timesteps = env.reset()</span><br><span class="line">    agent.reset()</span><br><span class="line">    total_steps = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="comment"># ! Note: the `env.step()` function needs a list, which actually allows multiple actions per frame,</span></span><br><span class="line">        <span class="comment"># ! so, we need to pack up the single action returned by the `agent.step()` function.</span></span><br><span class="line">        <span class="comment"># ! However, if the `agent.step()` function returns a list itself, then there is no need to use the list.</span></span><br><span class="line">        action = [agent.step(timesteps[<span class="number">0</span>])]</span><br><span class="line">        <span class="keyword">if</span> timesteps[<span class="number">0</span>].last():</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        total_steps += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> total_steps &gt; max_steps:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        timesteps = env.step(action)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define the main function</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">args</span>):</span></span><br><span class="line">    agent = MyAgent()</span><br><span class="line">    <span class="comment"># define the environment</span></span><br><span class="line">    env = SC2Env(map_name=<span class="string">&quot;Simple64&quot;</span>,</span><br><span class="line">                 players=[Agent(Race.terran), Bot(Race.terran, Difficulty.very_easy)],</span><br><span class="line">                 agent_interface_format=AgentInterfaceFormat(feature_dimensions=Dimensions(screen=<span class="number">84</span>, minimap=<span class="number">64</span>)),</span><br><span class="line">                 step_mul=<span class="number">16</span>, visualize=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        loop(agent, env)</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Finished!&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    app.run(main)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
+              <a href="/tags/PySC2/" rel="tag"># PySC2</a>
+              <a href="/tags/Tools/" rel="tag"># Tools</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/2-tutorial-pysc2-2/" rel="prev" title="Use PySC2 Learning Environment - Define Your Own Agent">
+                  <i class="fa fa-chevron-left"></i> Use PySC2 Learning Environment - Define Your Own Agent
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ma Haozhe</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
