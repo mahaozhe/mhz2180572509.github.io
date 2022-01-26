@@ -28,7 +28,7 @@
 <meta property="og:description" content="Poisson distribution can be used to express count data, which gives number of events occurring in a fixed interval of time or space and these events occur with a known constant mean rate and indepen">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-01-21T02:51:14.000Z">
-<meta property="article:modified_time" content="2022-01-21T02:51:14.209Z">
+<meta property="article:modified_time" content="2022-01-26T07:48:56.167Z">
 <meta property="article:author" content="Ma Haozhe">
 <meta property="article:tag" content="Probability Theory">
 <meta property="article:tag" content="Machine Learning">
@@ -148,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#probability-density-formula"><span class="nav-number">1.</span> <span class="nav-text">Probability Density Formula</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#expectation-and-variance"><span class="nav-number">2.</span> <span class="nav-text">Expectation and Variance</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#log-likelihood"><span class="nav-number">3.</span> <span class="nav-text">Log-Likelihood</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#poisson-regression"><span class="nav-number">4.</span> <span class="nav-text">Poisson Regression</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-reference"><span class="nav-number">5.</span> <span class="nav-text">Main Reference:</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#probability-density-formula"><span class="nav-number">1.</span> <span class="nav-text">Probability Density Formula</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#expectation-and-variance"><span class="nav-number">2.</span> <span class="nav-text">Expectation and Variance</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#expectation"><span class="nav-number">2.1.</span> <span class="nav-text">Expectation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#variance"><span class="nav-number">2.2.</span> <span class="nav-text">Variance</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#log-likelihood"><span class="nav-number">3.</span> <span class="nav-text">Log-Likelihood</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#poisson-regression"><span class="nav-number">4.</span> <span class="nav-text">Poisson Regression</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-reference"><span class="nav-number">5.</span> <span class="nav-text">Main Reference:</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -163,7 +163,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -251,6 +251,13 @@
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-01-26 15:48:56" itemprop="dateModified" datetime="2022-01-26T15:48:56+08:00">2022-01-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">In</span>
@@ -298,6 +305,7 @@ numerically equals to <span class="math inline">\(\lambda\)</span>:</p>
 <p><span class="math display">\[\begin{equation}
 \mathrm{E}(Y)=\mathrm{Var}(Y)=\lambda=\mu(x;\beta)
 \end{equation}\]</span></p>
+<h2 id="expectation">Expectation</h2>
 <p>To proof:</p>
 <p><span class="math display">\[\begin{equation}
 \begin{aligned}
@@ -321,6 +329,7 @@ e^x = 1 + x+\frac{x^2}{2!}+...+\frac{x^n}{n!}+... =
 \sum_{y=1}^{\infty}{\frac{\lambda^{y - 1}}{(y-1)!}} = \lambda
 e^{-\lambda} e^{\lambda} = \lambda
 \end{equation}\]</span></p>
+<h2 id="variance">Variance</h2>
 <p>To compute the variance, we firstly compute the expectation of <span
 class="math inline">\(Y^2\)</span>:</p>
 <p><span class="math display">\[\begin{equation}
@@ -415,6 +424,9 @@ class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2022/5-ProbabilisticML-2-NB/" rel="next" title="Negative Binomial Distribution - Expectation, Variance, Likelihood and Regression">
+                  Negative Binomial Distribution - Expectation, Variance, Likelihood and Regression <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
