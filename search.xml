@@ -1,6 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Poisson Distribution - Expectation, Variance, Likelihood and Regression</title>
+    <url>/2022/4-ProbabilisticML-1-Poisson/</url>
+    <content><![CDATA[<p>Poisson distribution can be used to express count data, which gives
+number of events occurring in a fixed interval of time or space and
+these events occur with a known constant mean rate and independently of
+the time since the last event.</p>
+<p>This blog aims to show the detailed proof of its expectation,
+variance, likelihood and regression.</p>
+<span id="more"></span>
+<h1 id="probability-density-formula">Probability Density Formula</h1>
+<p>Suppose a discrete random variable <span
+class="math inline">\(X\)</span> of non-negative integer numbers, and
+let <span
+class="math inline">\(\lambda=\mu(x;\beta)=e^{x\beta}\geq0\)</span>.
+Then we can say:</p>
+<p><span class="math display">\[\begin{equation}
+Y \sim Poisson(\mu(x,\beta))
+\end{equation}\]</span></p>
+<p>if:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+P(Y=y_i) &amp;= e^{-\lambda_i} \frac{\lambda_i^{y_i}}{y_i!}\\
+&amp;= e^{-\mu(x_i,\beta)} \frac{\mu(x_i,\beta)^{y_i}}{y_i!}
+\end{aligned}
+\end{equation}\]</span></p>
+<h1 id="expectation-and-variance">Expectation and Variance</h1>
+<p>The expectation and the variation of Poisson distribution both
+numerically equals to <span class="math inline">\(\lambda\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y)=\mathrm{Var}(Y)=\lambda=\mu(x;\beta)
+\end{equation}\]</span></p>
+<h2 id="expectation">Expectation</h2>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathrm{E}(Y) &amp;= \sum_{y=0}^{\infty}{y e^{-\lambda}
+\frac{\lambda^{y}}{y!}} \\
+&amp;= \sum_{y=1}^{\infty}{y e^{-\lambda} \frac{\lambda^{y}}{y!}} \\
+&amp;= \sum_{y=1}^{\infty}{e^{-\lambda} \frac{\lambda^{y -
+1}\lambda}{(y-1)!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{\lambda^{y -
+1}}{(y-1)!}}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Based on the Taylor expansion:</p>
+<p><span class="math display">\[\begin{equation}
+e^x = 1 + x+\frac{x^2}{2!}+...+\frac{x^n}{n!}+... =
+\sum_{k=1}^{\infty}{\frac{x^{k-1}}{(k-1)!}}
+\end{equation}\]</span></p>
+<p>We have:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \lambda e^{-\lambda}
+\sum_{y=1}^{\infty}{\frac{\lambda^{y - 1}}{(y-1)!}} = \lambda
+e^{-\lambda} e^{\lambda} = \lambda
+\end{equation}\]</span></p>
+<h2 id="variance">Variance</h2>
+<p>To compute the variance, we firstly compute the expectation of <span
+class="math inline">\(Y^2\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathrm{E}(Y^2) &amp;= \sum_{y=0}^{\infty}{y^2 e^{-\lambda}
+\frac{\lambda^y}{y!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{y \lambda^{y -
+1}}{(y-1)!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{(y-1+1)\lambda^{y
+- 1}}{(y-1)!}}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Set <span class="math inline">\(m=k-1\)</span>, we have:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathrm{E}(Y^2) &amp;= \lambda e^{-\lambda}(\sum_{m=0}^{\infty}{\frac{m
+\lambda^m}{m!}} + \sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
+&amp;= \lambda e^{-\lambda}(\lambda
+\sum_{m=1}^{\infty}{\frac{\lambda^{m-1}}{(m-1)!}} +
+\sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
+&amp;= \lambda e^{-\lambda} (\lambda e^{\lambda} +e^{\lambda} ) =
+\lambda(\lambda + 1)
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Finally, we can derive:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 = \lambda(\lambda
++ 1) - {\lambda}^2 = \lambda
+\end{equation}\]</span></p>
+<h1 id="log-likelihood">Log-Likelihood</h1>
+<p>Then we can derive the likelihood of <span
+class="math inline">\(Y\)</span> is:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+L(y;\beta) &amp;= \prod_{i=1}^{n}{P(Y=y_i)} \\
+&amp;= \prod_{i=1}^{n}{e^{-\mu(x_i;\beta)}}\prod_{i=1}^n
+\frac{\mu(x_i;\beta)^{y_i}}{y_i!}\\
+&amp;=
+e^{-\sum_{i=1}^{n}{\mu(x_i;\beta)}}\prod_{i=1}^{n}{\frac{\mu(x_i;\beta)^{y_i}}{y_i!}}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Then, we can get the log-likelihood as:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\ln{L(y;\beta)} &amp;=
+-\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
+\ln{\mu(x_i;\beta)}}-\sum_{i=1}^{n}{\ln{y_i!}}\\
+&amp;= -\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
+\ln{\mu(x_i;\beta)}} + const
+\end{aligned}
+\end{equation}\]</span></p>
+<h1 id="poisson-regression">Poisson Regression</h1>
+<p>We can learn the parameters <span
+class="math inline">\(\beta\)</span> based on <em>MLE</em> to do
+regression. The following codes are based on
+<code>scipy.optimize.minimize</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">N = <span class="number">10000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line">Y = np.random.poisson(np.exp(np.dot(X, beta_real)))  <span class="comment"># here, \lambda = exp(X\beta)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Poisson distribution of np.random.poisson(lam):</span></span><br><span class="line"><span class="comment"># f(k; lam) = (lam^k exp(-lam)) / (k!)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function to maximize the loge-likelihood</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">beta</span>):</span></span><br><span class="line">    Xbeta = np.dot(X, beta)</span><br><span class="line">    exp_Xbeta = np.exp(Xbeta)  <span class="comment"># \lambda = exp(X beta)</span></span><br><span class="line">    loss = exp_Xbeta.<span class="built_in">sum</span>() - np.dot(Y, Xbeta)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">beta_ini = np.zeros(P)  <span class="comment"># initialize beta with zeros</span></span><br><span class="line">result = mm(loss_function, beta_ini)</span><br><span class="line">beta_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_predicted))</span><br></pre></td></tr></table></figure>
+<p>The output of the above codes:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real beta: [-<span class="number">0.40914376</span>  <span class="number">0.29649545</span>  <span class="number">0.59736634</span>  <span class="number">1.40512766</span> -<span class="number">0.55024536</span>]</span><br><span class="line">Predicted beta: [-<span class="number">0.40346132</span>  <span class="number">0.29799245</span>  <span class="number">0.60520007</span>  <span class="number">1.40263191</span> -<span class="number">0.54896361</span>]</span><br></pre></td></tr></table></figure>
+<h1 id="main-reference">Main Reference:</h1>
+<ul>
+<li>Lecture slides by Claudia Czado: <a
+href="https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf"
+class="uri">https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf</a></li>
+<li>Poisson distribution Wikipedia: <a
+href="https://en.wikipedia.org/wiki/Poisson_distribution"
+class="uri">https://en.wikipedia.org/wiki/Poisson_distribution</a></li>
+<li>Poisson regression by <em>ahwillia</em>: <a
+href="https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a"
+class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Probabilistic Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Probability Theory</tag>
+        <tag>Machine Learning</tag>
+        <tag>Math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Negative Binomial Distribution - Expectation, Variance, Likelihood and Regression</title>
+    <url>/2022/5-ProbabilisticML-2-NB/</url>
+    <content><![CDATA[<p>This blog aims to show the detailed derivation of the expectation,
+variance, likelihood and regression of <em>Negative Binomial
+Distribution</em>.</p>
+<p>The Poisson distribution can be generalized by including a gamma
+noise variable, then we can get the negative binomial distribution.</p>
+<span id="more"></span>
+<h1 id="probability-density-formula">Probability Density Formula</h1>
+<p><span class="math display">\[\begin{equation}
+P(Y=y_i;\mu,\alpha) =
+\frac{\Gamma(y_i+\alpha^{-1})}{\Gamma(y_i+1)\Gamma(\alpha^{-1})}(\frac{\alpha^{-1}}{\alpha^{-1}\mu})^{\alpha^{-1}}(\frac{\mu}{\alpha^{-1}+\mu})^{y_i}
+\end{equation}\]</span></p>
+<p>where: <span class="math display">\[\begin{equation}
+\mu_i=e^{x_i\beta}
+\end{equation}\]</span></p>
+<p>We can set <span class="math inline">\(n=\alpha^{-1}\)</span> and
+<span
+class="math inline">\(p=\frac{\alpha^{-1}}{\alpha^{-1}+\mu}\)</span>,
+then the above formula can be rewritten as:</p>
+<p><span class="math display">\[\begin{equation}
+P(Y=y_i;n,p) =
+\frac{\Gamma(y_i+n)}{\Gamma(y_i+1)\Gamma(n)}p^n(1-p)^{y_i}
+\end{equation}\]</span></p>
+<h1 id="expectation-and-variance">Expectation and Variance</h1>
+<p>The expectation and the variance is:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \frac{n(1-p)}{p}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(Y) = \frac{n(1-p)}{p^2}
+\end{equation}\]</span></p>
+<h2 id="expectation">Expectation</h2>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\mathrm{E}(Y) &amp; =
+\sum_{y=0}^{\infty}{y\frac{(y+n-1)!}{(y)!(n-1)!}p^n(1-p)^{y}} \\
+&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{(y-1)!(n-1)!}p^n(1-p)^y}\\
+&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{y!n!}p^{n+1}(1-p)^{y-1}}\\
+&amp;= \frac{n(1-p)}{p}
+\sum_{y=1}^{\infty}{\frac{(y+n-1)!}{(y-1)!n!}p^{n+1}(1-p)^{y-1}} \\
+&amp;= \frac{n(1-p)}{p}
+\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}}
+\end{aligned}
+\end{equation*}\]</span></p>
+<p>As the integral sum of the negative binomial distribution is 1:</p>
+<p><span class="math display">\[\begin{equation}
+\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}} = 1
+\end{equation}\]</span></p>
+<p>So, we can get:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \frac{n(1-p)}{p}
+\end{equation}\]</span></p>
+<h2 id="variance">Variance</h2>
+<p>Before we compute the variance, we firstly compute <span
+class="math inline">\(\mathrm{E}(Y(Y-1))\)</span>:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\mathrm{E}(Y(Y-1)) &amp; =
+\sum_{y=0}^{\infty}{y(y-1)\frac{(y+n-1)!}{y!(n-1)!}p^n(1-p)^y} \\
+&amp;= \frac{n(r+1)(1-p)^2}{p^2}
+\sum_{y=2}^{\infty}{\frac{((n+2)+(y-2)-1)!}{(y-2)!(n+1)!}p^{n+2}(1-p)^{y-2}}
+\\
+&amp;= \frac{n(r+1)(1-p)^2}{p^2}
+\sum_{z=0}^{\infty}{\frac{((n+2)+z-1)!}{z!(n+1)!}p^{n+2}(1-p)^{z}} \\
+&amp;= \frac{n(r+1)(1-p)^2}{p^2}
+\end{aligned}
+\end{equation*}\]</span></p>
+<p>Then we can get:</p>
+<p><span class="math display">\[\begin{equation}
+E(Y^2) = E(Y(Y-1)) + E(Y) = \frac{n(n+1)(1-p)^2 + n(1-p)p}{p^2}
+\end{equation}\]</span></p>
+<p>Finally, we can compute the variance as:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 =
+\frac{n(1-p)}{p^2}
+\end{equation}\]</span></p>
+<h1 id="log-likelihood">Log-Likelihood</h1>
+<p>The log-likelihood that to maximize in an MLE approach is:</p>
+<p><span class="math display">\[\begin{equation}
+\sum_{i=1}^{n}{\ln(\Gamma(y_i+\alpha^{-1})) - \ln(\Gamma(\alpha^{-1})) -
+\ln(\Gamma(y_i+1)) - (\alpha^{-1} + y_i)\ln(1+\alpha \mu_i)
++y_i(\ln(\alpha)+\ln(\mu_i))}
+\end{equation}\]</span></p>
+<h1 id="negative-binomial-regression">Negative Binomial Regression</h1>
+<p>We can learn the parameters based on <em>MLE</em> to do regression.
+The following codes are based on
+<code>scipy.optimize.minimize</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> loggamma</span><br><span class="line"></span><br><span class="line">N = <span class="number">1000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">alpha_real = np.random.randint(<span class="number">1</span>, <span class="number">10</span>)  <span class="comment"># the real values of \alpha, a scalar</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># To apply the np.random.negative_binomial function:</span></span><br><span class="line"><span class="comment"># n = 1 / alpha_real</span></span><br><span class="line"><span class="comment"># p = (1 / alpha_real) / ((1 / alpha_real) + exp(X * real_beta))</span></span><br><span class="line"></span><br><span class="line">n = <span class="number">1</span> / alpha_real</span><br><span class="line">p = n / (n + np.exp(np.dot(X, beta_real)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># The negative binomial distribution defined from np.random.negative_binomial(n,p):</span></span><br><span class="line"><span class="comment"># P(y; n, p) = ((y+n-1)!)/(y!(n-1)!) * (p^n) * (1-p)^y</span></span><br><span class="line">Y = np.random.negative_binomial(n, p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss and gradient function</span></span><br><span class="line"><span class="comment"># params = [alpha, beta]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">params</span>):</span></span><br><span class="line">    alpha = params[<span class="number">0</span>]</span><br><span class="line">    beta = params[<span class="number">1</span>:]</span><br><span class="line">    mu = np.exp(np.dot(X, beta))</span><br><span class="line"></span><br><span class="line">    log_likelihood = loggamma(Y + <span class="number">1</span> / alpha).<span class="built_in">sum</span>() \</span><br><span class="line">                     - loggamma(alpha) * N \</span><br><span class="line">                     - loggamma(Y + <span class="number">1</span>).<span class="built_in">sum</span>() \</span><br><span class="line">                     - <span class="number">1</span> / alpha * (np.log(<span class="number">1</span> + alpha * mu).<span class="built_in">sum</span>()) \</span><br><span class="line">                     - np.dot(Y, np.log(<span class="number">1</span> + alpha * mu)) \</span><br><span class="line">                     + (Y * np.log(alpha)).<span class="built_in">sum</span>() \</span><br><span class="line">                     + np.dot(Y, np.log(mu))</span><br><span class="line">    <span class="keyword">return</span> -log_likelihood</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">params_ini = np.ones(P + <span class="number">1</span>)  <span class="comment"># initialize params ([alpha, beta]) with zeros</span></span><br><span class="line">result = mm(loss_function, params_ini)</span><br><span class="line">params_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(alpha_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">0</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">1</span>:]))</span><br></pre></td></tr></table></figure>
+<p>The output of the above codes:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real alpha: <span class="number">2</span></span><br><span class="line">Real beta: [ <span class="number">1.6794512</span>  -<span class="number">0.22624054</span>  <span class="number">1.15579192</span>  <span class="number">0.35920843</span>  <span class="number">0.09326148</span>]</span><br><span class="line">Predicted alpha: <span class="number">2.0811572484796637</span></span><br><span class="line">Predicted beta: [ <span class="number">1.69292056</span> -<span class="number">0.28083378</span>  <span class="number">1.18706627</span>  <span class="number">0.43136325</span>  <span class="number">0.1085059</span> ]</span><br></pre></td></tr></table></figure>
+<h1 id="main-reference">Main Reference:</h1>
+<ul>
+<li>Wikipedia of Negative binomial distribution: <a
+href="https://en.wikipedia.org/wiki/Negative_binomial_distribution"
+class="uri">https://en.wikipedia.org/wiki/Negative_binomial_distribution</a></li>
+<li>Negative Binomial Distributio introduction: <a
+href="http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf"
+class="uri">http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf</a></li>
+<li>Chapter 326 from NCSS Statistical Software: <a
+href="https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf"
+class="uri">https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Probabilistic Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Probability Theory</tag>
+        <tag>Machine Learning</tag>
+        <tag>Math</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>A Brief Tutorial to Use PySC2 Learning Environment (Overview)</title>
     <url>/2022/1-tutorial-pysc2-1/</url>
     <content><![CDATA[<p><code>PySC2</code> is DeepMind's Python component of the StarCraft II
@@ -156,70 +409,191 @@ class="uri">https://github.com/deepmind/pysc2</a></li>
       </tags>
   </entry>
   <entry>
-    <title>Use PySC2 Learning Environment - Define Your Own Agent</title>
-    <url>/2022/2-tutorial-pysc2-2/</url>
-    <content><![CDATA[<p>This is a brief introduction to an easy approach to use the
-<code>PySC2</code> by defining your own agent. A basic template for a
-self-defined agent can be found <a
-href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.
-(The codes are also attached at the end).</p>
-<ul>
-<li>For an overview of <code>PySC2</code>, you can proceed to
-<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
-<li>For an more comprehensive approach to define your own environment
-and agent, and also control the interaction between them, you can
-proceed to <a href="/2022/3-tutorial-pysc2-3/" title="Use PySC2 Learning Environment - Control Your Own Environment and Agent">Use PySC2 Learning Environment - Control Your Own Environment and Agent</a></li>
-</ul>
+    <title>First Order AutoRegression (AR(1)) - Expectation, Variance, Likelihood and Regression</title>
+    <url>/2022/6-ProbabilisticML-3-AR1/</url>
+    <content><![CDATA[<p>This blog aims to show the detailed derivation of the expectation,
+variance, likelihood and regression of <em>First-order autoregression
+(AR(1))</em> model.</p>
 <span id="more"></span>
-<h1 id="how-to-use-custom-defined-agents">How to Use Custom-Defined
-Agents?</h1>
-<p>Run the command:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent &lt;Agent&gt;</span><br></pre></td></tr></table></figure>
-<p>Assuming that your own agent class named
-<code>MyAgentClassName</code> is defined in <code>MyAgentFile.py</code>
-in a directory <code>[PATH]</code>, then when you run command in the
-<code>[PATH]</code> directory, you can identify the agent by:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent MyAgentFile.MyAgentClassName</span><br></pre></td></tr></table></figure>
-<h1 id="how-to-design-my-own-agent-and-make-it-interact-with-pysc2">How
-to Design My Own Agent and Make It Interact with PySC2?</h1>
-<p>Any custom designed agent should derive from the
-<code>BaseAgent</code> class (in <code>pysc2.agents.base_agent</code>)
-and override the <code>step(self, obs)</code> function, where the
-argument <code>obs</code> is the observations.</p>
-<h1 id="how-to-get-observations-and-rewards-from-the-environment">How to
-Get Observations and Rewards from The Environment?</h1>
-<p>The observations (as well as the rewards) taken from environment are
-all included in the parameter <code>obs</code> of the <code>step</code>
-function, such as the feature maps, valid actions, rewards and so
-on.</p>
-<p>for example: * state, viz. different types of feature maps:
-<code>obs.observation["screen"][feature_map_name]</code> * valid
-actions: <code>obs.observation["available_actions"]</code> or
-<code>obs.observation.available_actions</code> * rewards:
-<code>obs.reward</code></p>
-<h1 id="how-to-send-actions-to-interact-with-the-environment">How to
-Send Actions to Interact with The Environment?</h1>
-<p>In the <code>step</code> function, return the action (packed up as a
-<code>FunctionCall</code> instance).</p>
-<h1 id="more-reference">More Reference</h1>
+<h1 id="probability-density-formula">Probability Density Formula</h1>
+<p>The <em>first-order autoregression</em> (<em>AR(1)</em>) can model
+(weakly) stationary time series, if the series <span
+class="math inline">\(x_t\)</span> satisfy the following properties:</p>
 <ul>
-<li>A random agent: <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py"
-class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py</a></li>
-<li>A scripted agent: <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py"
-class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py</a></li>
+<li>The mean <span class="math inline">\(\mathrm{E}(x_t)\)</span> is the
+same for all <span class="math inline">\(t\)</span>.</li>
+<li>The variance <span class="math inline">\(\mathrm{Var}(x_t)\)</span>
+is the same for all <span class="math inline">\(t\)</span>.</li>
+<li>The covariance (and also correlation) between <span
+class="math inline">\(x_t\)</span> and <span
+class="math inline">\(x_{t-h}\)</span> is the same for all <span
+class="math inline">\(t\)</span> at each lag <span
+class="math inline">\(h=1,2,3\)</span>, etc.</li>
 </ul>
-<h1 id="template-codes">Template Codes</h1>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template for approach 1.</span></span><br><span class="line"><span class="string">The agent randomly selects actions.</span></span><br><span class="line"><span class="string">Use the `pysc2.bin.agent` module to run `MyAgent` when your commands are in the current path:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent pysc2EnvTemplate.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># to be compatible with python 2.x</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> features</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define our own agent</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line">        <span class="comment"># RL algorithm here~ #</span></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get available actions</span></span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        <span class="comment"># randomly select one action and its argument</span></span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes]</span><br><span class="line">                <span class="keyword">for</span> arg <span class="keyword">in</span> self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="comment"># pack up the actions as a `FunctionCall`</span></span><br><span class="line">        function_call = actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># return the actions a.k.a. the function_call</span></span><br><span class="line">        <span class="keyword">return</span> function_call</span><br></pre></td></tr></table></figure>
+<p>In the first-order autoregression model, the value of <span
+class="math inline">\(x\)</span> at time <span
+class="math inline">\(t\)</span> is a linear function of the value of
+<span class="math inline">\(x\)</span> at time <span
+class="math inline">\(t-1\)</span>, which can be written as:</p>
+<p><span class="math display">\[\begin{equation}
+x_t = \delta + \phi x_{t-1} + \omega_t
+\end{equation}\]</span></p>
+<p>with the following assumptions:</p>
+<ul>
+<li><span class="math inline">\(\omega_t \backsim
+N(0,\sigma_{\omega}^2)\)</span> i.i.d..</li>
+<li>Properties of the errors <span
+class="math inline">\(\omega_t\)</span> are independent of <span
+class="math inline">\(x_t\)</span>.</li>
+<li>The series <span class="math inline">\(x_t\)</span> is (weakly)
+stationary, which requires <span class="math inline">\(|\phi|\ &lt;
+1\)</span>.</li>
+</ul>
+<h1 id="expectation-and-variance">Expectation and Variance</h1>
+<h2 id="expectation">Expectation</h2>
+<p>The expectation of AR(1) model is:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(x_t)=\frac{\delta}{1-\phi}
+\end{equation}\]</span></p>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(x_t)=\mathrm{E}(\delta + \phi x_{t-1} +
+\omega_t)=\mathrm{E}(\delta) + \mathrm{E}(\phi x_{t-1})+
+\mathrm{E}(\omega_t) = \delta + \phi \mathrm{E}(x_{t-1})
+\end{equation}\]</span></p>
+<p>With the stationary assumption, <span
+class="math inline">\(\mathrm{E}(x_t) = \mathrm{E}(x_{t-1})\)</span>, we
+can solve the equation to get:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(x_t)=\frac{\delta}{1-\phi}
+\end{equation}\]</span>.</p>
+<h2 id="variance">Variance</h2>
+<p>The variance of AR(1) model is:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(x_t)=\frac{\sigma_{\omega}^2}{1-\phi^2}
+\end{equation}\]</span></p>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(x_t)=\mathrm{Var}(\delta) + \mathrm{Var}(\phi x_{t-1})+
+\mathrm{Var}(\omega_t) = \phi^2 \mathrm{Var}(x_{t-1}) +
+\sigma_{\omega}^2
+\end{equation}\]</span></p>
+<p>With the stationary assumption, <span
+class="math inline">\(\mathrm{Var}(x_t) =
+\mathrm{Var}(x_{t-1})\)</span>, we can solve the equation to get:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(x_t)=\frac{\sigma_{\omega}^2}{1-\phi^2}
+\end{equation}\]</span>.</p>
+<h1 id="log-likelihood">Log-Likelihood</h1>
+<p>In this part, we will derive the log-likelihood of the AR(1) model,
+which can be used to estimate the parameters in the MLE approach.</p>
+<p>Firstly, we define the parameters: <span class="math inline">\(\theta
+= (\delta,\phi,\sigma_{\omega}^2)\)</span>.</p>
+<p>Based on the Bayesian theory:</p>
+<p><span class="math display">\[\begin{equation}
+P(x_t,x_{t-1},...,x_1;\theta) =
+P(x_t|x_{t-1},x_{t-2},...,x_1;\theta)P(x_{t-1}|x_{t-2},...,x_1;\theta)...P(x_2|x_1;\theta)P(x_1;\theta)
+\end{equation}\]</span></p>
+<p>As in the AR(1) model, we assume that the <span
+class="math inline">\(x_t\)</span> only directly conditional on <span
+class="math inline">\(x_{t-1}\)</span>, then the above equation can be
+simplified as:</p>
+<p><span class="math display">\[\begin{equation}
+P(x_t,x_{t-1},...,x_1;\theta) =
+P(x_t|x_{t-1};\theta)P(x_{t-1}|x_{t-2};\theta)...P(x_2|x_1;\theta)P(x_1;\theta)
+\end{equation}\]</span></p>
+<p>Then we can rewrite the log-likelihood as:</p>
+<p><span class="math display">\[\begin{equation}
+\ln{L(\theta|x)} =\sum_{t=2}^{T}{\ln{P(x_t|x_{t-1};\theta)}} +
+\ln{P(x_1;\theta)}
+\end{equation}\]</span></p>
+<p>Secondly, consider the (weakly) stationary AR(1) model, we have:</p>
+<p><span class="math display">\[\begin{equation}
+x_t = \delta + \phi x_{t-1} + \omega_t
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\omega_t \backsim i.i.d.
+N(0,\sigma_{\omega}^2)\)</span> and <span
+class="math inline">\(|\phi|&lt;1\)</span>.</p>
+<p>Based on this, we can rewrite it as:</p>
+<p><span class="math display">\[\begin{equation}
+x_t|x_{t-1} \backsim N(\delta +\phi x_{t-1},\sigma_{\omega}^2)
+\end{equation}\]</span></p>
+<p>which equals to:</p>
+<p><span class="math display">\[\begin{equation}
+P(x_t|x_{t-1};\theta) =
+\frac{1}{\sqrt{2\pi}\sigma_{\omega}}e^{-\frac{1}{2\sigma_{\omega}^2}(x_t-\delta-\phi
+x_{t-1})^2}
+\end{equation}\]</span></p>
+<p>Then we can derive:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\sum_{t=2}^{T}{\ln{P(x_t|x_{t-1};\theta)}} &amp;=
+\sum_{t=2}^{T}{-\frac{1}{2}\ln{2\pi
+\sigma_{\omega}^2}-\frac{1}{2\sigma_{\omega}^2}(x_t-\delta-\phi
+x_{t-1})^2} \\
+&amp;=
+-\frac{T-1}{2}\ln{2\pi}-\frac{T-1}{2}\ln{\sigma_{\omega}^2}-\frac{1}{2\sigma_{\omega}^2}\sum_{t=2}^{T}{(x_t-\delta-\phi
+x_{t-1})^2}
+\end{aligned}
+\end{equation*}\]</span></p>
+<p>Next, we have proven that for all <span
+class="math inline">\(t\in{1,2,...,T}\)</span>, the expectation and
+variance of <span class="math inline">\(x_t\)</span> is
+respectively:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(x_t)=\frac{\delta}{1-\phi}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(x_t)=\frac{\sigma_{\omega}^2}{1-\phi^2}
+\end{equation}\]</span></p>
+<p>So for <span class="math inline">\(x_1\)</span>, we have:</p>
+<p><span class="math display">\[\begin{equation}
+x_1 \backsim N(\frac{\delta}{1-\phi},\frac{\sigma_{\omega}^2}{1-\phi^2})
+\end{equation}\]</span></p>
+<p>which equals to:</p>
+<p><span class="math display">\[\begin{equation}
+P(x_1;\theta) =
+\frac{\sqrt{1-\phi^2}}{\sqrt{2\pi}\sigma_{\omega}}e^{-\frac{1-\phi^2}{2\sigma_{\omega}^2}(x_1-\frac{\delta}{1-\phi})^2}
+\end{equation}\]</span></p>
+<p>Then we can derive:</p>
+<p><span class="math display">\[\begin{equation}
+\ln{P(x_1;\theta)} =
+-\frac{1}{2}\ln{2\pi}-\frac{1}{2}\ln{\frac{\delta^2}{1-\phi^2}}-\frac{1-\phi^2}{2\sigma_{\omega}^2}(x_1-\frac{\delta}{1-\phi})^2
+\end{equation}\]</span></p>
+<p>Finally we can have the log-likelihood as:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\ln{L(\theta|x)} &amp;= \sum_{t=2}^{T}{\ln{P(x_t|x_{t-1};\theta)}} +
+\ln{P(x_1;\theta)}\\
+&amp;= -\frac{T}{2}\ln{2\pi} - \frac{1}{2}
+\ln{\frac{\sigma_{\omega}^2}{1-\phi^2}}-\frac{1-\phi^2}{2\sigma_{\omega}^2}(x_1-\frac{\delta}{1-\phi})^2-\frac{T-1}{2}\ln{\sigma_{\omega}^2}-\frac{1}{2\sigma_{\omega}^2}\sum_{t=2}^{T}{(x_t-\delta-\phi
+x_{t-1})^2}
+\end{aligned}
+\end{equation*}\]</span></p>
+<h1 id="mle-regression">MLE Regression</h1>
+<p>We can learn the parameters based on <em>MLE</em> to do regression.
+The following codes are based on
+<code>scipy.optimize.minimize</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">theta_real = [<span class="number">5</span>, <span class="number">0.6</span>, <span class="number">1</span>]  <span class="comment"># parameters \theta is defined as [\delta, \phi, \sigma]</span></span><br><span class="line">expectation_real = theta_real[<span class="number">0</span>] / (<span class="number">1</span> - theta_real[<span class="number">1</span>])  <span class="comment"># expectation</span></span><br><span class="line">variance_real = theta_real[<span class="number">2</span>] ** <span class="number">2</span> / (<span class="number">1</span> - theta_real[<span class="number">1</span>] ** <span class="number">2</span>)  <span class="comment"># variance</span></span><br><span class="line"></span><br><span class="line">T = <span class="number">100</span>  <span class="comment"># number of time points</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># generate x_1</span></span><br><span class="line">x_1 = np.random.normal(expectation_real, variance_real)</span><br><span class="line"><span class="comment"># generate x_t, t=2,3,...,T</span></span><br><span class="line">data = [x_1]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(T - <span class="number">1</span>):</span><br><span class="line">    x_next = theta_real[<span class="number">0</span>] + theta_real[<span class="number">1</span>] * data[-<span class="number">1</span>] + np.random.normal(<span class="number">0</span>, theta_real[<span class="number">2</span>] ** <span class="number">2</span>)</span><br><span class="line">    data.append(x_next)</span><br><span class="line"></span><br><span class="line">data = np.array(data)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function (negative of log-likelihood)</span></span><br><span class="line"><span class="comment"># params: \theta = [\delta, \phi, \sigma]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">params</span>):</span></span><br><span class="line">    <span class="keyword">assert</span> <span class="built_in">len</span>(params) == <span class="number">3</span>, <span class="string">&quot;incorrect shape of parameters&quot;</span></span><br><span class="line">    delta, phi, sigma = params</span><br><span class="line"></span><br><span class="line">    x_t = data[<span class="number">1</span>:]</span><br><span class="line">    x_t_1 = data[:-<span class="number">1</span>]</span><br><span class="line">    sum_2_T = np.<span class="built_in">sum</span>((x_t - delta - phi * x_t_1) ** <span class="number">2</span>)</span><br><span class="line">    log_likelihood = - <span class="number">0.5</span> * T * np.log(<span class="number">2</span> * <span class="number">3.14</span>) \</span><br><span class="line">                     - <span class="number">0.5</span> * np.log(sigma ** <span class="number">2</span> / (<span class="number">1</span> - phi ** <span class="number">2</span>)) \</span><br><span class="line">                     - <span class="number">0.5</span> * (<span class="number">1</span> - phi ** <span class="number">2</span>) / (sigma ** <span class="number">2</span>) * ((x_1 - delta / (<span class="number">1</span> - phi)) ** <span class="number">2</span>) \</span><br><span class="line">                     - (T - <span class="number">1</span>) / <span class="number">2</span> * np.log(sigma ** <span class="number">2</span>) \</span><br><span class="line">                     - <span class="number">0.5</span> / (sigma ** <span class="number">2</span>) * sum_2_T</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> -log_likelihood</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">params_ini = np.random.rand(<span class="number">3</span>)  <span class="comment"># initialize params ([\delta, \phi, \sigma])</span></span><br><span class="line">params_bounds = ((<span class="number">0</span>, <span class="number">10</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">2</span>))  <span class="comment"># set some boundaries for the parameters</span></span><br><span class="line">result = mm(loss_function, params_ini, bounds=params_bounds, method=<span class="string">&#x27;Powell&#x27;</span>, tol=<span class="number">1e-10</span>)</span><br><span class="line">params_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real parameters [\delta, \phi, \sigma]: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(theta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted parameters [\delta, \phi, \sigma]: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted))</span><br></pre></td></tr></table></figure>
+<p>One of the results of the above codes is:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real parameters [\delta, \phi, \sigma]: [<span class="number">5</span>, <span class="number">0.6</span>, <span class="number">1</span>]</span><br><span class="line">Predicted parameters [\delta, \phi, \sigma]: [<span class="number">4.84142903</span> <span class="number">0.60249039</span> <span class="number">1.0670589</span>]</span><br></pre></td></tr></table></figure>
+<h1 id="main-reference">Main Reference:</h1>
+<ul>
+<li>STAT 510 Course (1.1 &amp; 1.2) of Eberly College of Science of
+*PennState: <a href="https://online.stat.psu.edu/stat510/lesson/1"
+class="uri">https://online.stat.psu.edu/stat510/lesson/1</a></li>
+<li>Estimation of ARMA Models by Eric Zivot: <a
+href="https://faculty.washington.edu/ezivot/econ584/notes/armaestimation.pdf"
+class="uri">https://faculty.washington.edu/ezivot/econ584/notes/armaestimation.pdf</a></li>
+</ul>
 ]]></content>
       <categories>
-        <category>Tutorial</category>
+        <category>Probabilistic Machine Learning</category>
       </categories>
       <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>PySC2</tag>
-        <tag>Tools</tag>
+        <tag>Probability Theory</tag>
+        <tag>Machine Learning</tag>
+        <tag>Math</tag>
       </tags>
   </entry>
   <entry>
@@ -328,244 +702,70 @@ here. You may not use it, but you have to define it.</p>
       </tags>
   </entry>
   <entry>
-    <title>Poisson Distribution - Expectation, Variance, Likelihood and Regression</title>
-    <url>/2022/4-ProbabilisticML-1-Poisson/</url>
-    <content><![CDATA[<p>Poisson distribution can be used to express count data, which gives
-number of events occurring in a fixed interval of time or space and
-these events occur with a known constant mean rate and independently of
-the time since the last event.</p>
-<p>This blog aims to show the detailed proof of its expectation,
-variance, likelihood and regression.</p>
-<span id="more"></span>
-<h1 id="probability-density-formula">Probability Density Formula</h1>
-<p>Suppose a discrete random variable <span
-class="math inline">\(X\)</span> of non-negative integer numbers, and
-let <span
-class="math inline">\(\lambda=\mu(x;\beta)=e^{x\beta}\geq0\)</span>.
-Then we can say:</p>
-<p><span class="math display">\[\begin{equation}
-Y \sim Poisson(\mu(x,\beta))
-\end{equation}\]</span></p>
-<p>if:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-P(Y=y_i) &amp;= e^{-\lambda_i} \frac{\lambda_i^{y_i}}{y_i!}\\
-&amp;= e^{-\mu(x_i,\beta)} \frac{\mu(x_i,\beta)^{y_i}}{y_i!}
-\end{aligned}
-\end{equation}\]</span></p>
-<h1 id="expectation-and-variance">Expectation and Variance</h1>
-<p>The expectation and the variation of Poisson distribution both
-numerically equals to <span class="math inline">\(\lambda\)</span>:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y)=\mathrm{Var}(Y)=\lambda=\mu(x;\beta)
-\end{equation}\]</span></p>
-<h2 id="expectation">Expectation</h2>
-<p>To proof:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y) &amp;= \sum_{y=0}^{\infty}{y e^{-\lambda}
-\frac{\lambda^{y}}{y!}} \\
-&amp;= \sum_{y=1}^{\infty}{y e^{-\lambda} \frac{\lambda^{y}}{y!}} \\
-&amp;= \sum_{y=1}^{\infty}{e^{-\lambda} \frac{\lambda^{y -
-1}\lambda}{(y-1)!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{\lambda^{y -
-1}}{(y-1)!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Based on the Taylor expansion:</p>
-<p><span class="math display">\[\begin{equation}
-e^x = 1 + x+\frac{x^2}{2!}+...+\frac{x^n}{n!}+... =
-\sum_{k=1}^{\infty}{\frac{x^{k-1}}{(k-1)!}}
-\end{equation}\]</span></p>
-<p>We have:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \lambda e^{-\lambda}
-\sum_{y=1}^{\infty}{\frac{\lambda^{y - 1}}{(y-1)!}} = \lambda
-e^{-\lambda} e^{\lambda} = \lambda
-\end{equation}\]</span></p>
-<h2 id="variance">Variance</h2>
-<p>To compute the variance, we firstly compute the expectation of <span
-class="math inline">\(Y^2\)</span>:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y^2) &amp;= \sum_{y=0}^{\infty}{y^2 e^{-\lambda}
-\frac{\lambda^y}{y!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{y \lambda^{y -
-1}}{(y-1)!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{(y-1+1)\lambda^{y
-- 1}}{(y-1)!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Set <span class="math inline">\(m=k-1\)</span>, we have:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y^2) &amp;= \lambda e^{-\lambda}(\sum_{m=0}^{\infty}{\frac{m
-\lambda^m}{m!}} + \sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
-&amp;= \lambda e^{-\lambda}(\lambda
-\sum_{m=1}^{\infty}{\frac{\lambda^{m-1}}{(m-1)!}} +
-\sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
-&amp;= \lambda e^{-\lambda} (\lambda e^{\lambda} +e^{\lambda} ) =
-\lambda(\lambda + 1)
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Finally, we can derive:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 = \lambda(\lambda
-+ 1) - {\lambda}^2 = \lambda
-\end{equation}\]</span></p>
-<h1 id="log-likelihood">Log-Likelihood</h1>
-<p>Then we can derive the likelihood of <span
-class="math inline">\(Y\)</span> is:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-L(y;\beta) &amp;= \prod_{i=1}^{n}{P(Y=y_i)} \\
-&amp;= \prod_{i=1}^{n}{e^{-\mu(x_i;\beta)}}\prod_{i=1}^n
-\frac{\mu(x_i;\beta)^{y_i}}{y_i!}\\
-&amp;=
-e^{-\sum_{i=1}^{n}{\mu(x_i;\beta)}}\prod_{i=1}^{n}{\frac{\mu(x_i;\beta)^{y_i}}{y_i!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Then, we can get the log-likelihood as:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\ln{L(y;\beta)} &amp;=
--\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
-\ln{\mu(x_i;\beta)}}-\sum_{i=1}^{n}{\ln{y_i!}}\\
-&amp;= -\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
-\ln{\mu(x_i;\beta)}} + const
-\end{aligned}
-\end{equation}\]</span></p>
-<h1 id="poisson-regression">Poisson Regression</h1>
-<p>We can learn the parameters <span
-class="math inline">\(\beta\)</span> based on <em>MLE</em> to do
-regression. The following codes are based on
-<code>scipy.optimize.minimize</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">N = <span class="number">10000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line">Y = np.random.poisson(np.exp(np.dot(X, beta_real)))  <span class="comment"># here, \lambda = exp(X\beta)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Poisson distribution of np.random.poisson(lam):</span></span><br><span class="line"><span class="comment"># f(k; lam) = (lam^k exp(-lam)) / (k!)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function to maximize the loge-likelihood</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">beta</span>):</span></span><br><span class="line">    Xbeta = np.dot(X, beta)</span><br><span class="line">    exp_Xbeta = np.exp(Xbeta)  <span class="comment"># \lambda = exp(X beta)</span></span><br><span class="line">    loss = exp_Xbeta.<span class="built_in">sum</span>() - np.dot(Y, Xbeta)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">beta_ini = np.zeros(P)  <span class="comment"># initialize beta with zeros</span></span><br><span class="line">result = mm(loss_function, beta_ini)</span><br><span class="line">beta_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_predicted))</span><br></pre></td></tr></table></figure>
-<p>The output of the above codes:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real beta: [-<span class="number">0.40914376</span>  <span class="number">0.29649545</span>  <span class="number">0.59736634</span>  <span class="number">1.40512766</span> -<span class="number">0.55024536</span>]</span><br><span class="line">Predicted beta: [-<span class="number">0.40346132</span>  <span class="number">0.29799245</span>  <span class="number">0.60520007</span>  <span class="number">1.40263191</span> -<span class="number">0.54896361</span>]</span><br></pre></td></tr></table></figure>
-<h1 id="main-reference">Main Reference:</h1>
+    <title>Use PySC2 Learning Environment - Define Your Own Agent</title>
+    <url>/2022/2-tutorial-pysc2-2/</url>
+    <content><![CDATA[<p>This is a brief introduction to an easy approach to use the
+<code>PySC2</code> by defining your own agent. A basic template for a
+self-defined agent can be found <a
+href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.
+(The codes are also attached at the end).</p>
 <ul>
-<li>Lecture slides by Claudia Czado: <a
-href="https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf"
-class="uri">https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf</a></li>
-<li>Poisson distribution Wikipedia: <a
-href="https://en.wikipedia.org/wiki/Poisson_distribution"
-class="uri">https://en.wikipedia.org/wiki/Poisson_distribution</a></li>
-<li>Poisson regression by <em>ahwillia</em>: <a
-href="https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a"
-class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a></li>
+<li>For an overview of <code>PySC2</code>, you can proceed to
+<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
+<li>For an more comprehensive approach to define your own environment
+and agent, and also control the interaction between them, you can
+proceed to <a href="/2022/3-tutorial-pysc2-3/" title="Use PySC2 Learning Environment - Control Your Own Environment and Agent">Use PySC2 Learning Environment - Control Your Own Environment and Agent</a></li>
 </ul>
-]]></content>
-      <categories>
-        <category>Probabilistic Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Probability Theory</tag>
-        <tag>Machine Learning</tag>
-        <tag>Math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Negative Binomial Distribution - Expectation, Variance, Likelihood and Regression</title>
-    <url>/2022/5-ProbabilisticML-2-NB/</url>
-    <content><![CDATA[<p>This blog aims to show the detailed proof of the expectation,
-variance, likelihood and regression of <em>Negative Binomial
-Distribution</em>.</p>
-<p>The Poisson distribution can be generalized by including a gamma
-noise variable, then we can get the negative binomial distribution.</p>
 <span id="more"></span>
-<h1 id="probability-density-formula">Probability Density Formula</h1>
-<p><span class="math display">\[\begin{equation}
-P(Y=y_i;\mu,\alpha) =
-\frac{\Gamma(y_i+\alpha^{-1})}{\Gamma(y_i+1)\Gamma(\alpha^{-1})}(\frac{\alpha^{-1}}{\alpha^{-1}\mu})^{\alpha^{-1}}(\frac{\mu}{\alpha^{-1}+\mu})^{y_i}
-\end{equation}\]</span></p>
-<p>where: <span class="math display">\[\begin{equation}
-\mu_i=e^{x_i\beta}
-\end{equation}\]</span></p>
-<p>We can set <span class="math inline">\(n=\alpha^{-1}\)</span> and
-<span
-class="math inline">\(p=\frac{\alpha^{-1}}{\alpha^{-1}+\mu}\)</span>,
-then the above formula can be rewritten as:</p>
-<p><span class="math display">\[\begin{equation}
-P(Y=y_i;n,p) =
-\frac{\Gamma(y_i+n)}{\Gamma(y_i+1)\Gamma(n)}p^n(1-p)^{y_i}
-\end{equation}\]</span></p>
-<h1 id="expectation-and-variance">Expectation and Variance</h1>
-<p>The expectation and the variance is:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \frac{n(1-p)}{p}
-\end{equation}\]</span></p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \frac{n(1-p)}{p^2}
-\end{equation}\]</span></p>
-<h2 id="expectation">Expectation</h2>
-<p>To proof:</p>
-<p><span class="math display">\[\begin{equation*}
-\begin{aligned}
-\mathrm{E}(Y) &amp; =
-\sum_{y=0}^{\infty}{y\frac{(y+n-1)!}{(y)!(n-1)!}p^n(1-p)^{y}} \\
-&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{(y-1)!(n-1)!}p^n(1-p)^y}\\
-&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{y!n!}p^{n+1}(1-p)^{y-1}}\\
-&amp;= \frac{n(1-p)}{p}
-\sum_{y=1}^{\infty}{\frac{(y+n-1)!}{(y-1)!n!}p^{n+1}(1-p)^{y-1}} \\
-&amp;= \frac{n(1-p)}{p}
-\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}}
-\end{aligned}
-\end{equation*}\]</span></p>
-<p>As the integral sum of the negative binomial distribution is 1:</p>
-<p><span class="math display">\[\begin{equation}
-\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}} = 1
-\end{equation}\]</span></p>
-<p>So, we can get:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \frac{n(1-p)}{p}
-\end{equation}\]</span></p>
-<h2 id="variance">Variance</h2>
-<p>Before we compute the variance, we firstly compute <span
-class="math inline">\(\mathrm{E}(Y(Y-1))\)</span>:</p>
-<p><span class="math display">\[\begin{equation*}
-\begin{aligned}
-\mathrm{E}(Y(Y-1)) &amp; =
-\sum_{y=0}^{\infty}{y(y-1)\frac{(y+n-1)!}{y!(n-1)!}p^n(1-p)^y} \\
-&amp;= \frac{n(r+1)(1-p)^2}{p^2}
-\sum_{y=2}^{\infty}{\frac{((n+2)+(y-2)-1)!}{(y-2)!(n+1)!}p^{n+2}(1-p)^{y-2}}
-\\
-&amp;= \frac{n(r+1)(1-p)^2}{p^2}
-\sum_{z=0}^{\infty}{\frac{((n+2)+z-1)!}{z!(n+1)!}p^{n+2}(1-p)^{z}} \\
-&amp;= \frac{n(r+1)(1-p)^2}{p^2}
-\end{aligned}
-\end{equation*}\]</span></p>
-<p>Then we can get:</p>
-<p><span class="math display">\[\begin{equation}
-E(Y^2) = E(Y(Y-1)) + E(Y) = \frac{n(n+1)(1-p)^2 + n(1-p)p}{p^2}
-\end{equation}\]</span></p>
-<p>Finally, we can compute the variance as:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 =
-\frac{n(1-p)}{p^2}
-\end{equation}\]</span></p>
-<h1 id="log-likelihood">Log-Likelihood</h1>
-<p>The log-likelihood that to maximize in an MLE approach is:</p>
-<p><span class="math display">\[\begin{equation}
-\sum_{i=1}^{n}{\ln(\Gamma(y_i+\alpha^{-1})) - \ln(\Gamma(\alpha^{-1})) -
-\ln(\Gamma(y_i+1)) - (\alpha^{-1} + y_i)\ln(1+\alpha \mu_i)
-+y_i(\ln(\alpha)+\ln(\mu_i))}
-\end{equation}\]</span></p>
-<h1 id="negative-binomial-regression">Negative Binomial Regression</h1>
-<p>We can learn the parameters based on <em>MLE</em> to do regression.
-The following codes are based on
-<code>scipy.optimize.minimize</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> loggamma</span><br><span class="line"></span><br><span class="line">N = <span class="number">1000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">alpha_real = np.random.randint(<span class="number">1</span>, <span class="number">10</span>)  <span class="comment"># the real values of \alpha, a scalar</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># To apply the np.random.negative_binomial function:</span></span><br><span class="line"><span class="comment"># n = 1 / alpha_real</span></span><br><span class="line"><span class="comment"># p = (1 / alpha_real) / ((1 / alpha_real) + exp(X * real_beta))</span></span><br><span class="line"></span><br><span class="line">n = <span class="number">1</span> / alpha_real</span><br><span class="line">p = n / (n + np.exp(np.dot(X, beta_real)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># The negative binomial distribution defined from np.random.negative_binomial(n,p):</span></span><br><span class="line"><span class="comment"># P(y; n, p) = ((y+n-1)!)/(y!(n-1)!) * (p^n) * (1-p)^y</span></span><br><span class="line">Y = np.random.negative_binomial(n, p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss and gradient function</span></span><br><span class="line"><span class="comment"># params = [alpha, beta]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">params</span>):</span></span><br><span class="line">    alpha = params[<span class="number">0</span>]</span><br><span class="line">    beta = params[<span class="number">1</span>:]</span><br><span class="line">    mu = np.exp(np.dot(X, beta))</span><br><span class="line"></span><br><span class="line">    log_likelihood = loggamma(Y + <span class="number">1</span> / alpha).<span class="built_in">sum</span>() \</span><br><span class="line">                     - loggamma(alpha) * N \</span><br><span class="line">                     - loggamma(Y + <span class="number">1</span>).<span class="built_in">sum</span>() \</span><br><span class="line">                     - <span class="number">1</span> / alpha * (np.log(<span class="number">1</span> + alpha * mu).<span class="built_in">sum</span>()) \</span><br><span class="line">                     - np.dot(Y, np.log(<span class="number">1</span> + alpha * mu)) \</span><br><span class="line">                     + (Y * np.log(alpha)).<span class="built_in">sum</span>() \</span><br><span class="line">                     + np.dot(Y, np.log(mu))</span><br><span class="line">    <span class="keyword">return</span> -log_likelihood</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">params_ini = np.ones(P + <span class="number">1</span>)  <span class="comment"># initialize params ([alpha, beta]) with zeros</span></span><br><span class="line">result = mm(loss_function, params_ini)</span><br><span class="line">params_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(alpha_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">0</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">1</span>:]))</span><br></pre></td></tr></table></figure>
-<p>The output of the above codes:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real alpha: <span class="number">2</span></span><br><span class="line">Real beta: [ <span class="number">1.6794512</span>  -<span class="number">0.22624054</span>  <span class="number">1.15579192</span>  <span class="number">0.35920843</span>  <span class="number">0.09326148</span>]</span><br><span class="line">Predicted alpha: <span class="number">2.0811572484796637</span></span><br><span class="line">Predicted beta: [ <span class="number">1.69292056</span> -<span class="number">0.28083378</span>  <span class="number">1.18706627</span>  <span class="number">0.43136325</span>  <span class="number">0.1085059</span> ]</span><br></pre></td></tr></table></figure>
+<h1 id="how-to-use-custom-defined-agents">How to Use Custom-Defined
+Agents?</h1>
+<p>Run the command:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent &lt;Agent&gt;</span><br></pre></td></tr></table></figure>
+<p>Assuming that your own agent class named
+<code>MyAgentClassName</code> is defined in <code>MyAgentFile.py</code>
+in a directory <code>[PATH]</code>, then when you run command in the
+<code>[PATH]</code> directory, you can identify the agent by:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent MyAgentFile.MyAgentClassName</span><br></pre></td></tr></table></figure>
+<h1 id="how-to-design-my-own-agent-and-make-it-interact-with-pysc2">How
+to Design My Own Agent and Make It Interact with PySC2?</h1>
+<p>Any custom designed agent should derive from the
+<code>BaseAgent</code> class (in <code>pysc2.agents.base_agent</code>)
+and override the <code>step(self, obs)</code> function, where the
+argument <code>obs</code> is the observations.</p>
+<h1 id="how-to-get-observations-and-rewards-from-the-environment">How to
+Get Observations and Rewards from The Environment?</h1>
+<p>The observations (as well as the rewards) taken from environment are
+all included in the parameter <code>obs</code> of the <code>step</code>
+function, such as the feature maps, valid actions, rewards and so
+on.</p>
+<p>for example: * state, viz. different types of feature maps:
+<code>obs.observation["screen"][feature_map_name]</code> * valid
+actions: <code>obs.observation["available_actions"]</code> or
+<code>obs.observation.available_actions</code> * rewards:
+<code>obs.reward</code></p>
+<h1 id="how-to-send-actions-to-interact-with-the-environment">How to
+Send Actions to Interact with The Environment?</h1>
+<p>In the <code>step</code> function, return the action (packed up as a
+<code>FunctionCall</code> instance).</p>
+<h1 id="more-reference">More Reference</h1>
+<ul>
+<li>A random agent: <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py"
+class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py</a></li>
+<li>A scripted agent: <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py"
+class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py</a></li>
+</ul>
+<h1 id="template-codes">Template Codes</h1>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template for approach 1.</span></span><br><span class="line"><span class="string">The agent randomly selects actions.</span></span><br><span class="line"><span class="string">Use the `pysc2.bin.agent` module to run `MyAgent` when your commands are in the current path:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent pysc2EnvTemplate.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># to be compatible with python 2.x</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> features</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define our own agent</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line">        <span class="comment"># RL algorithm here~ #</span></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get available actions</span></span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        <span class="comment"># randomly select one action and its argument</span></span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes]</span><br><span class="line">                <span class="keyword">for</span> arg <span class="keyword">in</span> self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="comment"># pack up the actions as a `FunctionCall`</span></span><br><span class="line">        function_call = actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># return the actions a.k.a. the function_call</span></span><br><span class="line">        <span class="keyword">return</span> function_call</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>Probabilistic Machine Learning</category>
+        <category>Tutorial</category>
       </categories>
       <tags>
-        <tag>Probability Theory</tag>
-        <tag>Machine Learning</tag>
-        <tag>Math</tag>
+        <tag>Reinforcement Learning</tag>
+        <tag>PySC2</tag>
+        <tag>Tools</tag>
       </tags>
   </entry>
 </search>
