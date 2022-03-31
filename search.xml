@@ -1,6 +1,293 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Negative Binomial Distribution - Expectation, Variance, Likelihood and Regression</title>
+    <url>/2022/5-ProbabilisticML-2-NB/</url>
+    <content><![CDATA[<p>This blog aims to show the detailed derivation of the expectation,
+variance, likelihood and regression of <em>Negative Binomial
+Distribution</em>.</p>
+<p>The Poisson distribution can be generalized by including a gamma
+noise variable, then we can get the negative binomial distribution.</p>
+<span id="more"></span>
+<h1 id="probability-density-formula">Probability Density Formula</h1>
+<p><span class="math display">\[\begin{equation}
+P(Y=y_i;\mu,\alpha) =
+\frac{\Gamma(y_i+\alpha^{-1})}{\Gamma(y_i+1)\Gamma(\alpha^{-1})}(\frac{\alpha^{-1}}{\alpha^{-1}\mu})^{\alpha^{-1}}(\frac{\mu}{\alpha^{-1}+\mu})^{y_i}
+\end{equation}\]</span></p>
+<p>where: <span class="math display">\[\begin{equation}
+\mu_i=e^{x_i\beta}
+\end{equation}\]</span></p>
+<p>We can set <span class="math inline">\(n=\alpha^{-1}\)</span> and
+<span
+class="math inline">\(p=\frac{\alpha^{-1}}{\alpha^{-1}+\mu}\)</span>,
+then the above formula can be rewritten as:</p>
+<p><span class="math display">\[\begin{equation}
+P(Y=y_i;n,p) =
+\frac{\Gamma(y_i+n)}{\Gamma(y_i+1)\Gamma(n)}p^n(1-p)^{y_i}
+\end{equation}\]</span></p>
+<h1 id="expectation-and-variance">Expectation and Variance</h1>
+<p>The expectation and the variance is:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \frac{n(1-p)}{p}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(Y) = \frac{n(1-p)}{p^2}
+\end{equation}\]</span></p>
+<h2 id="expectation">Expectation</h2>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\mathrm{E}(Y) &amp; =
+\sum_{y=0}^{\infty}{y\frac{(y+n-1)!}{(y)!(n-1)!}p^n(1-p)^{y}} \\
+&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{(y-1)!(n-1)!}p^n(1-p)^y}\\
+&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{y!n!}p^{n+1}(1-p)^{y-1}}\\
+&amp;= \frac{n(1-p)}{p}
+\sum_{y=1}^{\infty}{\frac{(y+n-1)!}{(y-1)!n!}p^{n+1}(1-p)^{y-1}} \\
+&amp;= \frac{n(1-p)}{p}
+\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}}
+\end{aligned}
+\end{equation*}\]</span></p>
+<p>As the integral sum of the negative binomial distribution is 1:</p>
+<p><span class="math display">\[\begin{equation}
+\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}} = 1
+\end{equation}\]</span></p>
+<p>So, we can get:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \frac{n(1-p)}{p}
+\end{equation}\]</span></p>
+<h2 id="variance">Variance</h2>
+<p>Before we compute the variance, we firstly compute <span
+class="math inline">\(\mathrm{E}(Y(Y-1))\)</span>:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\mathrm{E}(Y(Y-1)) &amp; =
+\sum_{y=0}^{\infty}{y(y-1)\frac{(y+n-1)!}{y!(n-1)!}p^n(1-p)^y} \\
+&amp;= \frac{n(r+1)(1-p)^2}{p^2}
+\sum_{y=2}^{\infty}{\frac{((n+2)+(y-2)-1)!}{(y-2)!(n+1)!}p^{n+2}(1-p)^{y-2}}
+\\
+&amp;= \frac{n(r+1)(1-p)^2}{p^2}
+\sum_{z=0}^{\infty}{\frac{((n+2)+z-1)!}{z!(n+1)!}p^{n+2}(1-p)^{z}} \\
+&amp;= \frac{n(r+1)(1-p)^2}{p^2}
+\end{aligned}
+\end{equation*}\]</span></p>
+<p>Then we can get:</p>
+<p><span class="math display">\[\begin{equation}
+E(Y^2) = E(Y(Y-1)) + E(Y) = \frac{n(n+1)(1-p)^2 + n(1-p)p}{p^2}
+\end{equation}\]</span></p>
+<p>Finally, we can compute the variance as:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 =
+\frac{n(1-p)}{p^2}
+\end{equation}\]</span></p>
+<h1 id="log-likelihood">Log-Likelihood</h1>
+<p>The log-likelihood that to maximize in an MLE approach is:</p>
+<p><span class="math display">\[\begin{equation}
+\sum_{i=1}^{n}{\ln(\Gamma(y_i+\alpha^{-1})) - \ln(\Gamma(\alpha^{-1})) -
+\ln(\Gamma(y_i+1)) - (\alpha^{-1} + y_i)\ln(1+\alpha \mu_i)
++y_i(\ln(\alpha)+\ln(\mu_i))}
+\end{equation}\]</span></p>
+<h1 id="negative-binomial-regression">Negative Binomial Regression</h1>
+<p>We can learn the parameters based on <em>MLE</em> to do regression.
+The following codes are based on
+<code>scipy.optimize.minimize</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> loggamma</span><br><span class="line"></span><br><span class="line">N = <span class="number">1000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">alpha_real = np.random.randint(<span class="number">1</span>, <span class="number">10</span>)  <span class="comment"># the real values of \alpha, a scalar</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># To apply the np.random.negative_binomial function:</span></span><br><span class="line"><span class="comment"># n = 1 / alpha_real</span></span><br><span class="line"><span class="comment"># p = (1 / alpha_real) / ((1 / alpha_real) + exp(X * real_beta))</span></span><br><span class="line"></span><br><span class="line">n = <span class="number">1</span> / alpha_real</span><br><span class="line">p = n / (n + np.exp(np.dot(X, beta_real)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># The negative binomial distribution defined from np.random.negative_binomial(n,p):</span></span><br><span class="line"><span class="comment"># P(y; n, p) = ((y+n-1)!)/(y!(n-1)!) * (p^n) * (1-p)^y</span></span><br><span class="line">Y = np.random.negative_binomial(n, p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss and gradient function</span></span><br><span class="line"><span class="comment"># params = [alpha, beta]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">params</span>):</span></span><br><span class="line">    alpha = params[<span class="number">0</span>]</span><br><span class="line">    beta = params[<span class="number">1</span>:]</span><br><span class="line">    mu = np.exp(np.dot(X, beta))</span><br><span class="line"></span><br><span class="line">    log_likelihood = loggamma(Y + <span class="number">1</span> / alpha).<span class="built_in">sum</span>() \</span><br><span class="line">                     - loggamma(alpha) * N \</span><br><span class="line">                     - loggamma(Y + <span class="number">1</span>).<span class="built_in">sum</span>() \</span><br><span class="line">                     - <span class="number">1</span> / alpha * (np.log(<span class="number">1</span> + alpha * mu).<span class="built_in">sum</span>()) \</span><br><span class="line">                     - np.dot(Y, np.log(<span class="number">1</span> + alpha * mu)) \</span><br><span class="line">                     + (Y * np.log(alpha)).<span class="built_in">sum</span>() \</span><br><span class="line">                     + np.dot(Y, np.log(mu))</span><br><span class="line">    <span class="keyword">return</span> -log_likelihood</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">params_ini = np.ones(P + <span class="number">1</span>)  <span class="comment"># initialize params ([alpha, beta]) with zeros</span></span><br><span class="line">result = mm(loss_function, params_ini)</span><br><span class="line">params_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(alpha_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">0</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">1</span>:]))</span><br></pre></td></tr></table></figure>
+<p>The output of the above codes:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real alpha: <span class="number">2</span></span><br><span class="line">Real beta: [ <span class="number">1.6794512</span>  -<span class="number">0.22624054</span>  <span class="number">1.15579192</span>  <span class="number">0.35920843</span>  <span class="number">0.09326148</span>]</span><br><span class="line">Predicted alpha: <span class="number">2.0811572484796637</span></span><br><span class="line">Predicted beta: [ <span class="number">1.69292056</span> -<span class="number">0.28083378</span>  <span class="number">1.18706627</span>  <span class="number">0.43136325</span>  <span class="number">0.1085059</span> ]</span><br></pre></td></tr></table></figure>
+<h1 id="main-reference">Main Reference</h1>
+<ul>
+<li>Wikipedia of Negative binomial distribution: <a
+href="https://en.wikipedia.org/wiki/Negative_binomial_distribution"
+class="uri">https://en.wikipedia.org/wiki/Negative_binomial_distribution</a></li>
+<li>Negative Binomial Distributio introduction: <a
+href="http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf"
+class="uri">http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf</a></li>
+<li>Chapter 326 from NCSS Statistical Software: <a
+href="https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf"
+class="uri">https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Probabilistic Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Probability Theory</tag>
+        <tag>Machine Learning</tag>
+        <tag>Math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Use PySC2 Learning Environment - Define Your Own Agent</title>
+    <url>/2022/2-tutorial-pysc2-2/</url>
+    <content><![CDATA[<p>This is a brief introduction to an easy approach to use the
+<code>PySC2</code> by defining your own agent. A basic template for a
+self-defined agent can be found <a
+href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.
+(The codes are also attached at the end).</p>
+<ul>
+<li>For an overview of <code>PySC2</code>, you can proceed to
+<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
+<li>For an more comprehensive approach to define your own environment
+and agent, and also control the interaction between them, you can
+proceed to <a href="/2022/3-tutorial-pysc2-3/" title="Use PySC2 Learning Environment - Control Your Own Environment and Agent">Use PySC2 Learning Environment - Control Your Own Environment and Agent</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="how-to-use-custom-defined-agents">How to Use Custom-Defined
+Agents?</h1>
+<p>Run the command:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent &lt;Agent&gt;</span><br></pre></td></tr></table></figure>
+<p>Assuming that your own agent class named
+<code>MyAgentClassName</code> is defined in <code>MyAgentFile.py</code>
+in a directory <code>[PATH]</code>, then when you run command in the
+<code>[PATH]</code> directory, you can identify the agent by:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent MyAgentFile.MyAgentClassName</span><br></pre></td></tr></table></figure>
+<h1 id="how-to-design-my-own-agent-and-make-it-interact-with-pysc2">How
+to Design My Own Agent and Make It Interact with PySC2?</h1>
+<p>Any custom designed agent should derive from the
+<code>BaseAgent</code> class (in <code>pysc2.agents.base_agent</code>)
+and override the <code>step(self, obs)</code> function, where the
+argument <code>obs</code> is the observations.</p>
+<h1 id="how-to-get-observations-and-rewards-from-the-environment">How to
+Get Observations and Rewards from The Environment?</h1>
+<p>The observations (as well as the rewards) taken from environment are
+all included in the parameter <code>obs</code> of the <code>step</code>
+function, such as the feature maps, valid actions, rewards and so
+on.</p>
+<p>for example: * state, viz. different types of feature maps:
+<code>obs.observation["screen"][feature_map_name]</code> * valid
+actions: <code>obs.observation["available_actions"]</code> or
+<code>obs.observation.available_actions</code> * rewards:
+<code>obs.reward</code></p>
+<h1 id="how-to-send-actions-to-interact-with-the-environment">How to
+Send Actions to Interact with The Environment?</h1>
+<p>In the <code>step</code> function, return the action (packed up as a
+<code>FunctionCall</code> instance).</p>
+<h1 id="more-reference">More Reference</h1>
+<ul>
+<li>A random agent: <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py"
+class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py</a></li>
+<li>A scripted agent: <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py"
+class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py</a></li>
+</ul>
+<h1 id="template-codes">Template Codes</h1>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template for approach 1.</span></span><br><span class="line"><span class="string">The agent randomly selects actions.</span></span><br><span class="line"><span class="string">Use the `pysc2.bin.agent` module to run `MyAgent` when your commands are in the current path:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent pysc2EnvTemplate.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># to be compatible with python 2.x</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> features</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define our own agent</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line">        <span class="comment"># RL algorithm here~ #</span></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get available actions</span></span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        <span class="comment"># randomly select one action and its argument</span></span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes]</span><br><span class="line">                <span class="keyword">for</span> arg <span class="keyword">in</span> self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="comment"># pack up the actions as a `FunctionCall`</span></span><br><span class="line">        function_call = actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># return the actions a.k.a. the function_call</span></span><br><span class="line">        <span class="keyword">return</span> function_call</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>PySC2</tag>
+        <tag>Tools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Use PySC2 Learning Environment - Control Your Own Environment and Agent</title>
+    <url>/2022/3-tutorial-pysc2-3/</url>
+    <content><![CDATA[<p>This is a brief introduction to an more comprehensive approach to use
+the <code>PySC2</code> by defining both your own environment and agent,
+and you can also control the interaction between the agent and the
+environment. A basic template can be found <a
+href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_2.py">here</a>.
+(The codes are also attached at the end).</p>
+<ul>
+<li>For an overview of <code>PySC2</code>, you can proceed to
+<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
+<li>For an simpler approach to only define your own agent, you can
+proceed to <a href="/2022/2-tutorial-pysc2-2/" title="Use PySC2 Learning Environment - Define Your Own Agent">Use PySC2 Learning Environment - Define Your Own Agent</a></li>
+</ul>
+<span id="more"></span>
+<p>The environment of PySC2 is defined in
+<code>pysc2.env.sc2_env</code>, while the actions and observations are
+defined in <code>pysc2.lib.features</code>. The class of
+<code>PySC2</code> environment is <code>SC2Env</code>, which Inherits
+from <code>pysc2.env.environment.Base</code>. <strong>You can use the
+<code>SC2Env</code> just like any other <em>OpenAI Gym</em>
+environments.</strong></p>
+<p>A basic template to instantiate the environment and an agent, and run
+the codes to make the agent interact with the environment can be found
+<a
+href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.</p>
+<h1 id="to-instantiate-an-environment">To Instantiate An
+Environment</h1>
+<p>Import the <code>SC2Env</code> from <code>pysc2.env.sc2_env</code>
+and instantiate it by <code>env = SC2Env([parameters])</code>.</p>
+<p>The definition of the class and all its parameters can be found <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/env/sc2_env.py#L121">here</a>.</p>
+<p>Some important arguments:</p>
+<ul>
+<li><code>map_name</code>: the name of the map.
+<ul>
+<li>You can find the namelist in <code>pysc2.bin.map_list</code> or by
+running <code>python -m pysc2.bin.map_list</code></li>
+<li>Or you can find them under the <code>pysc2/maps/</code> folder, like
+the script <code>pysc2/maps/melee.py</code> lists all the maps of
+<em>Melee</em>: <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">melee_maps = [&quot;Flat32&quot;, &quot;Flat48&quot;, &quot;Flat64&quot;, &quot;Flat96&quot;, &quot;Flat128&quot;, &quot;Simple64&quot;, &quot;Simple96&quot;, &quot;Simple128&quot;,]</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><code>players</code>：a list, containing one or two instances of
+<code>pysc2.env.sc2_env.Agent</code> or
+<code>pysc2.env.sc2_env.Bot</code>, some maps only allow one agent.
+<ul>
+<li>Note: the <code>Agent</code> and <code>Bot</code> is different from
+the <code>pysc2.agents.base_agent</code> we mentioned before, here is an
+example for these two classes: <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Agent</span>(<span class="params">collections.namedtuple(<span class="params"><span class="string">&quot;Agent&quot;</span>, [<span class="string">&quot;race&quot;</span>, <span class="string">&quot;name&quot;</span>]</span>)</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Define an Agent. It can have a single race or a list of races.&quot;&quot;&quot;</span></span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, race, name=<span class="literal">None</span></span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(Agent, cls).__new__(cls, to_list(race), name <span class="keyword">or</span> <span class="string">&quot;&lt;unknown&gt;&quot;</span>)</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bot</span>(<span class="params">collections.namedtuple(<span class="params"><span class="string">&quot;Bot&quot;</span>, [<span class="string">&quot;race&quot;</span>, <span class="string">&quot;difficulty&quot;</span>, <span class="string">&quot;build&quot;</span>]</span>)</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Define a Bot. It can have a single or list of races or builds.&quot;&quot;&quot;</span></span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, race, difficulty, build=<span class="literal">None</span></span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(Bot, cls).__new__(cls, to_list(race), difficulty, to_list(build <span class="keyword">or</span> BotBuild.random))</span><br></pre></td></tr></table></figure></li>
+</ul></li>
+<li><code>agent_interface_format</code>: to define the format of
+observation and action, like the resolution of the feature maps. It
+takes an instance of
+<code>pysc2.lib.features.AgentInterfaceFormat</code> or an instance of
+<code>pysc2.env.sc2_env.AgentInterfaceFormat</code>.
+<ul>
+<li>The number of <code>AgentInterfaceFormat</code> should be the same
+as the length of the list for the above <code>player</code> argument,
+with the same order.</li>
+<li>Please refer to <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/lib/features.py#L470">the
+definition</a> of <code>AgentInterfaceFormat</code> for more
+details.</li>
+</ul></li>
+<li><code>step_mul</code>: an int to identify after how many steps to
+take one observation and apply one action. (not the real number of
+frames). 1 second equals to 16 steps, which means if we set 16 here, we
+will get the observations every 1 second.</li>
+<li><code>game_steps_per_episode</code>: how many steps of one episode.
+For example, if we set <code>200*16</code> here, it means one episode
+will last for 200 seconds.</li>
+<li><code>save_replay_episodes</code>: how many episodes to save one
+replay.</li>
+<li><code>replay_dir</code>: the location to save replays.</li>
+</ul>
+<h1 id="define-a-function-to-interact-with-the-environment">Define A
+Function to Interact with The Environment</h1>
+<p>To define a function to interact with the environment, you can refer
+to the <code>run_loop</code> function in <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/env/run_loop.py#L23">pysc2/env/run_loop.py</a></p>
+<p>Here is also a good reference to instantiate an <code>SC2Env</code>
+and an <code>Agent</code>, and use the above <code>run_loop</code>
+function to test them in <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/tests/easy_scripted_test.py">pysc2/tests/easy_scripted_test.py</a>.</p>
+<h1 id="run-the-program">Run the Program</h1>
+<p>To actually run the codes above, we need the <code>run</code>
+function in <code>absl.app</code> package. The function takes in our
+running function as a parameter, like this:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pysc2.env <span class="keyword">import</span> run_loop, sc2_env</span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> random_agent</span><br><span class="line"><span class="keyword">from</span> absl <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">args</span>):</span></span><br><span class="line">    agent = random_agent.RandomAgent()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> sc2_env.SC2Env(map_name=<span class="string">&quot;MoveToBeacon&quot;</span>, </span><br><span class="line">	                players=[sc2_env.Agent(sc2_env.Race.terran)],</span><br><span class="line">			agent_interface_format=sc2_env.AgentInterfaceFormat(feature_dimensions=sc2_env.Dimensions(screen=<span class="number">84</span>, minimap=<span class="number">64</span>)), </span><br><span class="line">			step_mul=<span class="number">16</span>,</span><br><span class="line">			game_steps_per_episode=<span class="number">200</span> * <span class="number">16</span>, </span><br><span class="line">			visualize=<span class="literal">True</span>) <span class="keyword">as</span> env:</span><br><span class="line">	run_loop.run_loop([agent], env, <span class="number">200</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    app.run(main)</span><br></pre></td></tr></table></figure>
+<p><strong>Notes</strong>: When we define the <code>main</code>
+function, it must have at lest one argument, like <code>args</code>
+here. You may not use it, but you have to define it.</p>
+<h1 id="template-codes">Template Codes</h1>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template  for approach 2.</span></span><br><span class="line"><span class="string">Agent: using the random agent, referring to: pysc2.agent.random_agent.RandomAgent</span></span><br><span class="line"><span class="string">Environment: using the &#x27;Simple64&#x27; environment, both the player and the build-in AI are the race of terran.</span></span><br><span class="line"><span class="string">You can simply run the agent in the environment by the command:</span></span><br><span class="line"><span class="string">    python Approach_2.py</span></span><br><span class="line"><span class="string">Or you can use the `pysc2.bin.agent` module to run the MyAgent individually like the approach 1:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent Approach_2.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib.features <span class="keyword">import</span> AgentInterfaceFormat, Dimensions</span><br><span class="line"><span class="comment"># import the SC2Env environment</span></span><br><span class="line"><span class="keyword">from</span> pysc2.env.sc2_env <span class="keyword">import</span> SC2Env, Agent, Bot, Race, Difficulty</span><br><span class="line"><span class="comment"># import absl</span></span><br><span class="line"><span class="keyword">from</span> absl <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define the agent, overriding the `step` function</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    My customized agent, simply copied from `pysc2.agents.random_agent.RandomAgent`.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes] <span class="keyword">for</span> arg <span class="keyword">in</span></span><br><span class="line">                self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="keyword">return</span> actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define a loop function for only one agent</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loop</span>(<span class="params">agent, env, max_steps=<span class="number">200</span></span>):</span></span><br><span class="line">    <span class="comment"># Set up the agent</span></span><br><span class="line">    <span class="comment"># ! Important: here, to setup the agent, the `env.observation_spec()` and `env.action_spec()` return tuples,</span></span><br><span class="line">    <span class="comment"># ! however, we want the elements inside, so we need the indexes `[0]` form them respectively.</span></span><br><span class="line">    observation_spec = env.observation_spec()[<span class="number">0</span>]</span><br><span class="line">    action_spec = env.action_spec()[<span class="number">0</span>]</span><br><span class="line">    agent.setup(observation_spec, action_spec)</span><br><span class="line">    <span class="comment"># reset the environment and the agent</span></span><br><span class="line">    <span class="comment"># ! Note: the `env.reset()` returns a tuple,</span></span><br><span class="line">    <span class="comment"># ? each element for each agent/bot.</span></span><br><span class="line">    timesteps = env.reset()</span><br><span class="line">    agent.reset()</span><br><span class="line">    total_steps = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="comment"># ! Note: the `env.step()` function needs a list, which actually allows multiple actions per frame,</span></span><br><span class="line">        <span class="comment"># ! so, we need to pack up the single action returned by the `agent.step()` function.</span></span><br><span class="line">        <span class="comment"># ! However, if the `agent.step()` function returns a list itself, then there is no need to use the list.</span></span><br><span class="line">        action = [agent.step(timesteps[<span class="number">0</span>])]</span><br><span class="line">        <span class="keyword">if</span> timesteps[<span class="number">0</span>].last():</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        total_steps += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> total_steps &gt; max_steps:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        timesteps = env.step(action)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define the main function</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">args</span>):</span></span><br><span class="line">    agent = MyAgent()</span><br><span class="line">    <span class="comment"># define the environment</span></span><br><span class="line">    env = SC2Env(map_name=<span class="string">&quot;Simple64&quot;</span>,</span><br><span class="line">                 players=[Agent(Race.terran), Bot(Race.terran, Difficulty.very_easy)],</span><br><span class="line">                 agent_interface_format=AgentInterfaceFormat(feature_dimensions=Dimensions(screen=<span class="number">84</span>, minimap=<span class="number">64</span>)),</span><br><span class="line">                 step_mul=<span class="number">16</span>, visualize=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        loop(agent, env)</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Finished!&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    app.run(main)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>PySC2</tag>
+        <tag>Tools</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>A Brief Tutorial to Use PySC2 Learning Environment (Overview)</title>
     <url>/2022/1-tutorial-pysc2-1/</url>
     <content><![CDATA[<p><code>PySC2</code> is DeepMind's Python component of the StarCraft II
@@ -156,70 +443,141 @@ class="uri">https://github.com/deepmind/pysc2</a></li>
       </tags>
   </entry>
   <entry>
-    <title>Use PySC2 Learning Environment - Define Your Own Agent</title>
-    <url>/2022/2-tutorial-pysc2-2/</url>
-    <content><![CDATA[<p>This is a brief introduction to an easy approach to use the
-<code>PySC2</code> by defining your own agent. A basic template for a
-self-defined agent can be found <a
-href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.
-(The codes are also attached at the end).</p>
-<ul>
-<li>For an overview of <code>PySC2</code>, you can proceed to
-<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
-<li>For an more comprehensive approach to define your own environment
-and agent, and also control the interaction between them, you can
-proceed to <a href="/2022/3-tutorial-pysc2-3/" title="Use PySC2 Learning Environment - Control Your Own Environment and Agent">Use PySC2 Learning Environment - Control Your Own Environment and Agent</a></li>
-</ul>
+    <title>Poisson Distribution - Expectation, Variance, Likelihood and Regression</title>
+    <url>/2022/4-ProbabilisticML-1-Poisson/</url>
+    <content><![CDATA[<p>Poisson distribution can be used to express count data, which gives
+number of events occurring in a fixed interval of time or space and
+these events occur with a known constant mean rate and independently of
+the time since the last event.</p>
+<p>This blog aims to show the detailed proof of its expectation,
+variance, likelihood and regression.</p>
 <span id="more"></span>
-<h1 id="how-to-use-custom-defined-agents">How to Use Custom-Defined
-Agents?</h1>
-<p>Run the command:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent &lt;Agent&gt;</span><br></pre></td></tr></table></figure>
-<p>Assuming that your own agent class named
-<code>MyAgentClassName</code> is defined in <code>MyAgentFile.py</code>
-in a directory <code>[PATH]</code>, then when you run command in the
-<code>[PATH]</code> directory, you can identify the agent by:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent MyAgentFile.MyAgentClassName</span><br></pre></td></tr></table></figure>
-<h1 id="how-to-design-my-own-agent-and-make-it-interact-with-pysc2">How
-to Design My Own Agent and Make It Interact with PySC2?</h1>
-<p>Any custom designed agent should derive from the
-<code>BaseAgent</code> class (in <code>pysc2.agents.base_agent</code>)
-and override the <code>step(self, obs)</code> function, where the
-argument <code>obs</code> is the observations.</p>
-<h1 id="how-to-get-observations-and-rewards-from-the-environment">How to
-Get Observations and Rewards from The Environment?</h1>
-<p>The observations (as well as the rewards) taken from environment are
-all included in the parameter <code>obs</code> of the <code>step</code>
-function, such as the feature maps, valid actions, rewards and so
-on.</p>
-<p>for example: * state, viz. different types of feature maps:
-<code>obs.observation["screen"][feature_map_name]</code> * valid
-actions: <code>obs.observation["available_actions"]</code> or
-<code>obs.observation.available_actions</code> * rewards:
-<code>obs.reward</code></p>
-<h1 id="how-to-send-actions-to-interact-with-the-environment">How to
-Send Actions to Interact with The Environment?</h1>
-<p>In the <code>step</code> function, return the action (packed up as a
-<code>FunctionCall</code> instance).</p>
-<h1 id="more-reference">More Reference</h1>
+<h1 id="probability-density-formula">Probability Density Formula</h1>
+<p>Suppose a discrete random variable <span
+class="math inline">\(X\)</span> of non-negative integer numbers, and
+let <span
+class="math inline">\(\lambda=\mu(x;\beta)=e^{x\beta}\geq0\)</span>.
+Then we can say:</p>
+<p><span class="math display">\[\begin{equation}
+Y \sim Poisson(\mu(x,\beta))
+\end{equation}\]</span></p>
+<p>if:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+P(Y=y_i) &amp;= e^{-\lambda_i} \frac{\lambda_i^{y_i}}{y_i!}\\
+&amp;= e^{-\mu(x_i,\beta)} \frac{\mu(x_i,\beta)^{y_i}}{y_i!}
+\end{aligned}
+\end{equation}\]</span></p>
+<h1 id="expectation-and-variance">Expectation and Variance</h1>
+<p>The expectation and the variation of Poisson distribution both
+numerically equals to <span class="math inline">\(\lambda\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y)=\mathrm{Var}(Y)=\lambda=\mu(x;\beta)
+\end{equation}\]</span></p>
+<h2 id="expectation">Expectation</h2>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathrm{E}(Y) &amp;= \sum_{y=0}^{\infty}{y e^{-\lambda}
+\frac{\lambda^{y}}{y!}} \\
+&amp;= \sum_{y=1}^{\infty}{y e^{-\lambda} \frac{\lambda^{y}}{y!}} \\
+&amp;= \sum_{y=1}^{\infty}{e^{-\lambda} \frac{\lambda^{y -
+1}\lambda}{(y-1)!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{\lambda^{y -
+1}}{(y-1)!}}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Based on the Taylor expansion:</p>
+<p><span class="math display">\[\begin{equation}
+e^x = 1 + x+\frac{x^2}{2!}+...+\frac{x^n}{n!}+... =
+\sum_{k=1}^{\infty}{\frac{x^{k-1}}{(k-1)!}}
+\end{equation}\]</span></p>
+<p>We have:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \lambda e^{-\lambda}
+\sum_{y=1}^{\infty}{\frac{\lambda^{y - 1}}{(y-1)!}} = \lambda
+e^{-\lambda} e^{\lambda} = \lambda
+\end{equation}\]</span></p>
+<h2 id="variance">Variance</h2>
+<p>To compute the variance, we firstly compute the expectation of <span
+class="math inline">\(Y^2\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathrm{E}(Y^2) &amp;= \sum_{y=0}^{\infty}{y^2 e^{-\lambda}
+\frac{\lambda^y}{y!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{y \lambda^{y -
+1}}{(y-1)!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{(y-1+1)\lambda^{y
+- 1}}{(y-1)!}}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Set <span class="math inline">\(m=k-1\)</span>, we have:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathrm{E}(Y^2) &amp;= \lambda e^{-\lambda}(\sum_{m=0}^{\infty}{\frac{m
+\lambda^m}{m!}} + \sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
+&amp;= \lambda e^{-\lambda}(\lambda
+\sum_{m=1}^{\infty}{\frac{\lambda^{m-1}}{(m-1)!}} +
+\sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
+&amp;= \lambda e^{-\lambda} (\lambda e^{\lambda} +e^{\lambda} ) =
+\lambda(\lambda + 1)
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Finally, we can derive:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 = \lambda(\lambda
++ 1) - {\lambda}^2 = \lambda
+\end{equation}\]</span></p>
+<h1 id="log-likelihood">Log-Likelihood</h1>
+<p>Then we can derive the likelihood of <span
+class="math inline">\(Y\)</span> is:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+L(y;\beta) &amp;= \prod_{i=1}^{n}{P(Y=y_i)} \\
+&amp;= \prod_{i=1}^{n}{e^{-\mu(x_i;\beta)}}\prod_{i=1}^n
+\frac{\mu(x_i;\beta)^{y_i}}{y_i!}\\
+&amp;=
+e^{-\sum_{i=1}^{n}{\mu(x_i;\beta)}}\prod_{i=1}^{n}{\frac{\mu(x_i;\beta)^{y_i}}{y_i!}}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Then, we can get the log-likelihood as:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\ln{L(y;\beta)} &amp;=
+-\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
+\ln{\mu(x_i;\beta)}}-\sum_{i=1}^{n}{\ln{y_i!}}\\
+&amp;= -\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
+\ln{\mu(x_i;\beta)}} + const
+\end{aligned}
+\end{equation}\]</span></p>
+<h1 id="poisson-regression">Poisson Regression</h1>
+<p>We can learn the parameters <span
+class="math inline">\(\beta\)</span> based on <em>MLE</em> to do
+regression. The following codes are based on
+<code>scipy.optimize.minimize</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">N = <span class="number">10000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line">Y = np.random.poisson(np.exp(np.dot(X, beta_real)))  <span class="comment"># here, \lambda = exp(X\beta)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Poisson distribution of np.random.poisson(lam):</span></span><br><span class="line"><span class="comment"># f(k; lam) = (lam^k exp(-lam)) / (k!)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function to maximize the loge-likelihood</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">beta</span>):</span></span><br><span class="line">    Xbeta = np.dot(X, beta)</span><br><span class="line">    exp_Xbeta = np.exp(Xbeta)  <span class="comment"># \lambda = exp(X beta)</span></span><br><span class="line">    loss = exp_Xbeta.<span class="built_in">sum</span>() - np.dot(Y, Xbeta)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">beta_ini = np.zeros(P)  <span class="comment"># initialize beta with zeros</span></span><br><span class="line">result = mm(loss_function, beta_ini)</span><br><span class="line">beta_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_predicted))</span><br></pre></td></tr></table></figure>
+<p>The output of the above codes:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real beta: [-<span class="number">0.40914376</span>  <span class="number">0.29649545</span>  <span class="number">0.59736634</span>  <span class="number">1.40512766</span> -<span class="number">0.55024536</span>]</span><br><span class="line">Predicted beta: [-<span class="number">0.40346132</span>  <span class="number">0.29799245</span>  <span class="number">0.60520007</span>  <span class="number">1.40263191</span> -<span class="number">0.54896361</span>]</span><br></pre></td></tr></table></figure>
+<h1 id="main-reference">Main Reference</h1>
 <ul>
-<li>A random agent: <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py"
-class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py</a></li>
-<li>A scripted agent: <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py"
-class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py</a></li>
+<li>Lecture slides by Claudia Czado: <a
+href="https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf"
+class="uri">https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf</a></li>
+<li>Poisson distribution Wikipedia: <a
+href="https://en.wikipedia.org/wiki/Poisson_distribution"
+class="uri">https://en.wikipedia.org/wiki/Poisson_distribution</a></li>
+<li>Poisson regression by <em>ahwillia</em>: <a
+href="https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a"
+class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a></li>
 </ul>
-<h1 id="template-codes">Template Codes</h1>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template for approach 1.</span></span><br><span class="line"><span class="string">The agent randomly selects actions.</span></span><br><span class="line"><span class="string">Use the `pysc2.bin.agent` module to run `MyAgent` when your commands are in the current path:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent pysc2EnvTemplate.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># to be compatible with python 2.x</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> features</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define our own agent</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line">        <span class="comment"># RL algorithm here~ #</span></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get available actions</span></span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        <span class="comment"># randomly select one action and its argument</span></span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes]</span><br><span class="line">                <span class="keyword">for</span> arg <span class="keyword">in</span> self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="comment"># pack up the actions as a `FunctionCall`</span></span><br><span class="line">        function_call = actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># return the actions a.k.a. the function_call</span></span><br><span class="line">        <span class="keyword">return</span> function_call</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>Tutorial</category>
+        <category>Probabilistic Machine Learning</category>
       </categories>
       <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>PySC2</tag>
-        <tag>Tools</tag>
+        <tag>Probability Theory</tag>
+        <tag>Machine Learning</tag>
+        <tag>Math</tag>
       </tags>
   </entry>
   <entry>
@@ -411,110 +769,240 @@ class="uri">https://faculty.washington.edu/ezivot/econ584/notes/armaestimation.p
       </tags>
   </entry>
   <entry>
-    <title>Negative Binomial Distribution - Expectation, Variance, Likelihood and Regression</title>
-    <url>/2022/5-ProbabilisticML-2-NB/</url>
-    <content><![CDATA[<p>This blog aims to show the detailed derivation of the expectation,
-variance, likelihood and regression of <em>Negative Binomial
-Distribution</em>.</p>
-<p>The Poisson distribution can be generalized by including a gamma
-noise variable, then we can get the negative binomial distribution.</p>
+    <title>Markov Chain Monte Carlo (MCMC) Estimation of Hidden Markov Model (HMM)</title>
+    <url>/2022/8-ProbabilisticML-5-MCMCHMM/</url>
+    <content><![CDATA[<p><strong>Hidden Markov Model</strong> (HMM) contains a sequence hidden
+variables <span class="math inline">\(\{X_1, X_2, ..., X_T\}\)</span>
+and a sequence of observable variables <span
+class="math inline">\(\{Y_1, Y_2, ..., Y_T\}\)</span>, shown in the
+following figure. The joint probability of an HMM is:</p>
+<p><span class="math display">\[\begin{equation}
+P(X_1, X_2, ..., X_T, Y_1, Y_2, ..., Y_T) =
+P(X_1)\prod_{t=2}^{T}{P(X_t|X_{t-1})}\prod_{t=1}^{T}{P(Y_t|X_t)}
+\end{equation}\]</span>.</p>
 <span id="more"></span>
-<h1 id="probability-density-formula">Probability Density Formula</h1>
-<p><span class="math display">\[\begin{equation}
-P(Y=y_i;\mu,\alpha) =
-\frac{\Gamma(y_i+\alpha^{-1})}{\Gamma(y_i+1)\Gamma(\alpha^{-1})}(\frac{\alpha^{-1}}{\alpha^{-1}\mu})^{\alpha^{-1}}(\frac{\mu}{\alpha^{-1}+\mu})^{y_i}
-\end{equation}\]</span></p>
-<p>where: <span class="math display">\[\begin{equation}
-\mu_i=e^{x_i\beta}
-\end{equation}\]</span></p>
-<p>We can set <span class="math inline">\(n=\alpha^{-1}\)</span> and
-<span
-class="math inline">\(p=\frac{\alpha^{-1}}{\alpha^{-1}+\mu}\)</span>,
-then the above formula can be rewritten as:</p>
-<p><span class="math display">\[\begin{equation}
-P(Y=y_i;n,p) =
-\frac{\Gamma(y_i+n)}{\Gamma(y_i+1)\Gamma(n)}p^n(1-p)^{y_i}
-\end{equation}\]</span></p>
-<h1 id="expectation-and-variance">Expectation and Variance</h1>
-<p>The expectation and the variance is:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \frac{n(1-p)}{p}
-\end{equation}\]</span></p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \frac{n(1-p)}{p^2}
-\end{equation}\]</span></p>
-<h2 id="expectation">Expectation</h2>
-<p>To proof:</p>
-<p><span class="math display">\[\begin{equation*}
-\begin{aligned}
-\mathrm{E}(Y) &amp; =
-\sum_{y=0}^{\infty}{y\frac{(y+n-1)!}{(y)!(n-1)!}p^n(1-p)^{y}} \\
-&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{(y-1)!(n-1)!}p^n(1-p)^y}\\
-&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{y!n!}p^{n+1}(1-p)^{y-1}}\\
-&amp;= \frac{n(1-p)}{p}
-\sum_{y=1}^{\infty}{\frac{(y+n-1)!}{(y-1)!n!}p^{n+1}(1-p)^{y-1}} \\
-&amp;= \frac{n(1-p)}{p}
-\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}}
-\end{aligned}
-\end{equation*}\]</span></p>
-<p>As the integral sum of the negative binomial distribution is 1:</p>
-<p><span class="math display">\[\begin{equation}
-\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}} = 1
-\end{equation}\]</span></p>
-<p>So, we can get:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \frac{n(1-p)}{p}
-\end{equation}\]</span></p>
-<h2 id="variance">Variance</h2>
-<p>Before we compute the variance, we firstly compute <span
-class="math inline">\(\mathrm{E}(Y(Y-1))\)</span>:</p>
-<p><span class="math display">\[\begin{equation*}
-\begin{aligned}
-\mathrm{E}(Y(Y-1)) &amp; =
-\sum_{y=0}^{\infty}{y(y-1)\frac{(y+n-1)!}{y!(n-1)!}p^n(1-p)^y} \\
-&amp;= \frac{n(r+1)(1-p)^2}{p^2}
-\sum_{y=2}^{\infty}{\frac{((n+2)+(y-2)-1)!}{(y-2)!(n+1)!}p^{n+2}(1-p)^{y-2}}
-\\
-&amp;= \frac{n(r+1)(1-p)^2}{p^2}
-\sum_{z=0}^{\infty}{\frac{((n+2)+z-1)!}{z!(n+1)!}p^{n+2}(1-p)^{z}} \\
-&amp;= \frac{n(r+1)(1-p)^2}{p^2}
-\end{aligned}
-\end{equation*}\]</span></p>
-<p>Then we can get:</p>
-<p><span class="math display">\[\begin{equation}
-E(Y^2) = E(Y(Y-1)) + E(Y) = \frac{n(n+1)(1-p)^2 + n(1-p)p}{p^2}
-\end{equation}\]</span></p>
-<p>Finally, we can compute the variance as:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 =
-\frac{n(1-p)}{p^2}
-\end{equation}\]</span></p>
-<h1 id="log-likelihood">Log-Likelihood</h1>
-<p>The log-likelihood that to maximize in an MLE approach is:</p>
-<p><span class="math display">\[\begin{equation}
-\sum_{i=1}^{n}{\ln(\Gamma(y_i+\alpha^{-1})) - \ln(\Gamma(\alpha^{-1})) -
-\ln(\Gamma(y_i+1)) - (\alpha^{-1} + y_i)\ln(1+\alpha \mu_i)
-+y_i(\ln(\alpha)+\ln(\mu_i))}
-\end{equation}\]</span></p>
-<h1 id="negative-binomial-regression">Negative Binomial Regression</h1>
-<p>We can learn the parameters based on <em>MLE</em> to do regression.
-The following codes are based on
-<code>scipy.optimize.minimize</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> loggamma</span><br><span class="line"></span><br><span class="line">N = <span class="number">1000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">alpha_real = np.random.randint(<span class="number">1</span>, <span class="number">10</span>)  <span class="comment"># the real values of \alpha, a scalar</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># To apply the np.random.negative_binomial function:</span></span><br><span class="line"><span class="comment"># n = 1 / alpha_real</span></span><br><span class="line"><span class="comment"># p = (1 / alpha_real) / ((1 / alpha_real) + exp(X * real_beta))</span></span><br><span class="line"></span><br><span class="line">n = <span class="number">1</span> / alpha_real</span><br><span class="line">p = n / (n + np.exp(np.dot(X, beta_real)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># The negative binomial distribution defined from np.random.negative_binomial(n,p):</span></span><br><span class="line"><span class="comment"># P(y; n, p) = ((y+n-1)!)/(y!(n-1)!) * (p^n) * (1-p)^y</span></span><br><span class="line">Y = np.random.negative_binomial(n, p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss and gradient function</span></span><br><span class="line"><span class="comment"># params = [alpha, beta]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">params</span>):</span></span><br><span class="line">    alpha = params[<span class="number">0</span>]</span><br><span class="line">    beta = params[<span class="number">1</span>:]</span><br><span class="line">    mu = np.exp(np.dot(X, beta))</span><br><span class="line"></span><br><span class="line">    log_likelihood = loggamma(Y + <span class="number">1</span> / alpha).<span class="built_in">sum</span>() \</span><br><span class="line">                     - loggamma(alpha) * N \</span><br><span class="line">                     - loggamma(Y + <span class="number">1</span>).<span class="built_in">sum</span>() \</span><br><span class="line">                     - <span class="number">1</span> / alpha * (np.log(<span class="number">1</span> + alpha * mu).<span class="built_in">sum</span>()) \</span><br><span class="line">                     - np.dot(Y, np.log(<span class="number">1</span> + alpha * mu)) \</span><br><span class="line">                     + (Y * np.log(alpha)).<span class="built_in">sum</span>() \</span><br><span class="line">                     + np.dot(Y, np.log(mu))</span><br><span class="line">    <span class="keyword">return</span> -log_likelihood</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">params_ini = np.ones(P + <span class="number">1</span>)  <span class="comment"># initialize params ([alpha, beta]) with zeros</span></span><br><span class="line">result = mm(loss_function, params_ini)</span><br><span class="line">params_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(alpha_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">0</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">1</span>:]))</span><br></pre></td></tr></table></figure>
-<p>The output of the above codes:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real alpha: <span class="number">2</span></span><br><span class="line">Real beta: [ <span class="number">1.6794512</span>  -<span class="number">0.22624054</span>  <span class="number">1.15579192</span>  <span class="number">0.35920843</span>  <span class="number">0.09326148</span>]</span><br><span class="line">Predicted alpha: <span class="number">2.0811572484796637</span></span><br><span class="line">Predicted beta: [ <span class="number">1.69292056</span> -<span class="number">0.28083378</span>  <span class="number">1.18706627</span>  <span class="number">0.43136325</span>  <span class="number">0.1085059</span> ]</span><br></pre></td></tr></table></figure>
-<h1 id="main-reference">Main Reference</h1>
+<figure>
+<img src="/images/C8-F1.png" alt="Hidden Markov Model (HMM)." />
+<figcaption aria-hidden="true">Hidden Markov Model (HMM).</figcaption>
+</figure>
+<p>This section derives how to use MCMC algorithm to learn parameters in
+HMM. Let's suppose our ground truth is as follows:</p>
 <ul>
-<li>Wikipedia of Negative binomial distribution: <a
-href="https://en.wikipedia.org/wiki/Negative_binomial_distribution"
-class="uri">https://en.wikipedia.org/wiki/Negative_binomial_distribution</a></li>
-<li>Negative Binomial Distributio introduction: <a
-href="http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf"
-class="uri">http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf</a></li>
-<li>Chapter 326 from NCSS Statistical Software: <a
-href="https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf"
-class="uri">https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf</a></li>
+<li>The hidden variables are generated based on AR(1) model, which
+means:
+<ul>
+<li><span class="math inline">\(x_1\backsim
+N(\frac{\delta}{1-\phi},\frac{\sigma_{\omega}^2}{1-\phi^2})\)</span></li>
+<li><span class="math inline">\(x_t\backsim N(\delta+\phi
+x_{t-1},\sigma_{\omega}^2)\)</span></li>
+</ul></li>
+<li>The observable variables are generated based on Normal distribution
+averaged by the hidden variables, which means: <span
+class="math inline">\(Y_t \backsim N(AX_t, \sigma_y^2)\)</span>.</li>
+<li>To simplify, we fix <span class="math inline">\(\sigma_{\omega}^2 =
+\sigma_y^2 = 1\)</span>.</li>
+<li>The parameters we are going to learn are defined as <span
+class="math inline">\(\theta = \{\delta, \phi, A\}\)</span>.
+\end{itemize}</li>
 </ul>
+<h1 id="casual-inference-model-and-independence">Casual Inference Model
+and Independence</h1>
+<p>Based on the above assumptions, we can draw a casual inference model
+for the variables shown in the following figure:</p>
+<figure>
+<img src="/images/C8-F2.png" alt="Hidden Markov Model (HMM)." />
+<figcaption aria-hidden="true">Hidden Markov Model (HMM).</figcaption>
+</figure>
+<p>Based on the relations in the figure and the algorithm, we can
+briefly derive the following independence:</p>
+<ul>
+<li><span class="math inline">\(\delta \perp Y, A | X\)</span>.</li>
+<li><span class="math inline">\(\phi \perp Y, A | X\)</span>.</li>
+<li><span class="math inline">\(A \perp \delta, \phi | X\)</span>.</li>
+<li><span class="math inline">\(Y \perp \delta, \phi | X\)</span>.</li>
+</ul>
+<h1 id="posteriors-derivations-in-mcmc-algorithm">Posteriors Derivations
+in MCMC Algorithm</h1>
+<p>In this section, we derive the posteriors for the parameters we want
+to estimate in MCMC algorithm.</p>
+<p>Before we start, let's set the prior distributions for the
+parameters:</p>
+<p><span class="math display">\[\begin{equation}
+\delta \backsim N(1,1)
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\phi \backsim N(0.5,1)
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+A \backsim N(2,1)
+\end{equation}\]</span></p>
+<p>Firstly, for <span class="math inline">\(P(\delta | \phi, X, Y,
+A)\)</span>, based on the independence and Bayes' rule, we can
+derive:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+P(\delta | \phi, X, Y, A) &amp;= P(\delta | \phi, X) \\
+&amp;= \frac{P(\delta, \phi, X)}{P(\phi, X)} \\
+&amp;=\frac{P(X|\delta, \phi)P(\delta | \phi)P(\phi)}{P(X|\phi)P(\phi)}
+\\
+&amp;\propto P(X|\delta, \phi)P(\delta)
+\end{aligned}
+\end{equation}\]</span></p>
+<p>The same as parameter <span class="math inline">\(\phi\)</span> that
+we can get:</p>
+<p><span class="math display">\[\begin{equation}
+P(\phi | \delta, X, Y, A) = P(\phi | \delta, X) \propto P(X|\delta,
+\phi)P(\phi)
+\end{equation}\]</span></p>
+<p>Secondly, for <span class="math inline">\(P(A | \delta, \phi, X,
+Y)\)</span>, we can derive:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+P(A | \delta, \phi, X, Y) &amp;= P(A | X, Y) \\
+&amp;= \frac{P(Y | X, A)P(A|X)P(X)}{P(Y|X)P(X)} \\
+&amp;\propto P(Y | X, A)P(A) \\
+&amp;= p(A)\prod_{t=1}^{T}{P(Y_t | A, X_t)}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Finally, we also need to derive the distributions for each hidden
+variables <span class="math inline">\(X_t\)</span>:</p>
+<ol type="A">
+<li>For <span class="math inline">\(X_t\)</span>, where <span
+class="math inline">\(t \neq 1, T\)</span>:</li>
+</ol>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+&amp;P(X_t | X_1, ..., X_{t-2}, X_{t-1}, X_{t+1}, X_{t+2}, ..., X_T,
+Y_1, Y_2, ..., Y_T, \delta, \phi, A) \\
+&amp;= P(X_t | X_{t-1}, X_{t+1}, Y_t, \delta, \phi, A) \\
+&amp;\propto P(X_{t-1}, X_t, X_{t+1}, Y_t, \delta, \phi, A) \\
+&amp;= P(Y_t | X_t, A)P(X_{t+1} | X_t, \delta, \phi)P(X_t | X_{t-1},
+\delta, \phi)P(X_{t-1} | \delta, \phi)P(A)P(\delta)P(\phi)\\
+&amp;\propto P(Y_t | X_t, A)P(X_{t+1} | X_t, \delta, \phi)P(X_t |
+X_{t-1}, \delta, \phi)
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Based on this, we can further derive that:</p>
+<p><span class="math display">\[\begin{equation}
+X_t | X_{t-1}, X_{t+1}, Y_t, \delta, \phi, A \backsim N(\mu_t,
+\sigma_t^2)
+\end{equation}\]</span></p>
+<p>where: <span class="math inline">\(\mu_t = \frac{b_t}{a_t}\)</span>
+and <span class="math inline">\(\sigma_t^2 = \frac{1}{a_t}\)</span>, and
+we represent:</p>
+<p><span class="math display">\[\begin{equation}
+a_t = A^2 + \phi^2+1
+\end{equation}\]</span> <span class="math display">\[\begin{equation}
+b_t = AY_t+ \delta +\phi X_{t+1} + \phi X_{t-1} - \delta\phi
+\end{equation}\]</span></p>
+<ol start="2" type="A">
+<li>For <span class="math inline">\(X_1\)</span> and <span
+class="math inline">\(X_T\)</span>, we can similarly derive:</li>
+</ol>
+<p><span class="math display">\[\begin{equation}
+P(X_1 | X_2, ..., X_T, Y_1, Y_2, ..., Y_T, \delta, \phi, A) \propto
+P(Y_1 | X_1, A)P(X_2 | X_1, \delta, \phi)P(X_1 | \delta, \phi)
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+P(X_T | X_1, x_2, ..., X_{T-1}, Y_1, Y_2, ..., Y_T, \delta, \phi, A)
+\propto P(Y_T | X_T, A)P(X_T | X_{T-1}, \delta, \phi)
+\end{equation}\]</span></p>
+<p>We can further derive that:</p>
+<p><span class="math display">\[\begin{equation}
+X_1 | X_2, Y_1, \delta, \phi, A \backsim N(\mu_1, \sigma_1^2)
+\end{equation}\]</span></p>
+<p>where: <span class="math inline">\(\mu_1 = \frac{b_1}{a_1}\)</span>
+and <span class="math inline">\(\sigma_1^2 = \frac{1}{a_1}\)</span>, and
+we represent:</p>
+<p><span class="math display">\[\begin{equation}
+a_1 = A^2 + 1
+\end{equation}\]</span> <span class="math display">\[\begin{equation}
+b_1 = AY_1+\phi X_2 + \delta
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+X_T | X_{T-1}, Y_T, \delta, \phi, A \backsim N(\mu_T, \sigma_T^2)
+\end{equation}\]</span></p>
+<p>where: <span class="math inline">\(\mu_T = \frac{b_T}{a_T}\)</span>
+and <span class="math inline">\(\sigma_T^2 = \frac{1}{a_T}\)</span>, and
+we represent:</p>
+<p><span class="math display">\[\begin{equation}
+a_T = A^2 + 1
+\end{equation}\]</span> <span class="math display">\[\begin{equation}
+b_T = AY_T+\phi X_{T-1} + \delta
+\end{equation}\]</span></p>
+<p>Based on what we have known:</p>
+<p><span class="math display">\[\begin{equation}
+P(X_1|\delta,\phi) =
+\frac{\sqrt{1-\phi^2}}{\sqrt{2\pi}}e^{-\frac{1-\phi^2}{2}(X_1-\frac{\delta}{1-\phi})^2}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+P(X_t | X_{t-1},\delta,\phi) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(X_t
+- \delta - \phi X_{t-1})^2}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+P(X_1,X_2,...,X_t|\delta, \phi) =
+\frac{\sqrt{1-\phi^2}}{\sqrt{2\pi}}e^{-\frac{1-\phi^2}{2}(X_1-\frac{\delta}{1-\phi})^2}
+\prod_{t=2}^{T}{\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(X_t-\delta-\phi
+X_{t-1})^2}}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+P(Y_t | X_t,A) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(Y_t - AX_t)^2}
+\end{equation}\]</span></p>
+<p>We can subsequent these equations into the results we have derived
+above, we can compute the posteriors for the parameters and hidden
+variables.</p>
+<h1 id="acceptance-ratios">Acceptance Ratios</h1>
+<p>To estimate the parameters using the Metropolis-Hastings algorithm,
+we need to compute the acceptance ratio as follows:</p>
+<p><span class="math display">\[\begin{equation}
+r=min
+\left[1,\frac{P(\theta_i|\theta_{i-1},X_{i-1},Y_{i-1})}{P(\theta_{i-1}|\theta_{i-1},X_{i-1},Y_{i-1}))}\right]
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\theta\)</span> represents one of
+the <span class="math inline">\(\{\delta, \phi, A\}\)</span> and the
+conditioned <span class="math inline">\(\theta\)</span> represents other
+two parameters.</p>
+<p>In the implementation, we usually compute the <span
+class="math inline">\(log\)</span> format to prevent over-floating.</p>
+<h1 id="mcmc-algorithm-to-estimate-parameters">MCMC Algorithm to
+Estimate Parameters</h1>
+<p>Suppose we have a sequence of observed variables <span
+class="math inline">\(\{Y_1, Y_2, ..., Y_T\}\)</span>, we initialize the
+sequences for samples of the parameters: <span
+class="math inline">\(\{\delta_0\}\)</span>, <span
+class="math inline">\(\{\phi_0\}\)</span>, <span
+class="math inline">\(\{A_0\}\)</span>. We also have the pre-defined
+hyper-parameters, the burn-in steps <span
+class="math inline">\(B\)</span> and the total steps to iterative
+generate samples <span class="math inline">\(N\)</span>.</p>
+<p>We also need to define the generating distributions to sample
+parameters next step given the current parameters:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+g(\delta_i | \delta_{i-1}) &amp;:= \delta_i \backsim N(\delta_{i-1},1)
+\\
+g(\phi_i | \phi_{i-1}) &amp;:= \phi_i \backsim N(\phi_{i-1},1) \\
+g(A_i | A_{i-1}) &amp;:= A_i \backsim N(A_{i-1},1)
+\end{aligned}
+\end{equation}\]</span></p>
+<p>The Metropolis-Hastings algorithm repeatedly does the following
+steps:</p>
+<ul>
+<li>Sample a sequence of <span class="math inline">\(\{X_1, X_2, ...,
+X_T\}_i\)</span>.</li>
+<li>Generate candidate parameters <span
+class="math inline">\(\{\hat{\delta}, \hat{\phi},
+\hat{A}\}\)</span>.</li>
+<li>Compute the acceptance ratio <span
+class="math inline">\(r\)</span>.</li>
+<li>Uniformly and randomly sample a <span class="math inline">\(u\in
+[0,1]\)</span> and compare with <span class="math inline">\(r\)</span>
+to determine whether to accept the new samples.</li>
+<li>Add the new samples if accepted or keep the current samples as new
+samples if rejected.</li>
+</ul>
+<h1 id="codes">Codes</h1>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Using Markov Chain Monte Carlo (MCMC) method to estimate parameters of Hidden Markov Model (HMM).</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.stats <span class="keyword">import</span> norm</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"></span><br><span class="line"><span class="comment"># ! Set hyper-parameters:</span></span><br><span class="line">theta_real = [<span class="number">0.3</span>, <span class="number">0.7</span>, <span class="number">2</span>]  <span class="comment"># parameters \theta is defined as [\delta, \phi, A]</span></span><br><span class="line">sigma = <span class="number">1</span>  <span class="comment"># set \sigma_\omega and \sigma_y as constant values (for all sigmas in the model)</span></span><br><span class="line"></span><br><span class="line">T = <span class="number">20000</span></span><br><span class="line">N = <span class="number">11000</span></span><br><span class="line">B = <span class="number">1000</span></span><br><span class="line">x_0 = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">priors = &#123;<span class="string">&#x27;delta_E&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;delta_Var&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">          <span class="string">&#x27;phi_E&#x27;</span>: <span class="number">0.5</span>, <span class="string">&#x27;phi_Var&#x27;</span>: <span class="number">1</span>,</span><br><span class="line">          <span class="string">&#x27;A_E&#x27;</span>: <span class="number">2</span>, <span class="string">&#x27;A_Var&#x27;</span>: <span class="number">2</span>&#125;  <span class="comment"># to define the mean and variance of prior distributions of the parameters</span></span><br><span class="line"></span><br><span class="line">generate_sigma_square = <span class="number">0.5</span>  <span class="comment"># the variance to sample next parameter in a Normal method</span></span><br><span class="line">generate_e = <span class="number">0.2</span>  <span class="comment"># the upper/lower float to sample next parameter in a Uniform method</span></span><br><span class="line">generate_method = <span class="string">&quot;normal&quot;</span></span><br><span class="line"></span><br><span class="line">x_series_0 = [<span class="number">1</span>] * T</span><br><span class="line">theta_0 = [<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_series</span>(<span class="params">T, x_0</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    This function generates the series &#123;Y_1, Y_2, ..., Y_T&#125; given the length T and the first element X_0.</span></span><br><span class="line"><span class="string">    :param T: the length of time series</span></span><br><span class="line"><span class="string">    :param x_0: the first element of the hidden variables X_0</span></span><br><span class="line"><span class="string">    :return: a time series, &#123;Y_t&#125;.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    x_t = x_0</span><br><span class="line">    y_0 = np.random.normal(theta_real[<span class="number">2</span>] * x_t, sigma)</span><br><span class="line">    Y = [y_0]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(T - <span class="number">1</span>):</span><br><span class="line">        x_t = theta_real[<span class="number">0</span>] + theta_real[<span class="number">1</span>] * x_t + np.random.normal(<span class="number">0</span>, sigma)</span><br><span class="line">        y_t = np.random.normal(theta_real[<span class="number">2</span>] * x_t, sigma)</span><br><span class="line">        Y.append(y_t)</span><br><span class="line">    <span class="keyword">return</span> Y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">prior_theta</span>(<span class="params">theta</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to define the priors of parameters (log).</span></span><br><span class="line"><span class="string">    :param theta: parameters [\delta, \phi, A]</span></span><br><span class="line"><span class="string">    :return: the prior probabilities.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    p_delta = norm.pdf(theta[<span class="number">0</span>], loc=priors[<span class="string">&#x27;delta_E&#x27;</span>], scale=priors[<span class="string">&#x27;delta_Var&#x27;</span>])</span><br><span class="line">    p_phi = norm.pdf(theta[<span class="number">1</span>], loc=priors[<span class="string">&#x27;phi_E&#x27;</span>], scale=priors[<span class="string">&#x27;phi_Var&#x27;</span>])</span><br><span class="line">    p_A = norm.pdf(theta[<span class="number">2</span>], loc=priors[<span class="string">&#x27;A_E&#x27;</span>], scale=priors[<span class="string">&#x27;A_Var&#x27;</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [np.log(p_delta), np.log(p_phi), np.log(p_A)]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_next</span>(<span class="params">theta_current, method=generate_method</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to generate the next sample.</span></span><br><span class="line"><span class="string">    :param theta_current: the current theta</span></span><br><span class="line"><span class="string">    :param method: can choose &quot;normal&quot; or &quot;uniform&quot;</span></span><br><span class="line"><span class="string">    :return: the next proposals of theta</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> method <span class="keyword">in</span> [<span class="string">&quot;normal&quot;</span>, <span class="string">&quot;uniform&quot;</span>], <span class="string">&quot;Unknown generative method!&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> method == <span class="string">&quot;normal&quot;</span>:</span><br><span class="line">        delta_proposal = np.random.normal(theta_current[<span class="number">0</span>], generate_sigma_square)</span><br><span class="line">        phi_proposal = np.random.normal(theta_current[<span class="number">1</span>], generate_sigma_square)</span><br><span class="line">        A_proposal = np.random.normal(theta_current[<span class="number">2</span>], generate_sigma_square)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        delta_proposal = np.random.uniform(theta_current[<span class="number">0</span>] - generate_e, theta_current[<span class="number">0</span>] + generate_e)</span><br><span class="line">        phi_proposal = np.random.uniform(theta_current[<span class="number">1</span>] - generate_e, theta_current[<span class="number">1</span>] + generate_e)</span><br><span class="line">        A_proposal = np.random.uniform(theta_current[<span class="number">2</span>] - generate_e, theta_current[<span class="number">2</span>] + generate_e)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [delta_proposal, phi_proposal, A_proposal]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_x_series</span>(<span class="params">y_series, x_series, theta</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to sample hidden variable series x_series given the observed variables y_series and current theta.</span></span><br><span class="line"><span class="string">    :param y_series: the observed variables y_series</span></span><br><span class="line"><span class="string">    :param x_series: the hidden variables x_series</span></span><br><span class="line"><span class="string">    :param theta: the parameters [delta_i, phi_i, A]</span></span><br><span class="line"><span class="string">    :return: the sampled x_series</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    x_series_new = []</span><br><span class="line"></span><br><span class="line">    delta, phi, A = theta</span><br><span class="line"></span><br><span class="line">    a_1 = A ** <span class="number">2</span> + <span class="number">1</span></span><br><span class="line">    b_1 = A * y_series[<span class="number">0</span>] + phi * x_series[<span class="number">1</span>] + delta</span><br><span class="line">    mu_1 = b_1 / a_1</span><br><span class="line">    sigma_1 = <span class="number">1</span> / np.sqrt(a_1)</span><br><span class="line"></span><br><span class="line">    x_series_new.append(np.random.normal(mu_1, sigma_1))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, T - <span class="number">1</span>):</span><br><span class="line">        a_t = A ** <span class="number">2</span> + phi ** <span class="number">2</span> + <span class="number">1</span></span><br><span class="line">        b_t = A * y_series[t] + delta + phi * (x_series[t + <span class="number">1</span>] + x_series[t - <span class="number">1</span>]) - delta * phi</span><br><span class="line">        mu_t = b_t / a_t</span><br><span class="line">        sigma_t = <span class="number">1</span> / np.sqrt(a_t)</span><br><span class="line">        x_series_new.append(np.random.normal(mu_t, sigma_t))</span><br><span class="line"></span><br><span class="line">    a_T = A ** <span class="number">2</span> + <span class="number">1</span></span><br><span class="line">    b_T = A * y_series[T - <span class="number">1</span>] + phi * x_series[T - <span class="number">2</span>] + delta</span><br><span class="line">    mu_T = b_T / a_T</span><br><span class="line">    sigma_T = <span class="number">1</span> / np.sqrt(a_T)</span><br><span class="line"></span><br><span class="line">    x_series_new.append(np.random.normal(mu_T, sigma_T))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> x_series_new</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_log_P_x_given_theta</span>(<span class="params">x_series, theta</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to compute log(P(x|theta)).</span></span><br><span class="line"><span class="string">    The formula: log(P(x|theta)) = 0.5 * log(1 - \phi ^ 2) - 0.5 * (1 - \phi ^ 2) * (x_1 - \delta / (1 - \phi)) ^ 2</span></span><br><span class="line"><span class="string">        - 0.5 * SUM_&#123;t=2&#125;^&#123;T&#125;&#123;(x_t - \delta -\phi x_&#123;t-1&#125;) ^ 2&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :param x_series: the hidden variable series, x.</span></span><br><span class="line"><span class="string">    :param theta: the parameters [delta_i, phi_i, A_i]</span></span><br><span class="line"><span class="string">    :return: the log(P(x|delta_i, phi_i))</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    x_1 = x_series[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    sum_term = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, T):</span><br><span class="line">        sum_term += (x_series[t] - theta[<span class="number">0</span>] - theta[<span class="number">1</span>] * x_series[t - <span class="number">1</span>]) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># to restrain the |\phi|&lt;1</span></span><br><span class="line">    <span class="keyword">if</span> theta[<span class="number">1</span>] &gt; <span class="number">1</span>:</span><br><span class="line">        theta[<span class="number">1</span>] = <span class="number">0.99</span></span><br><span class="line">    <span class="keyword">if</span> theta[<span class="number">1</span>] &lt; -<span class="number">1</span>:</span><br><span class="line">        theta[<span class="number">1</span>] = -<span class="number">0.99</span></span><br><span class="line"></span><br><span class="line">    log_P = <span class="number">0.5</span> * np.log(<span class="number">1</span> - theta[<span class="number">1</span>] ** <span class="number">2</span>) \</span><br><span class="line">            - <span class="number">0.5</span> * (<span class="number">1</span> - theta[<span class="number">1</span>] ** <span class="number">2</span>) * (x_1 - theta[<span class="number">0</span>] / (<span class="number">1</span> - theta[<span class="number">1</span>])) ** <span class="number">2</span> \</span><br><span class="line">            - <span class="number">0.5</span> * sum_term</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> log_P</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_sum_log_P_y_given_x_and_A</span>(<span class="params">x_series, y_series, theta</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to compute sum_T&#123;log(P(y_t | x_t, A))&#125;</span></span><br><span class="line"><span class="string">    :param x_series: the hidden variable series, x</span></span><br><span class="line"><span class="string">    :param y_series: the observed variable series, y</span></span><br><span class="line"><span class="string">    :param theta: the parameters, where we only need A = theta[2]</span></span><br><span class="line"><span class="string">    :return: the sum over T of log(P(y_t | x_t, A))</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    A_current = theta[<span class="number">2</span>]</span><br><span class="line">    sum_log = -<span class="number">0.5</span> * np.log(<span class="number">2</span> * <span class="number">3.14</span>) * T</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(T):</span><br><span class="line">        sum_log += -<span class="number">0.5</span> * (y_series[i] - x_series[i] * A_current) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sum_log</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">accept_or_reject_proposals</span>(<span class="params">x_series, y_series, theta_current, theta_proposal</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to determine the theta_next by accepting or rejecting the proposals</span></span><br><span class="line"><span class="string">    :param x_series: the hidden variable series, x</span></span><br><span class="line"><span class="string">    :param y_series: the observed variable series, y</span></span><br><span class="line"><span class="string">    :param theta_current: the current parameters [\delta_i, \phi_i, A_i]</span></span><br><span class="line"><span class="string">    :param theta_proposal: the proposed parameters [\delta_p, \phi_p, A_p]</span></span><br><span class="line"><span class="string">    :return: the new theta [\delta_&#123;i+1&#125;, \phi_&#123;i+1&#125;, A_&#123;i+1&#125;], the [signals] of accepting (for True) or rejecting (for False)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    accept = [<span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>]</span><br><span class="line">    theta_next = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    log_p_x_theta_i = compute_log_P_x_given_theta(x_series, theta_current)</span><br><span class="line">    log_theta_i = prior_theta(theta_current)</span><br><span class="line">    log_theta_p = prior_theta(theta_proposal)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># + For parameter \delta, to compare log(P(\delta_p | \phi_i, x)) and log(P(\delta_i | \phi_i, x)), which equals to:</span></span><br><span class="line">    <span class="comment"># + log(r) = log(P(x | \delta_p, \phi_i)) + log(P(\delta_p)) - log(P(x | \delta_i, \phi_i)) - log(P(\delta_i))</span></span><br><span class="line">    log_r_delta = compute_log_P_x_given_theta(x_series, [theta_proposal[<span class="number">0</span>], theta_current[<span class="number">1</span>]]) \</span><br><span class="line">                  + log_theta_p[<span class="number">0</span>] \</span><br><span class="line">                  - log_p_x_theta_i \</span><br><span class="line">                  - log_theta_i[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> log_r_delta &gt; <span class="number">0</span>:</span><br><span class="line">        accept[<span class="number">0</span>] = <span class="literal">True</span></span><br><span class="line">        theta_next[<span class="number">0</span>] = theta_proposal[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        log_u = np.log(np.random.uniform(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">if</span> log_u &lt; log_r_delta:</span><br><span class="line">            accept[<span class="number">0</span>] = <span class="literal">True</span></span><br><span class="line">            theta_next[<span class="number">0</span>] = theta_proposal[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># ! reject</span></span><br><span class="line">            accept[<span class="number">0</span>] = <span class="literal">False</span></span><br><span class="line">            theta_next[<span class="number">0</span>] = theta_current[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># + For parameter \phi, to compare log(P(\phi_p | \delta_i, x)) and log(P(\phi_i | \delta_i, x)), which equals to:</span></span><br><span class="line">    <span class="comment"># + log(r) = log(P(x | \delta_i, \phi_p)) + log(P(\phi_p)) - log(P(x | \delta_i, \phi_i)) - log(P(\phi_i))</span></span><br><span class="line">    log_r_phi = compute_log_P_x_given_theta(x_series, [theta_current[<span class="number">0</span>], theta_proposal[<span class="number">1</span>]]) \</span><br><span class="line">                + log_theta_p[<span class="number">1</span>] \</span><br><span class="line">                - log_p_x_theta_i \</span><br><span class="line">                - log_theta_i[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> log_r_phi &gt; <span class="number">0</span>:</span><br><span class="line">        accept[<span class="number">1</span>] = <span class="literal">True</span></span><br><span class="line">        theta_next[<span class="number">1</span>] = theta_proposal[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        log_u = np.log(np.random.uniform(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">if</span> log_u &lt; log_r_phi:</span><br><span class="line">            accept[<span class="number">1</span>] = <span class="literal">True</span></span><br><span class="line">            theta_next[<span class="number">1</span>] = theta_proposal[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># ! reject</span></span><br><span class="line">            accept[<span class="number">1</span>] = <span class="literal">False</span></span><br><span class="line">            theta_next[<span class="number">1</span>] = theta_current[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># + For parameter A, to compare log(P(A_p | x_series, y_series)) and log(P(A_i | x_series, y_series)), which</span></span><br><span class="line">    <span class="comment"># + equals to: log(r) = sum_T&#123;log(P(y_t | x_t, A_p))&#125; + log(P(A_p)) - sum_T&#123;log(P(y_t | x_t, A_i))&#125; - log(P(A_i))</span></span><br><span class="line">    log_r_A = compute_sum_log_P_y_given_x_and_A(x_series, y_series, theta_proposal) \</span><br><span class="line">              + log_theta_p[<span class="number">2</span>] \</span><br><span class="line">              - compute_sum_log_P_y_given_x_and_A(x_series, y_series, theta_current) \</span><br><span class="line">              - log_theta_i[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> log_r_A &gt; <span class="number">0</span>:</span><br><span class="line">        accept[<span class="number">2</span>] = <span class="literal">True</span></span><br><span class="line">        theta_next[<span class="number">2</span>] = theta_proposal[<span class="number">2</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        log_u = np.log(np.random.uniform(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">if</span> log_u &lt; log_r_phi:</span><br><span class="line">            accept[<span class="number">2</span>] = <span class="literal">True</span></span><br><span class="line">            theta_next[<span class="number">2</span>] = theta_proposal[<span class="number">2</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># ! reject</span></span><br><span class="line">            accept[<span class="number">2</span>] = <span class="literal">False</span></span><br><span class="line">            theta_next[<span class="number">2</span>] = theta_current[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> theta_next, accept</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">perform_mcmc</span>(<span class="params">N, y_series, x_series_0, theta_0</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to perform MCMC sampling.</span></span><br><span class="line"><span class="string">    :param N: total number of samples</span></span><br><span class="line"><span class="string">    :param y_series: the observed variable series, y</span></span><br><span class="line"><span class="string">    :param x_series_0: the starting x_series</span></span><br><span class="line"><span class="string">    :param theta_0: the starting point</span></span><br><span class="line"><span class="string">    :return: the samples</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    samples = [theta_0]</span><br><span class="line">    accept_records = [[<span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>]]  <span class="comment"># to record the acceptance</span></span><br><span class="line">    x_series = x_series_0</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">1</span>, N)):</span><br><span class="line">        x_series_samples = sample_x_series(y_series, x_series, samples[n - <span class="number">1</span>])</span><br><span class="line">        theta_proposal = generate_next(samples[n - <span class="number">1</span>])</span><br><span class="line">        theta_next, accept = accept_or_reject_proposals(x_series_samples, y_series, samples[n - <span class="number">1</span>], theta_proposal)</span><br><span class="line">        samples.append(theta_next)</span><br><span class="line">        accept_records.append(accept)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> samples, accept_records</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_figures</span>(<span class="params">samples, means</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to plot the samples.</span></span><br><span class="line"><span class="string">    :param samples: the samples</span></span><br><span class="line"><span class="string">    :param means: the means of two sets of samples (without burn-in)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    delta_samples = samples[<span class="number">0</span>]</span><br><span class="line">    phi_samples = samples[<span class="number">1</span>]</span><br><span class="line">    A_samples = samples[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># draw \delta figure</span></span><br><span class="line">    plt.plot(<span class="built_in">list</span>(<span class="built_in">range</span>(N)), delta_samples, label=<span class="string">&quot;samples&quot;</span>)</span><br><span class="line">    plt.vlines(B, <span class="built_in">min</span>(delta_samples), <span class="built_in">max</span>(delta_samples), colors=<span class="string">&quot;r&quot;</span>, label=<span class="string">&quot;burn-in&quot;</span>)</span><br><span class="line">    plt.hlines(means[<span class="number">0</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;m&quot;</span>, label=<span class="string">&quot;mean of samples&quot;</span>)</span><br><span class="line">    plt.hlines(theta_real[<span class="number">0</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;g&quot;</span>, label=<span class="string">&quot;real value&quot;</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.title(<span class="string">r&quot;Samples of \delta&quot;</span>)</span><br><span class="line">    plt.savefig(<span class="string">&quot;./Results/MCMC-HMM-delta.pdf&quot;</span>, bbox_inches=<span class="string">&#x27;tight&#x27;</span>, pad_inches=<span class="number">0</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># draw \phi figure</span></span><br><span class="line">    plt.plot(<span class="built_in">list</span>(<span class="built_in">range</span>(N)), phi_samples, label=<span class="string">&quot;samples&quot;</span>)</span><br><span class="line">    plt.vlines(B, <span class="built_in">min</span>(phi_samples), <span class="built_in">max</span>(phi_samples), colors=<span class="string">&quot;r&quot;</span>, label=<span class="string">&quot;burn-in&quot;</span>)</span><br><span class="line">    plt.hlines(means[<span class="number">1</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;m&quot;</span>, label=<span class="string">&quot;mean of samples&quot;</span>)</span><br><span class="line">    plt.hlines(theta_real[<span class="number">1</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;g&quot;</span>, label=<span class="string">&quot;real value&quot;</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.title(<span class="string">r&quot;Samples of \phi&quot;</span>)</span><br><span class="line">    plt.savefig(<span class="string">&quot;./Results/MCMC-HMM-phi.pdf&quot;</span>, bbox_inches=<span class="string">&#x27;tight&#x27;</span>, pad_inches=<span class="number">0</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># draw A figure</span></span><br><span class="line">    plt.plot(<span class="built_in">list</span>(<span class="built_in">range</span>(N)), A_samples, label=<span class="string">&quot;samples&quot;</span>)</span><br><span class="line">    plt.vlines(B, <span class="built_in">min</span>(A_samples), <span class="built_in">max</span>(A_samples), colors=<span class="string">&quot;r&quot;</span>, label=<span class="string">&quot;burn-in&quot;</span>)</span><br><span class="line">    plt.hlines(means[<span class="number">2</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;m&quot;</span>, label=<span class="string">&quot;mean of samples&quot;</span>)</span><br><span class="line">    plt.hlines(theta_real[<span class="number">2</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;g&quot;</span>, label=<span class="string">&quot;real value&quot;</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.title(<span class="string">r&quot;Samples of A&quot;</span>)</span><br><span class="line">    plt.savefig(<span class="string">&quot;./Results/MCMC-HMM-A.pdf&quot;</span>, bbox_inches=<span class="string">&#x27;tight&#x27;</span>, pad_inches=<span class="number">0</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    y_series = generate_series(T, x_0)</span><br><span class="line">    samples, accept_records = perform_mcmc(N, y_series, x_series_0, theta_0)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># To analyse the results</span></span><br><span class="line">    samples = np.array(samples).T</span><br><span class="line">    samples_without_burn_in = samples[:, B:]</span><br><span class="line">    means = np.mean(samples_without_burn_in, axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    plot_figures(samples, means)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Real values of theta (delta, phi, A): &#123;&#125;&quot;</span>.<span class="built_in">format</span>(theta_real))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Estimated values of theta (delta, phi, A): &#123;&#125;&quot;</span>.<span class="built_in">format</span>(means))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>Probabilistic Machine Learning</category>
@@ -523,111 +1011,6 @@ class="uri">https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Proc
         <tag>Probability Theory</tag>
         <tag>Machine Learning</tag>
         <tag>Math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Use PySC2 Learning Environment - Control Your Own Environment and Agent</title>
-    <url>/2022/3-tutorial-pysc2-3/</url>
-    <content><![CDATA[<p>This is a brief introduction to an more comprehensive approach to use
-the <code>PySC2</code> by defining both your own environment and agent,
-and you can also control the interaction between the agent and the
-environment. A basic template can be found <a
-href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_2.py">here</a>.
-(The codes are also attached at the end).</p>
-<ul>
-<li>For an overview of <code>PySC2</code>, you can proceed to
-<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
-<li>For an simpler approach to only define your own agent, you can
-proceed to <a href="/2022/2-tutorial-pysc2-2/" title="Use PySC2 Learning Environment - Define Your Own Agent">Use PySC2 Learning Environment - Define Your Own Agent</a></li>
-</ul>
-<span id="more"></span>
-<p>The environment of PySC2 is defined in
-<code>pysc2.env.sc2_env</code>, while the actions and observations are
-defined in <code>pysc2.lib.features</code>. The class of
-<code>PySC2</code> environment is <code>SC2Env</code>, which Inherits
-from <code>pysc2.env.environment.Base</code>. <strong>You can use the
-<code>SC2Env</code> just like any other <em>OpenAI Gym</em>
-environments.</strong></p>
-<p>A basic template to instantiate the environment and an agent, and run
-the codes to make the agent interact with the environment can be found
-<a
-href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.</p>
-<h1 id="to-instantiate-an-environment">To Instantiate An
-Environment</h1>
-<p>Import the <code>SC2Env</code> from <code>pysc2.env.sc2_env</code>
-and instantiate it by <code>env = SC2Env([parameters])</code>.</p>
-<p>The definition of the class and all its parameters can be found <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/env/sc2_env.py#L121">here</a>.</p>
-<p>Some important arguments:</p>
-<ul>
-<li><code>map_name</code>: the name of the map.
-<ul>
-<li>You can find the namelist in <code>pysc2.bin.map_list</code> or by
-running <code>python -m pysc2.bin.map_list</code></li>
-<li>Or you can find them under the <code>pysc2/maps/</code> folder, like
-the script <code>pysc2/maps/melee.py</code> lists all the maps of
-<em>Melee</em>: <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">melee_maps = [&quot;Flat32&quot;, &quot;Flat48&quot;, &quot;Flat64&quot;, &quot;Flat96&quot;, &quot;Flat128&quot;, &quot;Simple64&quot;, &quot;Simple96&quot;, &quot;Simple128&quot;,]</span><br></pre></td></tr></table></figure></li>
-</ul></li>
-<li><code>players</code>：a list, containing one or two instances of
-<code>pysc2.env.sc2_env.Agent</code> or
-<code>pysc2.env.sc2_env.Bot</code>, some maps only allow one agent.
-<ul>
-<li>Note: the <code>Agent</code> and <code>Bot</code> is different from
-the <code>pysc2.agents.base_agent</code> we mentioned before, here is an
-example for these two classes: <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Agent</span>(<span class="params">collections.namedtuple(<span class="params"><span class="string">&quot;Agent&quot;</span>, [<span class="string">&quot;race&quot;</span>, <span class="string">&quot;name&quot;</span>]</span>)</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Define an Agent. It can have a single race or a list of races.&quot;&quot;&quot;</span></span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, race, name=<span class="literal">None</span></span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(Agent, cls).__new__(cls, to_list(race), name <span class="keyword">or</span> <span class="string">&quot;&lt;unknown&gt;&quot;</span>)</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bot</span>(<span class="params">collections.namedtuple(<span class="params"><span class="string">&quot;Bot&quot;</span>, [<span class="string">&quot;race&quot;</span>, <span class="string">&quot;difficulty&quot;</span>, <span class="string">&quot;build&quot;</span>]</span>)</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Define a Bot. It can have a single or list of races or builds.&quot;&quot;&quot;</span></span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span>(<span class="params">cls, race, difficulty, build=<span class="literal">None</span></span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>(Bot, cls).__new__(cls, to_list(race), difficulty, to_list(build <span class="keyword">or</span> BotBuild.random))</span><br></pre></td></tr></table></figure></li>
-</ul></li>
-<li><code>agent_interface_format</code>: to define the format of
-observation and action, like the resolution of the feature maps. It
-takes an instance of
-<code>pysc2.lib.features.AgentInterfaceFormat</code> or an instance of
-<code>pysc2.env.sc2_env.AgentInterfaceFormat</code>.
-<ul>
-<li>The number of <code>AgentInterfaceFormat</code> should be the same
-as the length of the list for the above <code>player</code> argument,
-with the same order.</li>
-<li>Please refer to <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/lib/features.py#L470">the
-definition</a> of <code>AgentInterfaceFormat</code> for more
-details.</li>
-</ul></li>
-<li><code>step_mul</code>: an int to identify after how many steps to
-take one observation and apply one action. (not the real number of
-frames). 1 second equals to 16 steps, which means if we set 16 here, we
-will get the observations every 1 second.</li>
-<li><code>game_steps_per_episode</code>: how many steps of one episode.
-For example, if we set <code>200*16</code> here, it means one episode
-will last for 200 seconds.</li>
-<li><code>save_replay_episodes</code>: how many episodes to save one
-replay.</li>
-<li><code>replay_dir</code>: the location to save replays.</li>
-</ul>
-<h1 id="define-a-function-to-interact-with-the-environment">Define A
-Function to Interact with The Environment</h1>
-<p>To define a function to interact with the environment, you can refer
-to the <code>run_loop</code> function in <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/env/run_loop.py#L23">pysc2/env/run_loop.py</a></p>
-<p>Here is also a good reference to instantiate an <code>SC2Env</code>
-and an <code>Agent</code>, and use the above <code>run_loop</code>
-function to test them in <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/tests/easy_scripted_test.py">pysc2/tests/easy_scripted_test.py</a>.</p>
-<h1 id="run-the-program">Run the Program</h1>
-<p>To actually run the codes above, we need the <code>run</code>
-function in <code>absl.app</code> package. The function takes in our
-running function as a parameter, like this:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pysc2.env <span class="keyword">import</span> run_loop, sc2_env</span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> random_agent</span><br><span class="line"><span class="keyword">from</span> absl <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">args</span>):</span></span><br><span class="line">    agent = random_agent.RandomAgent()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> sc2_env.SC2Env(map_name=<span class="string">&quot;MoveToBeacon&quot;</span>, </span><br><span class="line">	                players=[sc2_env.Agent(sc2_env.Race.terran)],</span><br><span class="line">			agent_interface_format=sc2_env.AgentInterfaceFormat(feature_dimensions=sc2_env.Dimensions(screen=<span class="number">84</span>, minimap=<span class="number">64</span>)), </span><br><span class="line">			step_mul=<span class="number">16</span>,</span><br><span class="line">			game_steps_per_episode=<span class="number">200</span> * <span class="number">16</span>, </span><br><span class="line">			visualize=<span class="literal">True</span>) <span class="keyword">as</span> env:</span><br><span class="line">	run_loop.run_loop([agent], env, <span class="number">200</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    app.run(main)</span><br></pre></td></tr></table></figure>
-<p><strong>Notes</strong>: When we define the <code>main</code>
-function, it must have at lest one argument, like <code>args</code>
-here. You may not use it, but you have to define it.</p>
-<h1 id="template-codes">Template Codes</h1>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template  for approach 2.</span></span><br><span class="line"><span class="string">Agent: using the random agent, referring to: pysc2.agent.random_agent.RandomAgent</span></span><br><span class="line"><span class="string">Environment: using the &#x27;Simple64&#x27; environment, both the player and the build-in AI are the race of terran.</span></span><br><span class="line"><span class="string">You can simply run the agent in the environment by the command:</span></span><br><span class="line"><span class="string">    python Approach_2.py</span></span><br><span class="line"><span class="string">Or you can use the `pysc2.bin.agent` module to run the MyAgent individually like the approach 1:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent Approach_2.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib.features <span class="keyword">import</span> AgentInterfaceFormat, Dimensions</span><br><span class="line"><span class="comment"># import the SC2Env environment</span></span><br><span class="line"><span class="keyword">from</span> pysc2.env.sc2_env <span class="keyword">import</span> SC2Env, Agent, Bot, Race, Difficulty</span><br><span class="line"><span class="comment"># import absl</span></span><br><span class="line"><span class="keyword">from</span> absl <span class="keyword">import</span> app</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define the agent, overriding the `step` function</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    My customized agent, simply copied from `pysc2.agents.random_agent.RandomAgent`.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes] <span class="keyword">for</span> arg <span class="keyword">in</span></span><br><span class="line">                self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="keyword">return</span> actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define a loop function for only one agent</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loop</span>(<span class="params">agent, env, max_steps=<span class="number">200</span></span>):</span></span><br><span class="line">    <span class="comment"># Set up the agent</span></span><br><span class="line">    <span class="comment"># ! Important: here, to setup the agent, the `env.observation_spec()` and `env.action_spec()` return tuples,</span></span><br><span class="line">    <span class="comment"># ! however, we want the elements inside, so we need the indexes `[0]` form them respectively.</span></span><br><span class="line">    observation_spec = env.observation_spec()[<span class="number">0</span>]</span><br><span class="line">    action_spec = env.action_spec()[<span class="number">0</span>]</span><br><span class="line">    agent.setup(observation_spec, action_spec)</span><br><span class="line">    <span class="comment"># reset the environment and the agent</span></span><br><span class="line">    <span class="comment"># ! Note: the `env.reset()` returns a tuple,</span></span><br><span class="line">    <span class="comment"># ? each element for each agent/bot.</span></span><br><span class="line">    timesteps = env.reset()</span><br><span class="line">    agent.reset()</span><br><span class="line">    total_steps = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="comment"># ! Note: the `env.step()` function needs a list, which actually allows multiple actions per frame,</span></span><br><span class="line">        <span class="comment"># ! so, we need to pack up the single action returned by the `agent.step()` function.</span></span><br><span class="line">        <span class="comment"># ! However, if the `agent.step()` function returns a list itself, then there is no need to use the list.</span></span><br><span class="line">        action = [agent.step(timesteps[<span class="number">0</span>])]</span><br><span class="line">        <span class="keyword">if</span> timesteps[<span class="number">0</span>].last():</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        total_steps += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> total_steps &gt; max_steps:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        timesteps = env.step(action)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define the main function</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">args</span>):</span></span><br><span class="line">    agent = MyAgent()</span><br><span class="line">    <span class="comment"># define the environment</span></span><br><span class="line">    env = SC2Env(map_name=<span class="string">&quot;Simple64&quot;</span>,</span><br><span class="line">                 players=[Agent(Race.terran), Bot(Race.terran, Difficulty.very_easy)],</span><br><span class="line">                 agent_interface_format=AgentInterfaceFormat(feature_dimensions=Dimensions(screen=<span class="number">84</span>, minimap=<span class="number">64</span>)),</span><br><span class="line">                 step_mul=<span class="number">16</span>, visualize=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        loop(agent, env)</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Finished!&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    app.run(main)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Tutorial</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>PySC2</tag>
-        <tag>Tools</tag>
       </tags>
   </entry>
   <entry>
@@ -806,144 +1189,6 @@ Hastings algorithm. Analytics Vidhya. Retrieved February 11, 2022 from
 <a
 href="https://medium.com/analytics-vidhya/an-ar-1-model-estimation-with-metropolis-hastings-algorithm-a5a0fcc0675f"
 class="uri">https://medium.com/analytics-vidhya/an-ar-1-model-estimation-with-metropolis-hastings-algorithm-a5a0fcc0675f</a></p>
-]]></content>
-      <categories>
-        <category>Probabilistic Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Probability Theory</tag>
-        <tag>Machine Learning</tag>
-        <tag>Math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Poisson Distribution - Expectation, Variance, Likelihood and Regression</title>
-    <url>/2022/4-ProbabilisticML-1-Poisson/</url>
-    <content><![CDATA[<p>Poisson distribution can be used to express count data, which gives
-number of events occurring in a fixed interval of time or space and
-these events occur with a known constant mean rate and independently of
-the time since the last event.</p>
-<p>This blog aims to show the detailed proof of its expectation,
-variance, likelihood and regression.</p>
-<span id="more"></span>
-<h1 id="probability-density-formula">Probability Density Formula</h1>
-<p>Suppose a discrete random variable <span
-class="math inline">\(X\)</span> of non-negative integer numbers, and
-let <span
-class="math inline">\(\lambda=\mu(x;\beta)=e^{x\beta}\geq0\)</span>.
-Then we can say:</p>
-<p><span class="math display">\[\begin{equation}
-Y \sim Poisson(\mu(x,\beta))
-\end{equation}\]</span></p>
-<p>if:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-P(Y=y_i) &amp;= e^{-\lambda_i} \frac{\lambda_i^{y_i}}{y_i!}\\
-&amp;= e^{-\mu(x_i,\beta)} \frac{\mu(x_i,\beta)^{y_i}}{y_i!}
-\end{aligned}
-\end{equation}\]</span></p>
-<h1 id="expectation-and-variance">Expectation and Variance</h1>
-<p>The expectation and the variation of Poisson distribution both
-numerically equals to <span class="math inline">\(\lambda\)</span>:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y)=\mathrm{Var}(Y)=\lambda=\mu(x;\beta)
-\end{equation}\]</span></p>
-<h2 id="expectation">Expectation</h2>
-<p>To proof:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y) &amp;= \sum_{y=0}^{\infty}{y e^{-\lambda}
-\frac{\lambda^{y}}{y!}} \\
-&amp;= \sum_{y=1}^{\infty}{y e^{-\lambda} \frac{\lambda^{y}}{y!}} \\
-&amp;= \sum_{y=1}^{\infty}{e^{-\lambda} \frac{\lambda^{y -
-1}\lambda}{(y-1)!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{\lambda^{y -
-1}}{(y-1)!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Based on the Taylor expansion:</p>
-<p><span class="math display">\[\begin{equation}
-e^x = 1 + x+\frac{x^2}{2!}+...+\frac{x^n}{n!}+... =
-\sum_{k=1}^{\infty}{\frac{x^{k-1}}{(k-1)!}}
-\end{equation}\]</span></p>
-<p>We have:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \lambda e^{-\lambda}
-\sum_{y=1}^{\infty}{\frac{\lambda^{y - 1}}{(y-1)!}} = \lambda
-e^{-\lambda} e^{\lambda} = \lambda
-\end{equation}\]</span></p>
-<h2 id="variance">Variance</h2>
-<p>To compute the variance, we firstly compute the expectation of <span
-class="math inline">\(Y^2\)</span>:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y^2) &amp;= \sum_{y=0}^{\infty}{y^2 e^{-\lambda}
-\frac{\lambda^y}{y!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{y \lambda^{y -
-1}}{(y-1)!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{(y-1+1)\lambda^{y
-- 1}}{(y-1)!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Set <span class="math inline">\(m=k-1\)</span>, we have:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y^2) &amp;= \lambda e^{-\lambda}(\sum_{m=0}^{\infty}{\frac{m
-\lambda^m}{m!}} + \sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
-&amp;= \lambda e^{-\lambda}(\lambda
-\sum_{m=1}^{\infty}{\frac{\lambda^{m-1}}{(m-1)!}} +
-\sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
-&amp;= \lambda e^{-\lambda} (\lambda e^{\lambda} +e^{\lambda} ) =
-\lambda(\lambda + 1)
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Finally, we can derive:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 = \lambda(\lambda
-+ 1) - {\lambda}^2 = \lambda
-\end{equation}\]</span></p>
-<h1 id="log-likelihood">Log-Likelihood</h1>
-<p>Then we can derive the likelihood of <span
-class="math inline">\(Y\)</span> is:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-L(y;\beta) &amp;= \prod_{i=1}^{n}{P(Y=y_i)} \\
-&amp;= \prod_{i=1}^{n}{e^{-\mu(x_i;\beta)}}\prod_{i=1}^n
-\frac{\mu(x_i;\beta)^{y_i}}{y_i!}\\
-&amp;=
-e^{-\sum_{i=1}^{n}{\mu(x_i;\beta)}}\prod_{i=1}^{n}{\frac{\mu(x_i;\beta)^{y_i}}{y_i!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Then, we can get the log-likelihood as:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\ln{L(y;\beta)} &amp;=
--\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
-\ln{\mu(x_i;\beta)}}-\sum_{i=1}^{n}{\ln{y_i!}}\\
-&amp;= -\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
-\ln{\mu(x_i;\beta)}} + const
-\end{aligned}
-\end{equation}\]</span></p>
-<h1 id="poisson-regression">Poisson Regression</h1>
-<p>We can learn the parameters <span
-class="math inline">\(\beta\)</span> based on <em>MLE</em> to do
-regression. The following codes are based on
-<code>scipy.optimize.minimize</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">N = <span class="number">10000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line">Y = np.random.poisson(np.exp(np.dot(X, beta_real)))  <span class="comment"># here, \lambda = exp(X\beta)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Poisson distribution of np.random.poisson(lam):</span></span><br><span class="line"><span class="comment"># f(k; lam) = (lam^k exp(-lam)) / (k!)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function to maximize the loge-likelihood</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">beta</span>):</span></span><br><span class="line">    Xbeta = np.dot(X, beta)</span><br><span class="line">    exp_Xbeta = np.exp(Xbeta)  <span class="comment"># \lambda = exp(X beta)</span></span><br><span class="line">    loss = exp_Xbeta.<span class="built_in">sum</span>() - np.dot(Y, Xbeta)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">beta_ini = np.zeros(P)  <span class="comment"># initialize beta with zeros</span></span><br><span class="line">result = mm(loss_function, beta_ini)</span><br><span class="line">beta_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_predicted))</span><br></pre></td></tr></table></figure>
-<p>The output of the above codes:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real beta: [-<span class="number">0.40914376</span>  <span class="number">0.29649545</span>  <span class="number">0.59736634</span>  <span class="number">1.40512766</span> -<span class="number">0.55024536</span>]</span><br><span class="line">Predicted beta: [-<span class="number">0.40346132</span>  <span class="number">0.29799245</span>  <span class="number">0.60520007</span>  <span class="number">1.40263191</span> -<span class="number">0.54896361</span>]</span><br></pre></td></tr></table></figure>
-<h1 id="main-reference">Main Reference</h1>
-<ul>
-<li>Lecture slides by Claudia Czado: <a
-href="https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf"
-class="uri">https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf</a></li>
-<li>Poisson distribution Wikipedia: <a
-href="https://en.wikipedia.org/wiki/Poisson_distribution"
-class="uri">https://en.wikipedia.org/wiki/Poisson_distribution</a></li>
-<li>Poisson regression by <em>ahwillia</em>: <a
-href="https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a"
-class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a></li>
-</ul>
 ]]></content>
       <categories>
         <category>Probabilistic Machine Learning</category>

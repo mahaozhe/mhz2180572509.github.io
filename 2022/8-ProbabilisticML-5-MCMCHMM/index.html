@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Hidden Markov Model (HMM) contains a sequence hidden variables \(\{X_1, X_2, ..., X_T\}\) and a sequence of observable variables \(\{Y_1, Y_2, ..., Y_T\}\), shown in the following figure. The joint">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Markov Chain Monte Carlo (MCMC) Estimation of Hidden Markov Model (HMM)">
+<meta property="og:url" content="http://example.com/2022/8-ProbabilisticML-5-MCMCHMM/">
+<meta property="og:site_name" content="Life like Wine">
+<meta property="og:description" content="Hidden Markov Model (HMM) contains a sequence hidden variables \(\{X_1, X_2, ..., X_T\}\) and a sequence of observable variables \(\{Y_1, Y_2, ..., Y_T\}\), shown in the following figure. The joint">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/C8-F1.png">
+<meta property="og:image" content="http://example.com/images/C8-F2.png">
+<meta property="article:published_time" content="2022-03-31T03:00:14.000Z">
+<meta property="article:modified_time" content="2022-03-31T03:00:14.130Z">
+<meta property="article:author" content="Ma Haozhe">
+<meta property="article:tag" content="Probability Theory">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Math">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/C8-F1.png">
+
+
+<link rel="canonical" href="http://example.com/2022/8-ProbabilisticML-5-MCMCHMM/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/8-ProbabilisticML-5-MCMCHMM/","path":"2022/8-ProbabilisticML-5-MCMCHMM/","title":"Markov Chain Monte Carlo (MCMC) Estimation of Hidden Markov Model (HMM)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Markov Chain Monte Carlo (MCMC) Estimation of Hidden Markov Model (HMM) | Life like Wine</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life like Wine</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#casual-inference-model-and-independence"><span class="nav-number">1.</span> <span class="nav-text">Casual Inference Model
+and Independence</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#posteriors-derivations-in-mcmc-algorithm"><span class="nav-number">2.</span> <span class="nav-text">Posteriors Derivations
+in MCMC Algorithm</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#acceptance-ratios"><span class="nav-number">3.</span> <span class="nav-text">Acceptance Ratios</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mcmc-algorithm-to-estimate-parameters"><span class="nav-number">4.</span> <span class="nav-text">MCMC Algorithm to
+Estimate Parameters</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#codes"><span class="nav-number">5.</span> <span class="nav-text">Codes</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ma Haozhe"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ma Haozhe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/mhz2180572509" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;mhz2180572509" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:haozhe.ma@u.nus.edu" title="E-Mail → mailto:haozhe.ma@u.nus.edu" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/8-ProbabilisticML-5-MCMCHMM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ma Haozhe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life like Wine">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Markov Chain Monte Carlo (MCMC) Estimation of Hidden Markov Model (HMM)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-03-31 11:00:14" itemprop="dateCreated datePublished" datetime="2022-03-31T11:00:14+08:00">2022-03-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Probabilistic-Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Probabilistic Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><strong>Hidden Markov Model</strong> (HMM) contains a sequence hidden
+variables <span class="math inline">\(\{X_1, X_2, ..., X_T\}\)</span>
+and a sequence of observable variables <span
+class="math inline">\(\{Y_1, Y_2, ..., Y_T\}\)</span>, shown in the
+following figure. The joint probability of an HMM is:</p>
+<p><span class="math display">\[\begin{equation}
+P(X_1, X_2, ..., X_T, Y_1, Y_2, ..., Y_T) =
+P(X_1)\prod_{t=2}^{T}{P(X_t|X_{t-1})}\prod_{t=1}^{T}{P(Y_t|X_t)}
+\end{equation}\]</span>.</p>
+<span id="more"></span>
+<figure>
+<img src="/images/C8-F1.png" alt="Hidden Markov Model (HMM)." />
+<figcaption aria-hidden="true">Hidden Markov Model (HMM).</figcaption>
+</figure>
+<p>This section derives how to use MCMC algorithm to learn parameters in
+HMM. Let's suppose our ground truth is as follows:</p>
+<ul>
+<li>The hidden variables are generated based on AR(1) model, which
+means:
+<ul>
+<li><span class="math inline">\(x_1\backsim
+N(\frac{\delta}{1-\phi},\frac{\sigma_{\omega}^2}{1-\phi^2})\)</span></li>
+<li><span class="math inline">\(x_t\backsim N(\delta+\phi
+x_{t-1},\sigma_{\omega}^2)\)</span></li>
+</ul></li>
+<li>The observable variables are generated based on Normal distribution
+averaged by the hidden variables, which means: <span
+class="math inline">\(Y_t \backsim N(AX_t, \sigma_y^2)\)</span>.</li>
+<li>To simplify, we fix <span class="math inline">\(\sigma_{\omega}^2 =
+\sigma_y^2 = 1\)</span>.</li>
+<li>The parameters we are going to learn are defined as <span
+class="math inline">\(\theta = \{\delta, \phi, A\}\)</span>.
+\end{itemize}</li>
+</ul>
+<h1 id="casual-inference-model-and-independence">Casual Inference Model
+and Independence</h1>
+<p>Based on the above assumptions, we can draw a casual inference model
+for the variables shown in the following figure:</p>
+<figure>
+<img src="/images/C8-F2.png" alt="Hidden Markov Model (HMM)." />
+<figcaption aria-hidden="true">Hidden Markov Model (HMM).</figcaption>
+</figure>
+<p>Based on the relations in the figure and the algorithm, we can
+briefly derive the following independence:</p>
+<ul>
+<li><span class="math inline">\(\delta \perp Y, A | X\)</span>.</li>
+<li><span class="math inline">\(\phi \perp Y, A | X\)</span>.</li>
+<li><span class="math inline">\(A \perp \delta, \phi | X\)</span>.</li>
+<li><span class="math inline">\(Y \perp \delta, \phi | X\)</span>.</li>
+</ul>
+<h1 id="posteriors-derivations-in-mcmc-algorithm">Posteriors Derivations
+in MCMC Algorithm</h1>
+<p>In this section, we derive the posteriors for the parameters we want
+to estimate in MCMC algorithm.</p>
+<p>Before we start, let's set the prior distributions for the
+parameters:</p>
+<p><span class="math display">\[\begin{equation}
+\delta \backsim N(1,1)
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\phi \backsim N(0.5,1)
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+A \backsim N(2,1)
+\end{equation}\]</span></p>
+<p>Firstly, for <span class="math inline">\(P(\delta | \phi, X, Y,
+A)\)</span>, based on the independence and Bayes' rule, we can
+derive:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+P(\delta | \phi, X, Y, A) &amp;= P(\delta | \phi, X) \\
+&amp;= \frac{P(\delta, \phi, X)}{P(\phi, X)} \\
+&amp;=\frac{P(X|\delta, \phi)P(\delta | \phi)P(\phi)}{P(X|\phi)P(\phi)}
+\\
+&amp;\propto P(X|\delta, \phi)P(\delta)
+\end{aligned}
+\end{equation}\]</span></p>
+<p>The same as parameter <span class="math inline">\(\phi\)</span> that
+we can get:</p>
+<p><span class="math display">\[\begin{equation}
+P(\phi | \delta, X, Y, A) = P(\phi | \delta, X) \propto P(X|\delta,
+\phi)P(\phi)
+\end{equation}\]</span></p>
+<p>Secondly, for <span class="math inline">\(P(A | \delta, \phi, X,
+Y)\)</span>, we can derive:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+P(A | \delta, \phi, X, Y) &amp;= P(A | X, Y) \\
+&amp;= \frac{P(Y | X, A)P(A|X)P(X)}{P(Y|X)P(X)} \\
+&amp;\propto P(Y | X, A)P(A) \\
+&amp;= p(A)\prod_{t=1}^{T}{P(Y_t | A, X_t)}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Finally, we also need to derive the distributions for each hidden
+variables <span class="math inline">\(X_t\)</span>:</p>
+<ol type="A">
+<li>For <span class="math inline">\(X_t\)</span>, where <span
+class="math inline">\(t \neq 1, T\)</span>:</li>
+</ol>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+&amp;P(X_t | X_1, ..., X_{t-2}, X_{t-1}, X_{t+1}, X_{t+2}, ..., X_T,
+Y_1, Y_2, ..., Y_T, \delta, \phi, A) \\
+&amp;= P(X_t | X_{t-1}, X_{t+1}, Y_t, \delta, \phi, A) \\
+&amp;\propto P(X_{t-1}, X_t, X_{t+1}, Y_t, \delta, \phi, A) \\
+&amp;= P(Y_t | X_t, A)P(X_{t+1} | X_t, \delta, \phi)P(X_t | X_{t-1},
+\delta, \phi)P(X_{t-1} | \delta, \phi)P(A)P(\delta)P(\phi)\\
+&amp;\propto P(Y_t | X_t, A)P(X_{t+1} | X_t, \delta, \phi)P(X_t |
+X_{t-1}, \delta, \phi)
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Based on this, we can further derive that:</p>
+<p><span class="math display">\[\begin{equation}
+X_t | X_{t-1}, X_{t+1}, Y_t, \delta, \phi, A \backsim N(\mu_t,
+\sigma_t^2)
+\end{equation}\]</span></p>
+<p>where: <span class="math inline">\(\mu_t = \frac{b_t}{a_t}\)</span>
+and <span class="math inline">\(\sigma_t^2 = \frac{1}{a_t}\)</span>, and
+we represent:</p>
+<p><span class="math display">\[\begin{equation}
+a_t = A^2 + \phi^2+1
+\end{equation}\]</span> <span class="math display">\[\begin{equation}
+b_t = AY_t+ \delta +\phi X_{t+1} + \phi X_{t-1} - \delta\phi
+\end{equation}\]</span></p>
+<ol start="2" type="A">
+<li>For <span class="math inline">\(X_1\)</span> and <span
+class="math inline">\(X_T\)</span>, we can similarly derive:</li>
+</ol>
+<p><span class="math display">\[\begin{equation}
+P(X_1 | X_2, ..., X_T, Y_1, Y_2, ..., Y_T, \delta, \phi, A) \propto
+P(Y_1 | X_1, A)P(X_2 | X_1, \delta, \phi)P(X_1 | \delta, \phi)
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+P(X_T | X_1, x_2, ..., X_{T-1}, Y_1, Y_2, ..., Y_T, \delta, \phi, A)
+\propto P(Y_T | X_T, A)P(X_T | X_{T-1}, \delta, \phi)
+\end{equation}\]</span></p>
+<p>We can further derive that:</p>
+<p><span class="math display">\[\begin{equation}
+X_1 | X_2, Y_1, \delta, \phi, A \backsim N(\mu_1, \sigma_1^2)
+\end{equation}\]</span></p>
+<p>where: <span class="math inline">\(\mu_1 = \frac{b_1}{a_1}\)</span>
+and <span class="math inline">\(\sigma_1^2 = \frac{1}{a_1}\)</span>, and
+we represent:</p>
+<p><span class="math display">\[\begin{equation}
+a_1 = A^2 + 1
+\end{equation}\]</span> <span class="math display">\[\begin{equation}
+b_1 = AY_1+\phi X_2 + \delta
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+X_T | X_{T-1}, Y_T, \delta, \phi, A \backsim N(\mu_T, \sigma_T^2)
+\end{equation}\]</span></p>
+<p>where: <span class="math inline">\(\mu_T = \frac{b_T}{a_T}\)</span>
+and <span class="math inline">\(\sigma_T^2 = \frac{1}{a_T}\)</span>, and
+we represent:</p>
+<p><span class="math display">\[\begin{equation}
+a_T = A^2 + 1
+\end{equation}\]</span> <span class="math display">\[\begin{equation}
+b_T = AY_T+\phi X_{T-1} + \delta
+\end{equation}\]</span></p>
+<p>Based on what we have known:</p>
+<p><span class="math display">\[\begin{equation}
+P(X_1|\delta,\phi) =
+\frac{\sqrt{1-\phi^2}}{\sqrt{2\pi}}e^{-\frac{1-\phi^2}{2}(X_1-\frac{\delta}{1-\phi})^2}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+P(X_t | X_{t-1},\delta,\phi) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(X_t
+- \delta - \phi X_{t-1})^2}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+P(X_1,X_2,...,X_t|\delta, \phi) =
+\frac{\sqrt{1-\phi^2}}{\sqrt{2\pi}}e^{-\frac{1-\phi^2}{2}(X_1-\frac{\delta}{1-\phi})^2}
+\prod_{t=2}^{T}{\frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(X_t-\delta-\phi
+X_{t-1})^2}}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+P(Y_t | X_t,A) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}(Y_t - AX_t)^2}
+\end{equation}\]</span></p>
+<p>We can subsequent these equations into the results we have derived
+above, we can compute the posteriors for the parameters and hidden
+variables.</p>
+<h1 id="acceptance-ratios">Acceptance Ratios</h1>
+<p>To estimate the parameters using the Metropolis-Hastings algorithm,
+we need to compute the acceptance ratio as follows:</p>
+<p><span class="math display">\[\begin{equation}
+r=min
+\left[1,\frac{P(\theta_i|\theta_{i-1},X_{i-1},Y_{i-1})}{P(\theta_{i-1}|\theta_{i-1},X_{i-1},Y_{i-1}))}\right]
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\theta\)</span> represents one of
+the <span class="math inline">\(\{\delta, \phi, A\}\)</span> and the
+conditioned <span class="math inline">\(\theta\)</span> represents other
+two parameters.</p>
+<p>In the implementation, we usually compute the <span
+class="math inline">\(log\)</span> format to prevent over-floating.</p>
+<h1 id="mcmc-algorithm-to-estimate-parameters">MCMC Algorithm to
+Estimate Parameters</h1>
+<p>Suppose we have a sequence of observed variables <span
+class="math inline">\(\{Y_1, Y_2, ..., Y_T\}\)</span>, we initialize the
+sequences for samples of the parameters: <span
+class="math inline">\(\{\delta_0\}\)</span>, <span
+class="math inline">\(\{\phi_0\}\)</span>, <span
+class="math inline">\(\{A_0\}\)</span>. We also have the pre-defined
+hyper-parameters, the burn-in steps <span
+class="math inline">\(B\)</span> and the total steps to iterative
+generate samples <span class="math inline">\(N\)</span>.</p>
+<p>We also need to define the generating distributions to sample
+parameters next step given the current parameters:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+g(\delta_i | \delta_{i-1}) &amp;:= \delta_i \backsim N(\delta_{i-1},1)
+\\
+g(\phi_i | \phi_{i-1}) &amp;:= \phi_i \backsim N(\phi_{i-1},1) \\
+g(A_i | A_{i-1}) &amp;:= A_i \backsim N(A_{i-1},1)
+\end{aligned}
+\end{equation}\]</span></p>
+<p>The Metropolis-Hastings algorithm repeatedly does the following
+steps:</p>
+<ul>
+<li>Sample a sequence of <span class="math inline">\(\{X_1, X_2, ...,
+X_T\}_i\)</span>.</li>
+<li>Generate candidate parameters <span
+class="math inline">\(\{\hat{\delta}, \hat{\phi},
+\hat{A}\}\)</span>.</li>
+<li>Compute the acceptance ratio <span
+class="math inline">\(r\)</span>.</li>
+<li>Uniformly and randomly sample a <span class="math inline">\(u\in
+[0,1]\)</span> and compare with <span class="math inline">\(r\)</span>
+to determine whether to accept the new samples.</li>
+<li>Add the new samples if accepted or keep the current samples as new
+samples if rejected.</li>
+</ul>
+<h1 id="codes">Codes</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Using Markov Chain Monte Carlo (MCMC) method to estimate parameters of Hidden Markov Model (HMM).</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.stats <span class="keyword">import</span> norm</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"></span><br><span class="line"><span class="comment"># ! Set hyper-parameters:</span></span><br><span class="line">theta_real = [<span class="number">0.3</span>, <span class="number">0.7</span>, <span class="number">2</span>]  <span class="comment"># parameters \theta is defined as [\delta, \phi, A]</span></span><br><span class="line">sigma = <span class="number">1</span>  <span class="comment"># set \sigma_\omega and \sigma_y as constant values (for all sigmas in the model)</span></span><br><span class="line"></span><br><span class="line">T = <span class="number">20000</span></span><br><span class="line">N = <span class="number">11000</span></span><br><span class="line">B = <span class="number">1000</span></span><br><span class="line">x_0 = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">priors = &#123;<span class="string">&#x27;delta_E&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;delta_Var&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">          <span class="string">&#x27;phi_E&#x27;</span>: <span class="number">0.5</span>, <span class="string">&#x27;phi_Var&#x27;</span>: <span class="number">1</span>,</span><br><span class="line">          <span class="string">&#x27;A_E&#x27;</span>: <span class="number">2</span>, <span class="string">&#x27;A_Var&#x27;</span>: <span class="number">2</span>&#125;  <span class="comment"># to define the mean and variance of prior distributions of the parameters</span></span><br><span class="line"></span><br><span class="line">generate_sigma_square = <span class="number">0.5</span>  <span class="comment"># the variance to sample next parameter in a Normal method</span></span><br><span class="line">generate_e = <span class="number">0.2</span>  <span class="comment"># the upper/lower float to sample next parameter in a Uniform method</span></span><br><span class="line">generate_method = <span class="string">&quot;normal&quot;</span></span><br><span class="line"></span><br><span class="line">x_series_0 = [<span class="number">1</span>] * T</span><br><span class="line">theta_0 = [<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_series</span>(<span class="params">T, x_0</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    This function generates the series &#123;Y_1, Y_2, ..., Y_T&#125; given the length T and the first element X_0.</span></span><br><span class="line"><span class="string">    :param T: the length of time series</span></span><br><span class="line"><span class="string">    :param x_0: the first element of the hidden variables X_0</span></span><br><span class="line"><span class="string">    :return: a time series, &#123;Y_t&#125;.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    x_t = x_0</span><br><span class="line">    y_0 = np.random.normal(theta_real[<span class="number">2</span>] * x_t, sigma)</span><br><span class="line">    Y = [y_0]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(T - <span class="number">1</span>):</span><br><span class="line">        x_t = theta_real[<span class="number">0</span>] + theta_real[<span class="number">1</span>] * x_t + np.random.normal(<span class="number">0</span>, sigma)</span><br><span class="line">        y_t = np.random.normal(theta_real[<span class="number">2</span>] * x_t, sigma)</span><br><span class="line">        Y.append(y_t)</span><br><span class="line">    <span class="keyword">return</span> Y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">prior_theta</span>(<span class="params">theta</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to define the priors of parameters (log).</span></span><br><span class="line"><span class="string">    :param theta: parameters [\delta, \phi, A]</span></span><br><span class="line"><span class="string">    :return: the prior probabilities.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    p_delta = norm.pdf(theta[<span class="number">0</span>], loc=priors[<span class="string">&#x27;delta_E&#x27;</span>], scale=priors[<span class="string">&#x27;delta_Var&#x27;</span>])</span><br><span class="line">    p_phi = norm.pdf(theta[<span class="number">1</span>], loc=priors[<span class="string">&#x27;phi_E&#x27;</span>], scale=priors[<span class="string">&#x27;phi_Var&#x27;</span>])</span><br><span class="line">    p_A = norm.pdf(theta[<span class="number">2</span>], loc=priors[<span class="string">&#x27;A_E&#x27;</span>], scale=priors[<span class="string">&#x27;A_Var&#x27;</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [np.log(p_delta), np.log(p_phi), np.log(p_A)]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_next</span>(<span class="params">theta_current, method=generate_method</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to generate the next sample.</span></span><br><span class="line"><span class="string">    :param theta_current: the current theta</span></span><br><span class="line"><span class="string">    :param method: can choose &quot;normal&quot; or &quot;uniform&quot;</span></span><br><span class="line"><span class="string">    :return: the next proposals of theta</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> method <span class="keyword">in</span> [<span class="string">&quot;normal&quot;</span>, <span class="string">&quot;uniform&quot;</span>], <span class="string">&quot;Unknown generative method!&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> method == <span class="string">&quot;normal&quot;</span>:</span><br><span class="line">        delta_proposal = np.random.normal(theta_current[<span class="number">0</span>], generate_sigma_square)</span><br><span class="line">        phi_proposal = np.random.normal(theta_current[<span class="number">1</span>], generate_sigma_square)</span><br><span class="line">        A_proposal = np.random.normal(theta_current[<span class="number">2</span>], generate_sigma_square)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        delta_proposal = np.random.uniform(theta_current[<span class="number">0</span>] - generate_e, theta_current[<span class="number">0</span>] + generate_e)</span><br><span class="line">        phi_proposal = np.random.uniform(theta_current[<span class="number">1</span>] - generate_e, theta_current[<span class="number">1</span>] + generate_e)</span><br><span class="line">        A_proposal = np.random.uniform(theta_current[<span class="number">2</span>] - generate_e, theta_current[<span class="number">2</span>] + generate_e)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [delta_proposal, phi_proposal, A_proposal]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_x_series</span>(<span class="params">y_series, x_series, theta</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to sample hidden variable series x_series given the observed variables y_series and current theta.</span></span><br><span class="line"><span class="string">    :param y_series: the observed variables y_series</span></span><br><span class="line"><span class="string">    :param x_series: the hidden variables x_series</span></span><br><span class="line"><span class="string">    :param theta: the parameters [delta_i, phi_i, A]</span></span><br><span class="line"><span class="string">    :return: the sampled x_series</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    x_series_new = []</span><br><span class="line"></span><br><span class="line">    delta, phi, A = theta</span><br><span class="line"></span><br><span class="line">    a_1 = A ** <span class="number">2</span> + <span class="number">1</span></span><br><span class="line">    b_1 = A * y_series[<span class="number">0</span>] + phi * x_series[<span class="number">1</span>] + delta</span><br><span class="line">    mu_1 = b_1 / a_1</span><br><span class="line">    sigma_1 = <span class="number">1</span> / np.sqrt(a_1)</span><br><span class="line"></span><br><span class="line">    x_series_new.append(np.random.normal(mu_1, sigma_1))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, T - <span class="number">1</span>):</span><br><span class="line">        a_t = A ** <span class="number">2</span> + phi ** <span class="number">2</span> + <span class="number">1</span></span><br><span class="line">        b_t = A * y_series[t] + delta + phi * (x_series[t + <span class="number">1</span>] + x_series[t - <span class="number">1</span>]) - delta * phi</span><br><span class="line">        mu_t = b_t / a_t</span><br><span class="line">        sigma_t = <span class="number">1</span> / np.sqrt(a_t)</span><br><span class="line">        x_series_new.append(np.random.normal(mu_t, sigma_t))</span><br><span class="line"></span><br><span class="line">    a_T = A ** <span class="number">2</span> + <span class="number">1</span></span><br><span class="line">    b_T = A * y_series[T - <span class="number">1</span>] + phi * x_series[T - <span class="number">2</span>] + delta</span><br><span class="line">    mu_T = b_T / a_T</span><br><span class="line">    sigma_T = <span class="number">1</span> / np.sqrt(a_T)</span><br><span class="line"></span><br><span class="line">    x_series_new.append(np.random.normal(mu_T, sigma_T))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> x_series_new</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_log_P_x_given_theta</span>(<span class="params">x_series, theta</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to compute log(P(x|theta)).</span></span><br><span class="line"><span class="string">    The formula: log(P(x|theta)) = 0.5 * log(1 - \phi ^ 2) - 0.5 * (1 - \phi ^ 2) * (x_1 - \delta / (1 - \phi)) ^ 2</span></span><br><span class="line"><span class="string">        - 0.5 * SUM_&#123;t=2&#125;^&#123;T&#125;&#123;(x_t - \delta -\phi x_&#123;t-1&#125;) ^ 2&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :param x_series: the hidden variable series, x.</span></span><br><span class="line"><span class="string">    :param theta: the parameters [delta_i, phi_i, A_i]</span></span><br><span class="line"><span class="string">    :return: the log(P(x|delta_i, phi_i))</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    x_1 = x_series[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    sum_term = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, T):</span><br><span class="line">        sum_term += (x_series[t] - theta[<span class="number">0</span>] - theta[<span class="number">1</span>] * x_series[t - <span class="number">1</span>]) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># to restrain the |\phi|&lt;1</span></span><br><span class="line">    <span class="keyword">if</span> theta[<span class="number">1</span>] &gt; <span class="number">1</span>:</span><br><span class="line">        theta[<span class="number">1</span>] = <span class="number">0.99</span></span><br><span class="line">    <span class="keyword">if</span> theta[<span class="number">1</span>] &lt; -<span class="number">1</span>:</span><br><span class="line">        theta[<span class="number">1</span>] = -<span class="number">0.99</span></span><br><span class="line"></span><br><span class="line">    log_P = <span class="number">0.5</span> * np.log(<span class="number">1</span> - theta[<span class="number">1</span>] ** <span class="number">2</span>) \</span><br><span class="line">            - <span class="number">0.5</span> * (<span class="number">1</span> - theta[<span class="number">1</span>] ** <span class="number">2</span>) * (x_1 - theta[<span class="number">0</span>] / (<span class="number">1</span> - theta[<span class="number">1</span>])) ** <span class="number">2</span> \</span><br><span class="line">            - <span class="number">0.5</span> * sum_term</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> log_P</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_sum_log_P_y_given_x_and_A</span>(<span class="params">x_series, y_series, theta</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to compute sum_T&#123;log(P(y_t | x_t, A))&#125;</span></span><br><span class="line"><span class="string">    :param x_series: the hidden variable series, x</span></span><br><span class="line"><span class="string">    :param y_series: the observed variable series, y</span></span><br><span class="line"><span class="string">    :param theta: the parameters, where we only need A = theta[2]</span></span><br><span class="line"><span class="string">    :return: the sum over T of log(P(y_t | x_t, A))</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    A_current = theta[<span class="number">2</span>]</span><br><span class="line">    sum_log = -<span class="number">0.5</span> * np.log(<span class="number">2</span> * <span class="number">3.14</span>) * T</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(T):</span><br><span class="line">        sum_log += -<span class="number">0.5</span> * (y_series[i] - x_series[i] * A_current) ** <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sum_log</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">accept_or_reject_proposals</span>(<span class="params">x_series, y_series, theta_current, theta_proposal</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to determine the theta_next by accepting or rejecting the proposals</span></span><br><span class="line"><span class="string">    :param x_series: the hidden variable series, x</span></span><br><span class="line"><span class="string">    :param y_series: the observed variable series, y</span></span><br><span class="line"><span class="string">    :param theta_current: the current parameters [\delta_i, \phi_i, A_i]</span></span><br><span class="line"><span class="string">    :param theta_proposal: the proposed parameters [\delta_p, \phi_p, A_p]</span></span><br><span class="line"><span class="string">    :return: the new theta [\delta_&#123;i+1&#125;, \phi_&#123;i+1&#125;, A_&#123;i+1&#125;], the [signals] of accepting (for True) or rejecting (for False)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    accept = [<span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>]</span><br><span class="line">    theta_next = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    log_p_x_theta_i = compute_log_P_x_given_theta(x_series, theta_current)</span><br><span class="line">    log_theta_i = prior_theta(theta_current)</span><br><span class="line">    log_theta_p = prior_theta(theta_proposal)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># + For parameter \delta, to compare log(P(\delta_p | \phi_i, x)) and log(P(\delta_i | \phi_i, x)), which equals to:</span></span><br><span class="line">    <span class="comment"># + log(r) = log(P(x | \delta_p, \phi_i)) + log(P(\delta_p)) - log(P(x | \delta_i, \phi_i)) - log(P(\delta_i))</span></span><br><span class="line">    log_r_delta = compute_log_P_x_given_theta(x_series, [theta_proposal[<span class="number">0</span>], theta_current[<span class="number">1</span>]]) \</span><br><span class="line">                  + log_theta_p[<span class="number">0</span>] \</span><br><span class="line">                  - log_p_x_theta_i \</span><br><span class="line">                  - log_theta_i[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> log_r_delta &gt; <span class="number">0</span>:</span><br><span class="line">        accept[<span class="number">0</span>] = <span class="literal">True</span></span><br><span class="line">        theta_next[<span class="number">0</span>] = theta_proposal[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        log_u = np.log(np.random.uniform(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">if</span> log_u &lt; log_r_delta:</span><br><span class="line">            accept[<span class="number">0</span>] = <span class="literal">True</span></span><br><span class="line">            theta_next[<span class="number">0</span>] = theta_proposal[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># ! reject</span></span><br><span class="line">            accept[<span class="number">0</span>] = <span class="literal">False</span></span><br><span class="line">            theta_next[<span class="number">0</span>] = theta_current[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># + For parameter \phi, to compare log(P(\phi_p | \delta_i, x)) and log(P(\phi_i | \delta_i, x)), which equals to:</span></span><br><span class="line">    <span class="comment"># + log(r) = log(P(x | \delta_i, \phi_p)) + log(P(\phi_p)) - log(P(x | \delta_i, \phi_i)) - log(P(\phi_i))</span></span><br><span class="line">    log_r_phi = compute_log_P_x_given_theta(x_series, [theta_current[<span class="number">0</span>], theta_proposal[<span class="number">1</span>]]) \</span><br><span class="line">                + log_theta_p[<span class="number">1</span>] \</span><br><span class="line">                - log_p_x_theta_i \</span><br><span class="line">                - log_theta_i[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> log_r_phi &gt; <span class="number">0</span>:</span><br><span class="line">        accept[<span class="number">1</span>] = <span class="literal">True</span></span><br><span class="line">        theta_next[<span class="number">1</span>] = theta_proposal[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        log_u = np.log(np.random.uniform(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">if</span> log_u &lt; log_r_phi:</span><br><span class="line">            accept[<span class="number">1</span>] = <span class="literal">True</span></span><br><span class="line">            theta_next[<span class="number">1</span>] = theta_proposal[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># ! reject</span></span><br><span class="line">            accept[<span class="number">1</span>] = <span class="literal">False</span></span><br><span class="line">            theta_next[<span class="number">1</span>] = theta_current[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># + For parameter A, to compare log(P(A_p | x_series, y_series)) and log(P(A_i | x_series, y_series)), which</span></span><br><span class="line">    <span class="comment"># + equals to: log(r) = sum_T&#123;log(P(y_t | x_t, A_p))&#125; + log(P(A_p)) - sum_T&#123;log(P(y_t | x_t, A_i))&#125; - log(P(A_i))</span></span><br><span class="line">    log_r_A = compute_sum_log_P_y_given_x_and_A(x_series, y_series, theta_proposal) \</span><br><span class="line">              + log_theta_p[<span class="number">2</span>] \</span><br><span class="line">              - compute_sum_log_P_y_given_x_and_A(x_series, y_series, theta_current) \</span><br><span class="line">              - log_theta_i[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> log_r_A &gt; <span class="number">0</span>:</span><br><span class="line">        accept[<span class="number">2</span>] = <span class="literal">True</span></span><br><span class="line">        theta_next[<span class="number">2</span>] = theta_proposal[<span class="number">2</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        log_u = np.log(np.random.uniform(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">        <span class="keyword">if</span> log_u &lt; log_r_phi:</span><br><span class="line">            accept[<span class="number">2</span>] = <span class="literal">True</span></span><br><span class="line">            theta_next[<span class="number">2</span>] = theta_proposal[<span class="number">2</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># ! reject</span></span><br><span class="line">            accept[<span class="number">2</span>] = <span class="literal">False</span></span><br><span class="line">            theta_next[<span class="number">2</span>] = theta_current[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> theta_next, accept</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">perform_mcmc</span>(<span class="params">N, y_series, x_series_0, theta_0</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to perform MCMC sampling.</span></span><br><span class="line"><span class="string">    :param N: total number of samples</span></span><br><span class="line"><span class="string">    :param y_series: the observed variable series, y</span></span><br><span class="line"><span class="string">    :param x_series_0: the starting x_series</span></span><br><span class="line"><span class="string">    :param theta_0: the starting point</span></span><br><span class="line"><span class="string">    :return: the samples</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    samples = [theta_0]</span><br><span class="line">    accept_records = [[<span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>]]  <span class="comment"># to record the acceptance</span></span><br><span class="line">    x_series = x_series_0</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">1</span>, N)):</span><br><span class="line">        x_series_samples = sample_x_series(y_series, x_series, samples[n - <span class="number">1</span>])</span><br><span class="line">        theta_proposal = generate_next(samples[n - <span class="number">1</span>])</span><br><span class="line">        theta_next, accept = accept_or_reject_proposals(x_series_samples, y_series, samples[n - <span class="number">1</span>], theta_proposal)</span><br><span class="line">        samples.append(theta_next)</span><br><span class="line">        accept_records.append(accept)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> samples, accept_records</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_figures</span>(<span class="params">samples, means</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    The function to plot the samples.</span></span><br><span class="line"><span class="string">    :param samples: the samples</span></span><br><span class="line"><span class="string">    :param means: the means of two sets of samples (without burn-in)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    delta_samples = samples[<span class="number">0</span>]</span><br><span class="line">    phi_samples = samples[<span class="number">1</span>]</span><br><span class="line">    A_samples = samples[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># draw \delta figure</span></span><br><span class="line">    plt.plot(<span class="built_in">list</span>(<span class="built_in">range</span>(N)), delta_samples, label=<span class="string">&quot;samples&quot;</span>)</span><br><span class="line">    plt.vlines(B, <span class="built_in">min</span>(delta_samples), <span class="built_in">max</span>(delta_samples), colors=<span class="string">&quot;r&quot;</span>, label=<span class="string">&quot;burn-in&quot;</span>)</span><br><span class="line">    plt.hlines(means[<span class="number">0</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;m&quot;</span>, label=<span class="string">&quot;mean of samples&quot;</span>)</span><br><span class="line">    plt.hlines(theta_real[<span class="number">0</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;g&quot;</span>, label=<span class="string">&quot;real value&quot;</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.title(<span class="string">r&quot;Samples of \delta&quot;</span>)</span><br><span class="line">    plt.savefig(<span class="string">&quot;./Results/MCMC-HMM-delta.pdf&quot;</span>, bbox_inches=<span class="string">&#x27;tight&#x27;</span>, pad_inches=<span class="number">0</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># draw \phi figure</span></span><br><span class="line">    plt.plot(<span class="built_in">list</span>(<span class="built_in">range</span>(N)), phi_samples, label=<span class="string">&quot;samples&quot;</span>)</span><br><span class="line">    plt.vlines(B, <span class="built_in">min</span>(phi_samples), <span class="built_in">max</span>(phi_samples), colors=<span class="string">&quot;r&quot;</span>, label=<span class="string">&quot;burn-in&quot;</span>)</span><br><span class="line">    plt.hlines(means[<span class="number">1</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;m&quot;</span>, label=<span class="string">&quot;mean of samples&quot;</span>)</span><br><span class="line">    plt.hlines(theta_real[<span class="number">1</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;g&quot;</span>, label=<span class="string">&quot;real value&quot;</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.title(<span class="string">r&quot;Samples of \phi&quot;</span>)</span><br><span class="line">    plt.savefig(<span class="string">&quot;./Results/MCMC-HMM-phi.pdf&quot;</span>, bbox_inches=<span class="string">&#x27;tight&#x27;</span>, pad_inches=<span class="number">0</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># draw A figure</span></span><br><span class="line">    plt.plot(<span class="built_in">list</span>(<span class="built_in">range</span>(N)), A_samples, label=<span class="string">&quot;samples&quot;</span>)</span><br><span class="line">    plt.vlines(B, <span class="built_in">min</span>(A_samples), <span class="built_in">max</span>(A_samples), colors=<span class="string">&quot;r&quot;</span>, label=<span class="string">&quot;burn-in&quot;</span>)</span><br><span class="line">    plt.hlines(means[<span class="number">2</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;m&quot;</span>, label=<span class="string">&quot;mean of samples&quot;</span>)</span><br><span class="line">    plt.hlines(theta_real[<span class="number">2</span>], <span class="number">0</span>, N, colors=<span class="string">&quot;g&quot;</span>, label=<span class="string">&quot;real value&quot;</span>)</span><br><span class="line">    plt.legend()</span><br><span class="line">    plt.title(<span class="string">r&quot;Samples of A&quot;</span>)</span><br><span class="line">    plt.savefig(<span class="string">&quot;./Results/MCMC-HMM-A.pdf&quot;</span>, bbox_inches=<span class="string">&#x27;tight&#x27;</span>, pad_inches=<span class="number">0</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    y_series = generate_series(T, x_0)</span><br><span class="line">    samples, accept_records = perform_mcmc(N, y_series, x_series_0, theta_0)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># To analyse the results</span></span><br><span class="line">    samples = np.array(samples).T</span><br><span class="line">    samples_without_burn_in = samples[:, B:]</span><br><span class="line">    means = np.mean(samples_without_burn_in, axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    plot_figures(samples, means)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Real values of theta (delta, phi, A): &#123;&#125;&quot;</span>.<span class="built_in">format</span>(theta_real))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Estimated values of theta (delta, phi, A): &#123;&#125;&quot;</span>.<span class="built_in">format</span>(means))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Probability-Theory/" rel="tag"># Probability Theory</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+              <a href="/tags/Math/" rel="tag"># Math</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/7-ProbabilisticML-4-MCMCAR1/" rel="prev" title="Markov Chain Monte Carlo (MCMC) Estimation of AR(1) Model">
+                  <i class="fa fa-chevron-left"></i> Markov Chain Monte Carlo (MCMC) Estimation of AR(1) Model
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ma Haozhe</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
