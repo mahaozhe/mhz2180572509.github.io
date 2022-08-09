@@ -20,35 +20,33 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves, Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. 2013. Playing Atari with Deep Reinforcement Learning. DOI:https:&#x2F;&#x2F;doi.or">
+<meta name="description" content="Hado van Hasselt, Arthur Guez, and David Silver. 2016. Deep Reinforcement Learning with Double Q-Learning. Proceedings of the AAAI Conference on Artificial Intelligence 30, 1 (March 2016). DOI: h">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[DQN] Human-level control through deep reinforcement learning">
-<meta property="og:url" content="http://example.com/2022/9-RLPaper-MF-1-DQN/">
+<meta property="og:title" content="[DDQN] Deep Reinforcement Learning with Double Q-Learning">
+<meta property="og:url" content="http://example.com/2022/11-RLPaper-MF-3-DDQN/">
 <meta property="og:site_name" content="Life like Wine">
-<meta property="og:description" content="[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves, Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. 2013. Playing Atari with Deep Reinforcement Learning. DOI:https:&#x2F;&#x2F;doi.or">
+<meta property="og:description" content="Hado van Hasselt, Arthur Guez, and David Silver. 2016. Deep Reinforcement Learning with Double Q-Learning. Proceedings of the AAAI Conference on Artificial Intelligence 30, 1 (March 2016). DOI: h">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/1-1.png">
-<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/1-2.png">
-<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/1-3.png">
-<meta property="article:published_time" content="2022-08-09T12:32:21.261Z">
-<meta property="article:modified_time" content="2022-08-09T12:47:57.159Z">
+<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/3-1.png">
+<meta property="article:published_time" content="2022-08-09T12:49:51.444Z">
+<meta property="article:modified_time" content="2022-08-09T12:56:41.251Z">
 <meta property="article:author" content="Ma Haozhe">
 <meta property="article:tag" content="Reinforcement Learning">
 <meta property="article:tag" content="Paper Notes">
 <meta property="article:tag" content="Model-Free RL">
 <meta property="article:tag" content="Deep Q-Learning">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/1-1.png">
+<meta name="twitter:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/3-1.png">
 
 
-<link rel="canonical" href="http://example.com/2022/9-RLPaper-MF-1-DQN/">
+<link rel="canonical" href="http://example.com/2022/11-RLPaper-MF-3-DDQN/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/9-RLPaper-MF-1-DQN/","path":"2022/9-RLPaper-MF-1-DQN/","title":"[DQN] Human-level control through deep reinforcement learning"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/11-RLPaper-MF-3-DDQN/","path":"2022/11-RLPaper-MF-3-DDQN/","title":"[DDQN] Deep Reinforcement Learning with Double Q-Learning"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>[DQN] Human-level control through deep reinforcement learning | Life like Wine</title>
+<title>[DDQN] Deep Reinforcement Learning with Double Q-Learning | Life like Wine</title>
   
 
 
@@ -153,7 +151,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-problems-to-solve"><span class="nav-number">2.</span> <span class="nav-text">Main Problems to Solve</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-innovations"><span class="nav-number">3.</span> <span class="nav-text">Main Innovations</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#implementation-details"><span class="nav-number">4.</span> <span class="nav-text">Implementation Details</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-problems-to-solve"><span class="nav-number">2.</span> <span class="nav-text">Main Problems to Solve</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-innovations"><span class="nav-number">3.</span> <span class="nav-text">Main Innovations</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -228,7 +226,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/9-RLPaper-MF-1-DQN/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11-RLPaper-MF-3-DDQN/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -241,7 +239,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          [DQN] Human-level control through deep reinforcement learning
+          [DDQN] Deep Reinforcement Learning with Double Q-Learning
         </h1>
 
         <div class="post-meta-container">
@@ -253,7 +251,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2022-08-09 20:32:21 / Modified: 20:47:57" itemprop="dateCreated datePublished" datetime="2022-08-09T20:32:21+08:00">2022-08-09</time>
+      <time title="Created: 2022-08-09 20:49:51 / Modified: 20:56:41" itemprop="dateCreated datePublished" datetime="2022-08-09T20:49:51+08:00">2022-08-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,112 +274,93 @@
     
     <div class="post-body" itemprop="articleBody">
         <blockquote>
-<p>[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves,
-Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. 2013. Playing
-Atari with Deep Reinforcement Learning. DOI:<a
-target="_blank" rel="noopener" href="https://doi.org/10.48550/arXiv.1312.5602"
-class="uri">https://doi.org/10.48550/arXiv.1312.5602</a></p>
-</blockquote>
-<blockquote>
-<p>[2] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A. Rusu,
-Joel Veness, Marc G. Bellemare, Alex Graves, Martin Riedmiller, Andreas
-K. Fidjeland, Georg Ostrovski, Stig Petersen, Charles Beattie, Amir
-Sadik, Ioannis Antonoglou, Helen King, Dharshan Kumaran, Daan Wierstra,
-Shane Legg, and Demis Hassabis. 2015. Human-level control through deep
-reinforcement learning. Nature 518, 7540 (February 2015), 529–533.
-DOI:<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nature14236"
-class="uri">https://doi.org/10.1038/nature14236</a></p>
+<p>Hado van Hasselt, Arthur Guez, and David Silver. 2016. Deep
+Reinforcement Learning with Double Q-Learning. Proceedings of the AAAI
+Conference on Artificial Intelligence 30, 1 (March 2016). DOI:
+https://doi.org/10.1609/aaai.v30i1.10295</p>
 </blockquote>
 <span id="more"></span>
 <figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/1-1.png"
-alt="Playing Atari with Deep Reinforcement Learning." />
-<figcaption aria-hidden="true">Playing Atari with Deep Reinforcement
-Learning.</figcaption>
-</figure>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/1-2.png"
-alt="Human-level control through deep reinforcement learning." />
-<figcaption aria-hidden="true">Human-level control through deep
-reinforcement learning.</figcaption>
+<img src="/images/RLPapers/Model-Free/DeepQLearning/3-1.png"
+alt="Deep Reinforcement Learning with Double Q-Learning" />
+<figcaption aria-hidden="true">Deep Reinforcement Learning with Double
+Q-Learning</figcaption>
 </figure>
 <h1 id="overview">Overview</h1>
-<p>The proposed <strong><em>Deep Q-Learning Network</em></strong>
-(<strong><em>DQN</em></strong>) is the first algorithm to introduce
-(deep) neural networks as function approximators (in other words,
-non-linear function approximators) into reinforcement learning. DQN is a
-<strong>model-free</strong>, <strong>off-policy</strong>,
-<strong>(Q-)value based</strong> algorithm, which can be implemented
-onto environments with continuous state space but only with discrete
-action space. DQN can be trained <strong>end-to-end</strong>, which
-means it could receive high-dimensional state's representations as
-input. The paper evaluated the DQN on 7 Atari games and 49 Atari games
-with the same hyper-parameters which shows the great generalization
-ability of DQN.</p>
+<p>The paper mainly answered the questions that why there exists
+<strong>overestimation</strong> in the previous reinforcement learning
+(RL) algorithms and how serious the overestimation is to harm the
+performance and lead to sub-optimal policies
+<strong>theoretically</strong>. The paper gives substantial proof of
+this problem and introduced the idea of <strong><em>Double
+Q-Learning</em></strong> [1] to the function approximation scenario to
+propose the <strong><em>Double Deep Q-Networks</em></strong>
+(<strong><em>DDQN</em></strong>) algorithm. The authors show
+experimental results on Atari games to compare the DDQN with the
+standard DQN and show it can not only yields more accurate value
+estimates, but also leads to much higher scores (better policies).</p>
 <h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>To introduce deep neural networks (non-linear functions) as
-approximators in reinforcement learning has to overcome some
-problems:</p>
-<ol type="1">
-<li>Most deep learning algorithms (like classifications, regressions)
-assume that the data samples are independent, however, in RL
-environments, the samples in a sequence are <strong>highly
-correlated</strong>.</li>
-<li>Most deep learning algorithms require large amounts of hand-labelled
-training data, however, RL algorithms need to learn from observations
-and information directly from environment, e.g., the scalar reward
-signals, which is frequently sparse, noisy and delayed.</li>
-<li>Most deep learning methods assume they are learnt in a fixed
-underlaying distribution, however, in RL, the <strong>data distribution
-changes</strong> as the agents updates their behaviors during the
-learning process.</li>
-</ol>
+<p>The paper mainly want to overcome/relieve the overestimation problem
+in standard DQN algorithm.</p>
 <h1 id="main-innovations">Main Innovations</h1>
-<p>The paper mainly proposed two techniques to overcome the problems:
-(a) <strong>experience replay</strong> and (b) <strong>target network
-with periodically update</strong>:</p>
-<ol type="1">
-<li>Experience replay: initialize a replay buffer and store the
-transitions <span class="math inline">\(\{s_t,a_t,r_t,s_{t+1}\}\)</span>
-in it, for each iteration, randomly draw samples from the replay buffer
-and train the network using stochastic gradient descent (SGD).
+<p>The core idea for DDQN algorithm to reduce overestimation is to
+<strong>decompose the max operation in the TD-target into <em>action
+selection</em> and <em>action evaluation</em></strong>. DDQN is based on
+the standard DQN algorithm and uses the existing architecture
+<strong>without requiring additional networks or
+parameters</strong>.</p>
+<p>In the DQN algorithm, it initialized two networks, one is called
+<strong>(online) policy network</strong> (with parameters <span
+class="math inline">\(\theta\)</span>) and another is called
+<strong>target network</strong> (with parameters <span
+class="math inline">\(\theta&#39;\)</span>). The parameters are copied
+from policy network to target network periodically. To update parameters
+of the policy network at each step, the algorithm randomly draw
+transition samples from the experience replay buffer and minimize the
+distance between the <strong>TD-target</strong> <span
+class="math inline">\(Y\)</span> and the current Q-value.</p>
+<p>The main difference is how to compute the TD-target:</p>
 <ul>
-<li>Can break the correlations among samples so as to reduce the
-variance</li>
-<li>Each sample can be drawn in many rounds of updates, which allows for
-greater data efficiency.</li>
-</ul></li>
-<li>Target network with periodically update: the algorithm initializes
-two networks with the same hyper-parameters and architecture, for each
-iteration, update the policy network with SGD, for each <span
-class="math inline">\(K\)</span> (a hyper-parameter) iterations,
-directly copy the parameters in policy network to target network. In the
-training, the action is selected by target network.
-<ul>
-<li>The distribution of the behavior to select the action can be
-smooth.</li>
-</ul></li>
-</ol>
-<p>The algorithm:</p>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/1-3.png"
-alt="DQN algorithm." />
-<figcaption aria-hidden="true">DQN algorithm.</figcaption>
-</figure>
-<h1 id="implementation-details">Implementation Details</h1>
-<ul>
-<li>Using an adaptive learning rate method such as RMSProp or ADADELTA
-that maintains a per-parameter learning rate α, and adjusts α according
-to the history of gradient updates to that parameter.</li>
-<li>Using the <strong>last 4 frames</strong> of a history and stacks
-them as the input to the Q-network, which can capture the information
-about objects' speed and acceleration.</li>
-<li>Pre-processing to change the RGB screens to gray-scale images and
-crop the central part.</li>
-<li>During the training, the agent observes the environment and selects
-an action for each <span class="math inline">\(k\)</span> frames of the
-video game.</li>
+<li><p>For the standard DQN:</p>
+<p><span class="math display">\[\begin{equation}
+  Y^{DQN}=r_{t+1}+\gamma \max_{a&#39;}⁡{Q(s_{t+1},a&#39;|\theta&#39;)}
+  \end{equation}\]</span></p>
+<p>which can be written as:</p>
+<p><span class="math display">\[\begin{equation}
+  Y^{DQN}=r_{t+1}+\gamma
+Q(s_{t+1},\arg\max_{a&#39;}{Q(s_{t+1},a&#39;|\theta&#39;)}|\theta&#39;)
+  \end{equation}\]</span></p>
+<p>where we can see that the selection of the action with maximal
+Q-value and compute the corresponding Q-value is all conducted by the
+target network (so it directly return the maximal Q-value among the
+outputs from the target network).</p></li>
+<li><p>For the double DQN:</p>
+<p><span class="math display">\[\begin{equation}
+  Y^{DDQN}=r_{t+1}+\gamma
+Q(s_{t+1},\arg\max_{a&#39;}{Q(s_{t+1},a&#39;|\theta)}|\theta&#39;)
+  \end{equation}\]</span></p>
+<p>where we can see that the selection of the action with maximal
+Q-value is conducted by the policy network but the computation of the
+corresponding Q-value is conducted by the target network.</p></li>
 </ul>
+<p>The process to compute the TD-target can be described as follows:</p>
+<ol type="1">
+<li>Input the state <span class="math inline">\(s_{t+1}\)</span> into
+the policy network (with parameters <span
+class="math inline">\(\theta\)</span>), select the action with the
+maximal Q-value from the output head, suppose the action is <span
+class="math inline">\(a^+\)</span>.</li>
+<li>Input the state <span class="math inline">\(s_{t+1}\)</span> into
+the target network (with parameters <span
+class="math inline">\(\theta&#39;\)</span>), return the Q-value of <span
+class="math inline">\(Q(s_{t+1},a^+)\)</span> from the output head.</li>
+<li>Use the returned Q-value to compute the TD-target.</li>
+</ol>
+<h1 id="reference">Reference</h1>
+<p>[1] Hado Hasselt. 2010. Double Q-learning. In Advances in Neural
+Information Processing Systems, Curran Associates, Inc. Retrieved August
+8, 2022 from
+https://proceedings.neurips.cc/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-Abstract.html</p>
 
     </div>
 
@@ -401,13 +380,13 @@ video game.</li>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/8-ProbabilisticML-5-MCMCHMM/" rel="prev" title="Markov Chain Monte Carlo (MCMC) Estimation of Hidden Markov Model (HMM)">
-                  <i class="fa fa-chevron-left"></i> Markov Chain Monte Carlo (MCMC) Estimation of Hidden Markov Model (HMM)
+                <a href="/2022/10-RLPaper-MF-2-DRQN/" rel="prev" title="[DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs">
+                  <i class="fa fa-chevron-left"></i> [DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/10-RLPaper-MF-2-DRQN/" rel="next" title="[DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs">
-                  [DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs <i class="fa fa-chevron-right"></i>
+                <a href="/2022/12-RLPaper-MF-4-DuelingDQN/" rel="next" title="[Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning">
+                  [Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
