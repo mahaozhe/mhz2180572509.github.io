@@ -20,35 +20,33 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves, Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. 2013. Playing Atari with Deep Reinforcement Learning. DOI:https:&#x2F;&#x2F;doi.or">
+<meta name="description" content="Tom Schaul, John Quan, Ioannis Antonoglou, and David Silver. 2016. Prioritized Experience Replay. DOI:https:&#x2F;&#x2F;doi.org&#x2F;10.48550&#x2F;arXiv.1511.05952">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[DQN] Human-level control through deep reinforcement learning">
-<meta property="og:url" content="http://example.com/2022/9-RLPaper-MF-1-DQN/">
+<meta property="og:title" content="[PER] Prioritized Experience Replay">
+<meta property="og:url" content="http://example.com/2022/13-RLPaper-Te-ER-1-PER/">
 <meta property="og:site_name" content="Life like Wine">
-<meta property="og:description" content="[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves, Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. 2013. Playing Atari with Deep Reinforcement Learning. DOI:https:&#x2F;&#x2F;doi.or">
+<meta property="og:description" content="Tom Schaul, John Quan, Ioannis Antonoglou, and David Silver. 2016. Prioritized Experience Replay. DOI:https:&#x2F;&#x2F;doi.org&#x2F;10.48550&#x2F;arXiv.1511.05952">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/1-1.png">
-<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/1-2.png">
-<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/1-3.png">
-<meta property="article:published_time" content="2022-08-09T12:32:21.261Z">
-<meta property="article:modified_time" content="2022-08-09T12:47:57.159Z">
+<meta property="og:image" content="http://example.com/images/RLPapers/Techniques/Experience-Replay/Images/1-1.png">
+<meta property="article:published_time" content="2022-08-11T02:23:17.172Z">
+<meta property="article:modified_time" content="2022-08-11T02:31:54.230Z">
 <meta property="article:author" content="Ma Haozhe">
 <meta property="article:tag" content="Reinforcement Learning">
 <meta property="article:tag" content="Paper Notes">
-<meta property="article:tag" content="Model-Free RL">
-<meta property="article:tag" content="Deep Q-Learning">
+<meta property="article:tag" content="Experience Replay">
+<meta property="article:tag" content="RL Techniques">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/1-1.png">
+<meta name="twitter:image" content="http://example.com/images/RLPapers/Techniques/Experience-Replay/Images/1-1.png">
 
 
-<link rel="canonical" href="http://example.com/2022/9-RLPaper-MF-1-DQN/">
+<link rel="canonical" href="http://example.com/2022/13-RLPaper-Te-ER-1-PER/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/9-RLPaper-MF-1-DQN/","path":"2022/9-RLPaper-MF-1-DQN/","title":"[DQN] Human-level control through deep reinforcement learning"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/13-RLPaper-Te-ER-1-PER/","path":"2022/13-RLPaper-Te-ER-1-PER/","title":"[PER] Prioritized Experience Replay"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>[DQN] Human-level control through deep reinforcement learning | Life like Wine</title>
+<title>[PER] Prioritized Experience Replay | Life like Wine</title>
   
 
 
@@ -153,7 +151,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-problems-to-solve"><span class="nav-number">2.</span> <span class="nav-text">Main Problems to Solve</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-innovations"><span class="nav-number">3.</span> <span class="nav-text">Main Innovations</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#implementation-details"><span class="nav-number">4.</span> <span class="nav-text">Implementation Details</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-problems-to-solve"><span class="nav-number">2.</span> <span class="nav-text">Main Problems to Solve</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-innovations"><span class="nav-number">3.</span> <span class="nav-text">Main Innovations</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -228,7 +226,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/9-RLPaper-MF-1-DQN/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/13-RLPaper-Te-ER-1-PER/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -241,7 +239,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          [DQN] Human-level control through deep reinforcement learning
+          [PER] Prioritized Experience Replay
         </h1>
 
         <div class="post-meta-container">
@@ -253,7 +251,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2022-08-09 20:32:21 / Modified: 20:47:57" itemprop="dateCreated datePublished" datetime="2022-08-09T20:32:21+08:00">2022-08-09</time>
+      <time title="Created: 2022-08-11 10:23:17 / Modified: 10:31:54" itemprop="dateCreated datePublished" datetime="2022-08-11T10:23:17+08:00">2022-08-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,112 +274,77 @@
     
     <div class="post-body" itemprop="articleBody">
         <blockquote>
-<p>[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves,
-Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. 2013. Playing
-Atari with Deep Reinforcement Learning. DOI:<a
-target="_blank" rel="noopener" href="https://doi.org/10.48550/arXiv.1312.5602"
-class="uri">https://doi.org/10.48550/arXiv.1312.5602</a></p>
-</blockquote>
-<blockquote>
-<p>[2] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A. Rusu,
-Joel Veness, Marc G. Bellemare, Alex Graves, Martin Riedmiller, Andreas
-K. Fidjeland, Georg Ostrovski, Stig Petersen, Charles Beattie, Amir
-Sadik, Ioannis Antonoglou, Helen King, Dharshan Kumaran, Daan Wierstra,
-Shane Legg, and Demis Hassabis. 2015. Human-level control through deep
-reinforcement learning. Nature 518, 7540 (February 2015), 529–533.
-DOI:<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nature14236"
-class="uri">https://doi.org/10.1038/nature14236</a></p>
+<p>Tom Schaul, John Quan, Ioannis Antonoglou, and David Silver. 2016.
+Prioritized Experience Replay.
+DOI:https://doi.org/10.48550/arXiv.1511.05952</p>
 </blockquote>
 <span id="more"></span>
 <figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/1-1.png"
-alt="Playing Atari with Deep Reinforcement Learning." />
-<figcaption aria-hidden="true">Playing Atari with Deep Reinforcement
-Learning.</figcaption>
-</figure>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/1-2.png"
-alt="Human-level control through deep reinforcement learning." />
-<figcaption aria-hidden="true">Human-level control through deep
-reinforcement learning.</figcaption>
+<img src="/images/RLPapers/Techniques/Experience-Replay/Images/1-1.png"
+alt="Prioritized Experience Replay" />
+<figcaption aria-hidden="true">Prioritized Experience
+Replay</figcaption>
 </figure>
 <h1 id="overview">Overview</h1>
-<p>The proposed <strong><em>Deep Q-Learning Network</em></strong>
-(<strong><em>DQN</em></strong>) is the first algorithm to introduce
-(deep) neural networks as function approximators (in other words,
-non-linear function approximators) into reinforcement learning. DQN is a
-<strong>model-free</strong>, <strong>off-policy</strong>,
-<strong>(Q-)value based</strong> algorithm, which can be implemented
-onto environments with continuous state space but only with discrete
-action space. DQN can be trained <strong>end-to-end</strong>, which
-means it could receive high-dimensional state's representations as
-input. The paper evaluated the DQN on 7 Atari games and 49 Atari games
-with the same hyper-parameters which shows the great generalization
-ability of DQN.</p>
+<p>The paper proposed a <strong><em>prioritized experience
+replay</em></strong> (<strong><em>PER</em></strong>) framework to be
+implemented in to experience-replay-based RL algorithms to replace the
+original uniformly and randomly draw samples. The paper further proposed
+two methods to solve problems that introduced by the prioritized: one is
+the diversity of loss, another one is the introduced bias. The paper
+evaluated the framework integrated into the DDQN algorithm, and show
+better performances than the state-of-the-art algorithms (2016).</p>
 <h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>To introduce deep neural networks (non-linear functions) as
-approximators in reinforcement learning has to overcome some
-problems:</p>
-<ol type="1">
-<li>Most deep learning algorithms (like classifications, regressions)
-assume that the data samples are independent, however, in RL
-environments, the samples in a sequence are <strong>highly
-correlated</strong>.</li>
-<li>Most deep learning algorithms require large amounts of hand-labelled
-training data, however, RL algorithms need to learn from observations
-and information directly from environment, e.g., the scalar reward
-signals, which is frequently sparse, noisy and delayed.</li>
-<li>Most deep learning methods assume they are learnt in a fixed
-underlaying distribution, however, in RL, the <strong>data distribution
-changes</strong> as the agents updates their behaviors during the
-learning process.</li>
-</ol>
+<p>The prioritized experience replay method is proposed for more
+efficiently and more effectively learning of the experience-replay-based
+deep RL algorithms. As in the previous experience replay method, all
+samples to train the model are drawn uniformly from the replay buffer at
+random, however, many transitions are not useful to update or to
+optimize the model in the desired direction.</p>
 <h1 id="main-innovations">Main Innovations</h1>
-<p>The paper mainly proposed two techniques to overcome the problems:
-(a) <strong>experience replay</strong> and (b) <strong>target network
-with periodically update</strong>:</p>
-<ol type="1">
-<li>Experience replay: initialize a replay buffer and store the
-transitions <span class="math inline">\(\{s_t,a_t,r_t,s_{t+1}\}\)</span>
-in it, for each iteration, randomly draw samples from the replay buffer
-and train the network using stochastic gradient descent (SGD).
-<ul>
-<li>Can break the correlations among samples so as to reduce the
-variance</li>
-<li>Each sample can be drawn in many rounds of updates, which allows for
-greater data efficiency.</li>
-</ul></li>
-<li>Target network with periodically update: the algorithm initializes
-two networks with the same hyper-parameters and architecture, for each
-iteration, update the policy network with SGD, for each <span
-class="math inline">\(K\)</span> (a hyper-parameter) iterations,
-directly copy the parameters in policy network to target network. In the
-training, the action is selected by target network.
-<ul>
-<li>The distribution of the behavior to select the action can be
-smooth.</li>
-</ul></li>
-</ol>
-<p>The algorithm:</p>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/1-3.png"
-alt="DQN algorithm." />
-<figcaption aria-hidden="true">DQN algorithm.</figcaption>
-</figure>
-<h1 id="implementation-details">Implementation Details</h1>
-<ul>
-<li>Using an adaptive learning rate method such as RMSProp or ADADELTA
-that maintains a per-parameter learning rate α, and adjusts α according
-to the history of gradient updates to that parameter.</li>
-<li>Using the <strong>last 4 frames</strong> of a history and stacks
-them as the input to the Q-network, which can capture the information
-about objects' speed and acceleration.</li>
-<li>Pre-processing to change the RGB screens to gray-scale images and
-crop the central part.</li>
-<li>During the training, the agent observes the environment and selects
-an action for each <span class="math inline">\(k\)</span> frames of the
-video game.</li>
-</ul>
+<p>The main idea for the framework is to sample transitions from the
+replay buffer using the magnitude of the TD-error <span
+class="math inline">\(\delta\)</span> as the priority. Intuitively, the
+larger of the TD-error for one transition, the distance between the
+TD-target and the currently estimated Q-value will be larger, then the
+agent should learn more from it than others.</p>
+<p>However, there are two main problems that caused by the prioritized
+experience replay: the <strong>loss diversity decreasing</strong> and
+the <strong>bias introduced</strong>.</p>
+<p>Firstly, the loss diversity will decrease. As the samples are drawn
+based on the TD-error at the first computation when storing them into
+the buffer, so some samples with very low TD-errors will have very low
+probabilities to be selected or even never be selected, in which case,
+the framework will focus on a very small subset of the experiences,
+which leads the system to over-fitting.</p>
+<p>To solve this problem, the paper proposed <strong><em>stochastic
+prioritization</em></strong>, that interpolates between pure greedy
+prioritization and uniform random sampling. The probability to select
+one sample <span class="math inline">\(i\)</span> is defined as:</p>
+<p><span class="math display">\[\begin{equation}
+P(i)=\frac{p_i^{\alpha}}{\sum_k{p_k^{\alpha}}}
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\alpha\)</span> determines how much
+prioritization is used, with <span
+class="math inline">\(\alpha=0\)</span> corresponding to the uniform
+case.</p>
+<p>Secondly, the prioritized experience replay introduced bias, as the
+target/real distribution changes when we draw samples non-uniformly. To
+solve this problem, the paper proposed to correct the bias by using the
+<strong><em>importance-sampling weights</em></strong> which is defined
+as:</p>
+<p><span class="math display">\[\begin{equation}
+w_i=\left(\frac{1}{N} \times \frac{1}{P(i)}\right)^{\beta}
+\end{equation}\]</span></p>
+<p>which can be folded into the Q-learning update by using <span
+class="math inline">\(w_i \delta_i\)</span> instead of <span
+class="math inline">\(\delta_i\)</span>. The hyper-parameter <span
+class="math inline">\(\beta\)</span> controls the degree to compensate
+the bias. The paper proposed to use an
+<strong><em>annealing</em></strong> method to set the <span
+class="math inline">\(\beta\)</span> as a very small value at the
+beginning and define a schedule to make it reach 1 at the end of the
+training.</p>
 
     </div>
 
@@ -393,21 +356,21 @@ video game.</li>
           <div class="post-tags">
               <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
               <a href="/tags/Paper-Notes/" rel="tag"># Paper Notes</a>
-              <a href="/tags/Model-Free-RL/" rel="tag"># Model-Free RL</a>
-              <a href="/tags/Deep-Q-Learning/" rel="tag"># Deep Q-Learning</a>
+              <a href="/tags/Experience-Replay/" rel="tag"># Experience Replay</a>
+              <a href="/tags/RL-Techniques/" rel="tag"># RL Techniques</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/8-ProbabilisticML-5-MCMCHMM/" rel="prev" title="Markov Chain Monte Carlo (MCMC) Estimation of Hidden Markov Model (HMM)">
-                  <i class="fa fa-chevron-left"></i> Markov Chain Monte Carlo (MCMC) Estimation of Hidden Markov Model (HMM)
+                <a href="/2022/12-RLPaper-MF-4-DuelingDQN/" rel="prev" title="[Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning">
+                  <i class="fa fa-chevron-left"></i> [Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/10-RLPaper-MF-2-DRQN/" rel="next" title="[DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs">
-                  [DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs <i class="fa fa-chevron-right"></i>
+                <a href="/2022/14-RLPaper-Te-Ex-1-NoisyNet/" rel="next" title="[NoisyNet] Noisy Networks for Exploration">
+                  [NoisyNet] Noisy Networks for Exploration <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>

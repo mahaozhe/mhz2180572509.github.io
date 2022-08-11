@@ -156,6 +156,100 @@ class="uri">https://github.com/deepmind/pysc2</a></li>
       </tags>
   </entry>
   <entry>
+    <title>[Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning</title>
+    <url>/2022/12-RLPaper-MF-4-DuelingDQN/</url>
+    <content><![CDATA[<blockquote>
+<p>Ziyu Wang, Tom Schaul, Matteo Hessel, Hado Hasselt, Marc Lanctot, and
+Nando Freitas. 2016. Dueling Network Architectures for Deep
+Reinforcement Learning. In Proceedings of The 33rd International
+Conference on Machine Learning, PMLR, 1995–2003. Retrieved August 8,
+2022 from https://proceedings.mlr.press/v48/wangf16.html</p>
+</blockquote>
+<span id="more"></span>
+<figure>
+<img src="/images/RLPapers/Model-Free/DeepQLearning/4-1.png"
+alt="Dueling Network Architectures for Deep Reinforcement Learning" />
+<figcaption aria-hidden="true">Dueling Network Architectures for Deep
+Reinforcement Learning</figcaption>
+</figure>
+<h1 id="overview">Overview</h1>
+<p>The paper proposed a creative network <strong>architecture</strong>
+called <strong><em>dueling network</em></strong> to <strong>decouple the
+value and advantage</strong> in deep Q-networks algorithm. The
+architecture can be used to replace the original network in any
+applicable deep RL algorithm without imposing any change to the
+underlying algorithm. The authors conducted experiments to show better
+performances that outperform the state-of-the-art algorithms (2016-6) on
+Atari games domain.</p>
+<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
+<p>The new architecture main solves the following problems:</p>
+<ul>
+<li>In most environments, for many states, the selection of actions is
+almost irrelevant, which means, for these states, selecting any action
+by the agent does not affect the environment any more.</li>
+<li>In most popular deep RL algorithms, like DQN, DDQN, the difference
+of the Q-values among different actions are usually very small, which is
+easy to be influenced by any noise or oscillation.</li>
+</ul>
+<h1 id="main-innovations">Main Innovations</h1>
+<p>The proposed architecture is shown in the following figure:</p>
+<figure>
+<img src="/images/RLPapers/Model-Free/DeepQLearning/4-2.png"
+alt="Dueling network architecture" />
+<figcaption aria-hidden="true">Dueling network architecture</figcaption>
+</figure>
+<p>At the end of the convolutional layers, the dueling network separate
+the output to two streams, one to estimate the state value <span
+class="math inline">\(V(s)\)</span> (a scaler) and one to estimate the
+<strong><em>advantage function</em></strong> of each action for the
+current state <span class="math inline">\(A(s,a)\)</span> (a vector with
+length of <span class="math inline">\(|A|\)</span>). Then the network
+use a sepcial <strong>aggregating layer</strong> to combine the value
+and the advantage together to output the Q-value <span
+class="math inline">\(Q(s,a)\)</span>.</p>
+<p>The relationship among these qualities under a specific policy <span
+class="math inline">\(\pi\)</span> is:</p>
+<p><span class="math display">\[\begin{equation}
+A^{\pi}(s,a)=Q^{\pi}(s,a)−V^{\pi}(s)
+\end{equation}\]</span></p>
+<p>which indicates that the advantage is the Q-value but measured by the
+value of that state, in this case, we actually have: <span
+class="math inline">\(\mathbb{E}_{a \backsim
+\pi(s)}[A^{\pi}(s,a)]=0\)</span>. The advantage is a <strong>relative
+measure</strong> of the importance of each action.</p>
+<p>One important problem is that: actually, in deep Q-networks based
+algorithms, we only estimate the final output Q-values in the algorithm,
+but not explicitly estimate or give out the state values and action
+advantages, and we cannot <strong>recover</strong> these two values only
+based on the given Q-value. So, to address this issue of identifiability
+problem, the paper <strong>forced the advantage function estimator to
+offset by the maximal of all advantages or the average of all
+advantages</strong>:</p>
+<ul>
+<li><span
+class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\max_{a&#39;}⁡{A(s,a&#39;)})\)</span></li>
+<li><span
+class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\frac{1}{|A|}\sum_{a&#39;}{A(s,a&#39;)})\)</span></li>
+</ul>
+<p>This trick, on the one hand, loses the original semantics of V and A
+because they are now off-target by a constant, but on the other hand, it
+increases the stability of the optimization. What's more, this doesn't
+change the relative rank of the A (and hence Q) values and the values
+can be computed <strong>automatically</strong>.</p>
+<p>The paper evaluated the performance of the above two methods, and
+show the results based on the second equation.</p>
+]]></content>
+      <categories>
+        <category>RL Paper Notes</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Paper Notes</tag>
+        <tag>Model-Free RL</tag>
+        <tag>Deep Q-Learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs</title>
     <url>/2022/10-RLPaper-MF-2-DRQN/</url>
     <content><![CDATA[<blockquote>
@@ -335,88 +429,80 @@ https://proceedings.neurips.cc/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-
       </tags>
   </entry>
   <entry>
-    <title>[Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning</title>
-    <url>/2022/12-RLPaper-MF-4-DuelingDQN/</url>
+    <title>[PER] Prioritized Experience Replay</title>
+    <url>/2022/13-RLPaper-Te-ER-1-PER/</url>
     <content><![CDATA[<blockquote>
-<p>Ziyu Wang, Tom Schaul, Matteo Hessel, Hado Hasselt, Marc Lanctot, and
-Nando Freitas. 2016. Dueling Network Architectures for Deep
-Reinforcement Learning. In Proceedings of The 33rd International
-Conference on Machine Learning, PMLR, 1995–2003. Retrieved August 8,
-2022 from https://proceedings.mlr.press/v48/wangf16.html</p>
+<p>Tom Schaul, John Quan, Ioannis Antonoglou, and David Silver. 2016.
+Prioritized Experience Replay.
+DOI:https://doi.org/10.48550/arXiv.1511.05952</p>
 </blockquote>
 <span id="more"></span>
 <figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/4-1.png"
-alt="Dueling Network Architectures for Deep Reinforcement Learning" />
-<figcaption aria-hidden="true">Dueling Network Architectures for Deep
-Reinforcement Learning</figcaption>
+<img src="/images/RLPapers/Techniques/Experience-Replay/Images/1-1.png"
+alt="Prioritized Experience Replay" />
+<figcaption aria-hidden="true">Prioritized Experience
+Replay</figcaption>
 </figure>
 <h1 id="overview">Overview</h1>
-<p>The paper proposed a creative network <strong>architecture</strong>
-called <strong><em>dueling network</em></strong> to <strong>decouple the
-value and advantage</strong> in deep Q-networks algorithm. The
-architecture can be used to replace the original network in any
-applicable deep RL algorithm without imposing any change to the
-underlying algorithm. The authors conducted experiments to show better
-performances that outperform the state-of-the-art algorithms (2016-6) on
-Atari games domain.</p>
+<p>The paper proposed a <strong><em>prioritized experience
+replay</em></strong> (<strong><em>PER</em></strong>) framework to be
+implemented in to experience-replay-based RL algorithms to replace the
+original uniformly and randomly draw samples. The paper further proposed
+two methods to solve problems that introduced by the prioritized: one is
+the diversity of loss, another one is the introduced bias. The paper
+evaluated the framework integrated into the DDQN algorithm, and show
+better performances than the state-of-the-art algorithms (2016).</p>
 <h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>The new architecture main solves the following problems:</p>
-<ul>
-<li>In most environments, for many states, the selection of actions is
-almost irrelevant, which means, for these states, selecting any action
-by the agent does not affect the environment any more.</li>
-<li>In most popular deep RL algorithms, like DQN, DDQN, the difference
-of the Q-values among different actions are usually very small, which is
-easy to be influenced by any noise or oscillation.</li>
-</ul>
+<p>The prioritized experience replay method is proposed for more
+efficiently and more effectively learning of the experience-replay-based
+deep RL algorithms. As in the previous experience replay method, all
+samples to train the model are drawn uniformly from the replay buffer at
+random, however, many transitions are not useful to update or to
+optimize the model in the desired direction.</p>
 <h1 id="main-innovations">Main Innovations</h1>
-<p>The proposed architecture is shown in the following figure:</p>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/4-2.png"
-alt="Dueling network architecture" />
-<figcaption aria-hidden="true">Dueling network architecture</figcaption>
-</figure>
-<p>At the end of the convolutional layers, the dueling network separate
-the output to two streams, one to estimate the state value <span
-class="math inline">\(V(s)\)</span> (a scaler) and one to estimate the
-<strong><em>advantage function</em></strong> of each action for the
-current state <span class="math inline">\(A(s,a)\)</span> (a vector with
-length of <span class="math inline">\(|A|\)</span>). Then the network
-use a sepcial <strong>aggregating layer</strong> to combine the value
-and the advantage together to output the Q-value <span
-class="math inline">\(Q(s,a)\)</span>.</p>
-<p>The relationship among these qualities under a specific policy <span
-class="math inline">\(\pi\)</span> is:</p>
+<p>The main idea for the framework is to sample transitions from the
+replay buffer using the magnitude of the TD-error <span
+class="math inline">\(\delta\)</span> as the priority. Intuitively, the
+larger of the TD-error for one transition, the distance between the
+TD-target and the currently estimated Q-value will be larger, then the
+agent should learn more from it than others.</p>
+<p>However, there are two main problems that caused by the prioritized
+experience replay: the <strong>loss diversity decreasing</strong> and
+the <strong>bias introduced</strong>.</p>
+<p>Firstly, the loss diversity will decrease. As the samples are drawn
+based on the TD-error at the first computation when storing them into
+the buffer, so some samples with very low TD-errors will have very low
+probabilities to be selected or even never be selected, in which case,
+the framework will focus on a very small subset of the experiences,
+which leads the system to over-fitting.</p>
+<p>To solve this problem, the paper proposed <strong><em>stochastic
+prioritization</em></strong>, that interpolates between pure greedy
+prioritization and uniform random sampling. The probability to select
+one sample <span class="math inline">\(i\)</span> is defined as:</p>
 <p><span class="math display">\[\begin{equation}
-A^{\pi}(s,a)=Q^{\pi}(s,a)−V^{\pi}(s)
+P(i)=\frac{p_i^{\alpha}}{\sum_k{p_k^{\alpha}}}
 \end{equation}\]</span></p>
-<p>which indicates that the advantage is the Q-value but measured by the
-value of that state, in this case, we actually have: <span
-class="math inline">\(\mathbb{E}_{a \backsim
-\pi(s)}[A^{\pi}(s,a)]=0\)</span>. The advantage is a <strong>relative
-measure</strong> of the importance of each action.</p>
-<p>One important problem is that: actually, in deep Q-networks based
-algorithms, we only estimate the final output Q-values in the algorithm,
-but not explicitly estimate or give out the state values and action
-advantages, and we cannot <strong>recover</strong> these two values only
-based on the given Q-value. So, to address this issue of identifiability
-problem, the paper <strong>forced the advantage function estimator to
-offset by the maximal of all advantages or the average of all
-advantages</strong>:</p>
-<ul>
-<li><span
-class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\max_{a&#39;}⁡{A(s,a&#39;)})\)</span></li>
-<li><span
-class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\frac{1}{|A|}\sum_{a&#39;}{A(s,a&#39;)})\)</span></li>
-</ul>
-<p>This trick, on the one hand, loses the original semantics of V and A
-because they are now off-target by a constant, but on the other hand, it
-increases the stability of the optimization. What's more, this doesn't
-change the relative rank of the A (and hence Q) values and the values
-can be computed <strong>automatically</strong>.</p>
-<p>The paper evaluated the performance of the above two methods, and
-show the results based on the second equation.</p>
+<p>where <span class="math inline">\(\alpha\)</span> determines how much
+prioritization is used, with <span
+class="math inline">\(\alpha=0\)</span> corresponding to the uniform
+case.</p>
+<p>Secondly, the prioritized experience replay introduced bias, as the
+target/real distribution changes when we draw samples non-uniformly. To
+solve this problem, the paper proposed to correct the bias by using the
+<strong><em>importance-sampling weights</em></strong> which is defined
+as:</p>
+<p><span class="math display">\[\begin{equation}
+w_i=\left(\frac{1}{N} \times \frac{1}{P(i)}\right)^{\beta}
+\end{equation}\]</span></p>
+<p>which can be folded into the Q-learning update by using <span
+class="math inline">\(w_i \delta_i\)</span> instead of <span
+class="math inline">\(\delta_i\)</span>. The hyper-parameter <span
+class="math inline">\(\beta\)</span> controls the degree to compensate
+the bias. The paper proposed to use an
+<strong><em>annealing</em></strong> method to set the <span
+class="math inline">\(\beta\)</span> as a very small value at the
+beginning and define a schedule to make it reach 1 at the end of the
+training.</p>
 ]]></content>
       <categories>
         <category>RL Paper Notes</category>
@@ -424,8 +510,75 @@ show the results based on the second equation.</p>
       <tags>
         <tag>Reinforcement Learning</tag>
         <tag>Paper Notes</tag>
-        <tag>Model-Free RL</tag>
-        <tag>Deep Q-Learning</tag>
+        <tag>Experience Replay</tag>
+        <tag>RL Techniques</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Use PySC2 Learning Environment - Define Your Own Agent</title>
+    <url>/2022/2-tutorial-pysc2-2/</url>
+    <content><![CDATA[<p>This is a brief introduction to an easy approach to use the
+<code>PySC2</code> by defining your own agent. A basic template for a
+self-defined agent can be found <a
+href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.
+(The codes are also attached at the end).</p>
+<ul>
+<li>For an overview of <code>PySC2</code>, you can proceed to
+<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
+<li>For an more comprehensive approach to define your own environment
+and agent, and also control the interaction between them, you can
+proceed to <a href="/2022/3-tutorial-pysc2-3/" title="Use PySC2 Learning Environment - Control Your Own Environment and Agent">Use PySC2 Learning Environment - Control Your Own Environment and Agent</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="how-to-use-custom-defined-agents">How to Use Custom-Defined
+Agents?</h1>
+<p>Run the command:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent &lt;Agent&gt;</span><br></pre></td></tr></table></figure>
+<p>Assuming that your own agent class named
+<code>MyAgentClassName</code> is defined in <code>MyAgentFile.py</code>
+in a directory <code>[PATH]</code>, then when you run command in the
+<code>[PATH]</code> directory, you can identify the agent by:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent MyAgentFile.MyAgentClassName</span><br></pre></td></tr></table></figure>
+<h1 id="how-to-design-my-own-agent-and-make-it-interact-with-pysc2">How
+to Design My Own Agent and Make It Interact with PySC2?</h1>
+<p>Any custom designed agent should derive from the
+<code>BaseAgent</code> class (in <code>pysc2.agents.base_agent</code>)
+and override the <code>step(self, obs)</code> function, where the
+argument <code>obs</code> is the observations.</p>
+<h1 id="how-to-get-observations-and-rewards-from-the-environment">How to
+Get Observations and Rewards from The Environment?</h1>
+<p>The observations (as well as the rewards) taken from environment are
+all included in the parameter <code>obs</code> of the <code>step</code>
+function, such as the feature maps, valid actions, rewards and so
+on.</p>
+<p>for example: * state, viz. different types of feature maps:
+<code>obs.observation["screen"][feature_map_name]</code> * valid
+actions: <code>obs.observation["available_actions"]</code> or
+<code>obs.observation.available_actions</code> * rewards:
+<code>obs.reward</code></p>
+<h1 id="how-to-send-actions-to-interact-with-the-environment">How to
+Send Actions to Interact with The Environment?</h1>
+<p>In the <code>step</code> function, return the action (packed up as a
+<code>FunctionCall</code> instance).</p>
+<h1 id="more-reference">More Reference</h1>
+<ul>
+<li>A random agent: <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py"
+class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py</a></li>
+<li>A scripted agent: <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py"
+class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py</a></li>
+</ul>
+<h1 id="template-codes">Template Codes</h1>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template for approach 1.</span></span><br><span class="line"><span class="string">The agent randomly selects actions.</span></span><br><span class="line"><span class="string">Use the `pysc2.bin.agent` module to run `MyAgent` when your commands are in the current path:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent pysc2EnvTemplate.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># to be compatible with python 2.x</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> features</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define our own agent</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line">        <span class="comment"># RL algorithm here~ #</span></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get available actions</span></span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        <span class="comment"># randomly select one action and its argument</span></span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes]</span><br><span class="line">                <span class="keyword">for</span> arg <span class="keyword">in</span> self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="comment"># pack up the actions as a `FunctionCall`</span></span><br><span class="line">        function_call = actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># return the actions a.k.a. the function_call</span></span><br><span class="line">        <span class="keyword">return</span> function_call</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Tutorial</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>PySC2</tag>
+        <tag>Tools</tag>
       </tags>
   </entry>
   <entry>
@@ -672,70 +825,102 @@ class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a
       </tags>
   </entry>
   <entry>
-    <title>Use PySC2 Learning Environment - Define Your Own Agent</title>
-    <url>/2022/2-tutorial-pysc2-2/</url>
-    <content><![CDATA[<p>This is a brief introduction to an easy approach to use the
-<code>PySC2</code> by defining your own agent. A basic template for a
-self-defined agent can be found <a
-href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.
-(The codes are also attached at the end).</p>
-<ul>
-<li>For an overview of <code>PySC2</code>, you can proceed to
-<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
-<li>For an more comprehensive approach to define your own environment
-and agent, and also control the interaction between them, you can
-proceed to <a href="/2022/3-tutorial-pysc2-3/" title="Use PySC2 Learning Environment - Control Your Own Environment and Agent">Use PySC2 Learning Environment - Control Your Own Environment and Agent</a></li>
-</ul>
+    <title>[NoisyNet] Noisy Networks for Exploration</title>
+    <url>/2022/14-RLPaper-Te-Ex-1-NoisyNet/</url>
+    <content><![CDATA[<blockquote>
+<p>Meire Fortunato, Mohammad Gheshlaghi Azar, Bilal Piot, Jacob Menick,
+Ian Osband, Alex Graves, Vlad Mnih, Remi Munos, Demis Hassabis, Olivier
+Pietquin, Charles Blundell, and Shane Legg. 2019. Noisy Networks for
+Exploration. DOI: https://doi.org/10.48550/arXiv.1706.10295</p>
+</blockquote>
 <span id="more"></span>
-<h1 id="how-to-use-custom-defined-agents">How to Use Custom-Defined
-Agents?</h1>
-<p>Run the command:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent &lt;Agent&gt;</span><br></pre></td></tr></table></figure>
-<p>Assuming that your own agent class named
-<code>MyAgentClassName</code> is defined in <code>MyAgentFile.py</code>
-in a directory <code>[PATH]</code>, then when you run command in the
-<code>[PATH]</code> directory, you can identify the agent by:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent MyAgentFile.MyAgentClassName</span><br></pre></td></tr></table></figure>
-<h1 id="how-to-design-my-own-agent-and-make-it-interact-with-pysc2">How
-to Design My Own Agent and Make It Interact with PySC2?</h1>
-<p>Any custom designed agent should derive from the
-<code>BaseAgent</code> class (in <code>pysc2.agents.base_agent</code>)
-and override the <code>step(self, obs)</code> function, where the
-argument <code>obs</code> is the observations.</p>
-<h1 id="how-to-get-observations-and-rewards-from-the-environment">How to
-Get Observations and Rewards from The Environment?</h1>
-<p>The observations (as well as the rewards) taken from environment are
-all included in the parameter <code>obs</code> of the <code>step</code>
-function, such as the feature maps, valid actions, rewards and so
-on.</p>
-<p>for example: * state, viz. different types of feature maps:
-<code>obs.observation["screen"][feature_map_name]</code> * valid
-actions: <code>obs.observation["available_actions"]</code> or
-<code>obs.observation.available_actions</code> * rewards:
-<code>obs.reward</code></p>
-<h1 id="how-to-send-actions-to-interact-with-the-environment">How to
-Send Actions to Interact with The Environment?</h1>
-<p>In the <code>step</code> function, return the action (packed up as a
-<code>FunctionCall</code> instance).</p>
-<h1 id="more-reference">More Reference</h1>
+<figure>
+<img src="/images/RLPapers/Techniques/Exploration/Images/1-1.png"
+alt="Noisy Networks for Exploration" />
+<figcaption aria-hidden="true">Noisy Networks for
+Exploration</figcaption>
+</figure>
+<h1 id="overview">Overview</h1>
+<p>The paper proposed a general framework
+<strong><em>NoisyNet</em></strong> to introduce <strong>parametric
+noise</strong> to add to the weights in the network and aid the agent to
+exploration more efficiently and effectively. The framework can be
+implemented into any RL algorithms with <strong>gradient
+descent</strong>, like DQN, DDQN, Dueling DQN, DDPG, A3C, TRPO and so
+on, which also add little computational overhead. The <em>NoisyNet</em>
+can replace the original exploration policies, like <span
+class="math inline">\(\epsilon\)</span>-greedy exploration. The paper
+conducted experiments to compare the DQN, Dueling DQN and A3C algorihtms
+with <em>NoisyNet</em> respectively with the original version of these
+algorithms, the results show higher scores for a wide range of Atari
+games.</p>
+<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
+<p>For traditional exploration policies, like entropy reward and <span
+class="math inline">\(\epsilon\)</span>-greddy, there needs additional
+hyper-parameters and more importantly, the policy is independent of the
+states and policies learned by the agents.</p>
+<h1 id="main-innovations">Main Innovations</h1>
+<p>The key idea of the <em>NoisyNet</em> is to add a parametric noise to
+the parameters (weights) (to be learned) of the networks. The added
+noise can help to make the agent to select creative behaviors. More
+importantly, as the noise is parametric, and the parameters are also
+updated in the reinforcement learning algorithm by gradient descent with
+the original parameters, so the noise can be controlled by the model
+during the learning procedure and therefore, the noise is dependent of
+the states and the policy.</p>
+<p>The main method to change an original parameter <span
+class="math inline">\(\theta\)</span> to a new set of learnable
+parameters is to define:</p>
+<p><span class="math display">\[\begin{equation}
+\theta^{new}=\mu^{\theta}+\Sigma^{\theta} \odot \epsilon^{\theta}
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\mu\)</span> can be seen as the
+original weight, and <span class="math inline">\(\Sigma\)</span> is the
+factor to be multiplied to the noise to control the noise to be added
+onto the original weight, <span class="math inline">\(\epsilon\)</span>
+is the generated <strong>zero-mean noise with fixed statics</strong>,
+<strong>element-wise multiplied</strong> by the control factor. In this
+case, the original parameter <span class="math inline">\(\theta\)</span>
+to learn is replaced by a set of parameter <span
+class="math inline">\(\zeta=[\mu^{\theta},\Sigma^{\theta}]\)</span>. We
+can see from the equation, the <em>NoisyNet</em> doesn't change or
+control the distribution of the parameters in the network, but only
+learn to control the intensity of the noise
+<strong>automatically</strong>. The parameters of the noise <span
+class="math inline">\(\Sigma\)</span> can also be learned in the RL
+algorithm accompanying the parameters from the model.</p>
+<p>The paper proposed two approaches to generate noise:</p>
 <ul>
-<li>A random agent: <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py"
-class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py</a></li>
-<li>A scripted agent: <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py"
-class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py</a></li>
+<li><strong>Independent Gaussian noise</strong>: uses an independent
+Gaussian noise entry per weight.</li>
+<li><strong>Factorised Gaussian noise</strong>: uses an independent
+noise per each output and another independent noise per each input.</li>
 </ul>
-<h1 id="template-codes">Template Codes</h1>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template for approach 1.</span></span><br><span class="line"><span class="string">The agent randomly selects actions.</span></span><br><span class="line"><span class="string">Use the `pysc2.bin.agent` module to run `MyAgent` when your commands are in the current path:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent pysc2EnvTemplate.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># to be compatible with python 2.x</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> features</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define our own agent</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line">        <span class="comment"># RL algorithm here~ #</span></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get available actions</span></span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        <span class="comment"># randomly select one action and its argument</span></span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes]</span><br><span class="line">                <span class="keyword">for</span> arg <span class="keyword">in</span> self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="comment"># pack up the actions as a `FunctionCall`</span></span><br><span class="line">        function_call = actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># return the actions a.k.a. the function_call</span></span><br><span class="line">        <span class="keyword">return</span> function_call</span><br></pre></td></tr></table></figure>
+<h1 id="implementation-details">Implementation Details</h1>
+<p>The paper implements the <em>NoisyNet</em> framework into three RL
+algorithms to build the Noisy-DQN, Noisy-Dueling-DQN, and the Noisy-A3C
+and compare them with the original algorithms respectively.</p>
+<ol type="1">
+<li>For the noisy-based algorithms, the original exploration policies,
+like <span class="math inline">\(\epsilon\)</span>-greedy is
+canceled.</li>
+<li>A noisy network agent samples a new set of parameters after every
+step of optimization. Between optimization steps, the agent acts
+according to a fixed set of parameters.</li>
+<li>The <em>NoisyNet</em> is not implemented into all parameters in the
+original network, but only replace parts of them, like in the DQN and
+Dueling DQN, the noise is only added onto parameters in the fully
+connected layers.</li>
+</ol>
 ]]></content>
       <categories>
-        <category>Tutorial</category>
+        <category>RL Paper Notes</category>
       </categories>
       <tags>
         <tag>Reinforcement Learning</tag>
-        <tag>PySC2</tag>
-        <tag>Tools</tag>
+        <tag>Paper Notes</tag>
+        <tag>RL Techniques</tag>
+        <tag>Exploration</tag>
       </tags>
   </entry>
   <entry>
