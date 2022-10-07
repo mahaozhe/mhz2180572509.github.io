@@ -156,100 +156,6 @@ class="uri">https://github.com/deepmind/pysc2</a></li>
       </tags>
   </entry>
   <entry>
-    <title>[Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning</title>
-    <url>/2022/12-RLPaper-MF-4-DuelingDQN/</url>
-    <content><![CDATA[<blockquote>
-<p>Ziyu Wang, Tom Schaul, Matteo Hessel, Hado Hasselt, Marc Lanctot, and
-Nando Freitas. 2016. Dueling Network Architectures for Deep
-Reinforcement Learning. In Proceedings of The 33rd International
-Conference on Machine Learning, PMLR, 1995–2003. Retrieved August 8,
-2022 from https://proceedings.mlr.press/v48/wangf16.html</p>
-</blockquote>
-<span id="more"></span>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/4-1.png"
-alt="Dueling Network Architectures for Deep Reinforcement Learning" />
-<figcaption aria-hidden="true">Dueling Network Architectures for Deep
-Reinforcement Learning</figcaption>
-</figure>
-<h1 id="overview">Overview</h1>
-<p>The paper proposed a creative network <strong>architecture</strong>
-called <strong><em>dueling network</em></strong> to <strong>decouple the
-value and advantage</strong> in deep Q-networks algorithm. The
-architecture can be used to replace the original network in any
-applicable deep RL algorithm without imposing any change to the
-underlying algorithm. The authors conducted experiments to show better
-performances that outperform the state-of-the-art algorithms (2016-6) on
-Atari games domain.</p>
-<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>The new architecture main solves the following problems:</p>
-<ul>
-<li>In most environments, for many states, the selection of actions is
-almost irrelevant, which means, for these states, selecting any action
-by the agent does not affect the environment any more.</li>
-<li>In most popular deep RL algorithms, like DQN, DDQN, the difference
-of the Q-values among different actions are usually very small, which is
-easy to be influenced by any noise or oscillation.</li>
-</ul>
-<h1 id="main-innovations">Main Innovations</h1>
-<p>The proposed architecture is shown in the following figure:</p>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/4-2.png"
-alt="Dueling network architecture" />
-<figcaption aria-hidden="true">Dueling network architecture</figcaption>
-</figure>
-<p>At the end of the convolutional layers, the dueling network separate
-the output to two streams, one to estimate the state value <span
-class="math inline">\(V(s)\)</span> (a scaler) and one to estimate the
-<strong><em>advantage function</em></strong> of each action for the
-current state <span class="math inline">\(A(s,a)\)</span> (a vector with
-length of <span class="math inline">\(|A|\)</span>). Then the network
-use a sepcial <strong>aggregating layer</strong> to combine the value
-and the advantage together to output the Q-value <span
-class="math inline">\(Q(s,a)\)</span>.</p>
-<p>The relationship among these qualities under a specific policy <span
-class="math inline">\(\pi\)</span> is:</p>
-<p><span class="math display">\[\begin{equation}
-A^{\pi}(s,a)=Q^{\pi}(s,a)−V^{\pi}(s)
-\end{equation}\]</span></p>
-<p>which indicates that the advantage is the Q-value but measured by the
-value of that state, in this case, we actually have: <span
-class="math inline">\(\mathbb{E}_{a \backsim
-\pi(s)}[A^{\pi}(s,a)]=0\)</span>. The advantage is a <strong>relative
-measure</strong> of the importance of each action.</p>
-<p>One important problem is that: actually, in deep Q-networks based
-algorithms, we only estimate the final output Q-values in the algorithm,
-but not explicitly estimate or give out the state values and action
-advantages, and we cannot <strong>recover</strong> these two values only
-based on the given Q-value. So, to address this issue of identifiability
-problem, the paper <strong>forced the advantage function estimator to
-offset by the maximal of all advantages or the average of all
-advantages</strong>:</p>
-<ul>
-<li><span
-class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\max_{a&#39;}⁡{A(s,a&#39;)})\)</span></li>
-<li><span
-class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\frac{1}{|A|}\sum_{a&#39;}{A(s,a&#39;)})\)</span></li>
-</ul>
-<p>This trick, on the one hand, loses the original semantics of V and A
-because they are now off-target by a constant, but on the other hand, it
-increases the stability of the optimization. What's more, this doesn't
-change the relative rank of the A (and hence Q) values and the values
-can be computed <strong>automatically</strong>.</p>
-<p>The paper evaluated the performance of the above two methods, and
-show the results based on the second equation.</p>
-]]></content>
-      <categories>
-        <category>RL Paper Notes</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>Paper Notes</tag>
-        <tag>Model-Free RL</tag>
-        <tag>Deep Q-Learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>[DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs</title>
     <url>/2022/10-RLPaper-MF-2-DRQN/</url>
     <content><![CDATA[<blockquote>
@@ -429,6 +335,186 @@ https://proceedings.neurips.cc/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-
       </tags>
   </entry>
   <entry>
+    <title>[A3C] Asynchronous Methods for Deep Reinforcement Learning</title>
+    <url>/2022/15-RLPaper-MF-PG-1-A3C/</url>
+    <content><![CDATA[<blockquote>
+<p>Volodymyr Mnih, Adria Puigdomenech Badia, Mehdi Mirza, Alex Graves,
+Timothy Lillicrap, Tim Harley, David Silver, and Koray Kavukcuoglu.
+2016. Asynchronous Methods for Deep Reinforcement Learning. In
+Proceedings of The 33rd International Conference on Machine Learning,
+PMLR, 1928–1937. Retrieved October 4, 2022 from
+https://proceedings.mlr.press/v48/mniha16.html</p>
+</blockquote>
+<span id="more"></span>
+<figure>
+<img src="/images/RLPapers/Model-Free/PolicyGradients/1-1.png"
+alt="Asynchronous Methods for Deep Reinforcement Learning" />
+<figcaption aria-hidden="true">Asynchronous Methods for Deep
+Reinforcement Learning</figcaption>
+</figure>
+<h2 id="overview">Overview</h2>
+<p>The paper proposed a general framework to train RL agents
+asynchronously. The main idea is to initialize multiple learners on
+multiple threads of the multiple-core CPUs. There is a
+<strong>global</strong> learner and multiple <strong>actor</strong>
+learners. The actor learners push their parameters to the global learner
+and pull parameters from it. In this case, the samples from multiple
+learners can <strong>de-correlate</strong> the relations from the
+sequential trajectories, so that on-line learning can be conducted in
+deep RL domain, and save time and computing resources effectively. The
+paper implemented the asynchronous approach into four existing RL
+algorithms:</p>
+<ul>
+<li>Asynchronous one-step Q-learning</li>
+<li>Asynchronous one-step SARSA</li>
+<li>Asynchronous n-step Q-learning</li>
+<li><strong><em>Asynchronous Advantage Actor-Critic
+(A3C)</em></strong></li>
+</ul>
+<p>where the last one achieves best performance. The paper conducted
+some experiments on Atari games and show the A3C algorithm outperforms
+the best current baselines.</p>
+<h2 id="main-problems-to-solve">Main Problems to Solve</h2>
+<ol type="1">
+<li>Many deep reinforcement learning algorithms turns to off-policy
+approaches, as online learning cannot decorrelate the relations among
+the sequential transitions. So many techniques are proposed, e.g.,
+experience replay to <strong>aggregate over memory</strong>. In this
+case, they usually requires off-policy learning.</li>
+<li>The experience replay based algorithms or massively distributed
+architectures use more memory and computation per real interaction.</li>
+</ol>
+<h2 id="main-innovations">Main Innovations</h2>
+<p>The paper proposed a conceptually simple and lightweight framework
+for deep reinforcement learning that uses asynchronous gradient descent
+for optimization of deep neural network controllers. The algorithm
+instantiates multiple learners on multiple threads on multiple-core CPUs
+and one global learner. The workers parallelly learn in their own
+environment instances and share gradients or parameters with the global
+learner. In this case, there are several advantages:</p>
+<ol type="1">
+<li>The workers sample and learn by interacting with their own
+environments, so the samples are not correlated with each other, which
+solves the main problem of on-line RL approaches.</li>
+<li>Since the parallelism can decorrelates the data, then no experience
+replay is needed, which saves much time and computing resources, makes
+it possible to train agents on multiple-core CPUs but not GPUs, and even
+use much shorter time than training on GPUs.</li>
+<li>The main idea can make on-line algorithms to be implemented into
+deep RL domains, like actor-critic.</li>
+<li>Compared with the massively distributed approaches, the workers and
+the global learner are set on one single machine but multiple cores of
+CPU, so there is no need to cost time and resources on the communication
+between the machines.</li>
+<li>Different learners can have different exploration policies, so that
+better de-correlate the samples.</li>
+</ol>
+]]></content>
+      <categories>
+        <category>RL Paper Notes</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Paper Notes</tag>
+        <tag>Model-Free RL</tag>
+        <tag>Policy Gradients</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning</title>
+    <url>/2022/12-RLPaper-MF-4-DuelingDQN/</url>
+    <content><![CDATA[<blockquote>
+<p>Ziyu Wang, Tom Schaul, Matteo Hessel, Hado Hasselt, Marc Lanctot, and
+Nando Freitas. 2016. Dueling Network Architectures for Deep
+Reinforcement Learning. In Proceedings of The 33rd International
+Conference on Machine Learning, PMLR, 1995–2003. Retrieved August 8,
+2022 from https://proceedings.mlr.press/v48/wangf16.html</p>
+</blockquote>
+<span id="more"></span>
+<figure>
+<img src="/images/RLPapers/Model-Free/DeepQLearning/4-1.png"
+alt="Dueling Network Architectures for Deep Reinforcement Learning" />
+<figcaption aria-hidden="true">Dueling Network Architectures for Deep
+Reinforcement Learning</figcaption>
+</figure>
+<h1 id="overview">Overview</h1>
+<p>The paper proposed a creative network <strong>architecture</strong>
+called <strong><em>dueling network</em></strong> to <strong>decouple the
+value and advantage</strong> in deep Q-networks algorithm. The
+architecture can be used to replace the original network in any
+applicable deep RL algorithm without imposing any change to the
+underlying algorithm. The authors conducted experiments to show better
+performances that outperform the state-of-the-art algorithms (2016-6) on
+Atari games domain.</p>
+<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
+<p>The new architecture main solves the following problems:</p>
+<ul>
+<li>In most environments, for many states, the selection of actions is
+almost irrelevant, which means, for these states, selecting any action
+by the agent does not affect the environment any more.</li>
+<li>In most popular deep RL algorithms, like DQN, DDQN, the difference
+of the Q-values among different actions are usually very small, which is
+easy to be influenced by any noise or oscillation.</li>
+</ul>
+<h1 id="main-innovations">Main Innovations</h1>
+<p>The proposed architecture is shown in the following figure:</p>
+<figure>
+<img src="/images/RLPapers/Model-Free/DeepQLearning/4-2.png"
+alt="Dueling network architecture" />
+<figcaption aria-hidden="true">Dueling network architecture</figcaption>
+</figure>
+<p>At the end of the convolutional layers, the dueling network separate
+the output to two streams, one to estimate the state value <span
+class="math inline">\(V(s)\)</span> (a scaler) and one to estimate the
+<strong><em>advantage function</em></strong> of each action for the
+current state <span class="math inline">\(A(s,a)\)</span> (a vector with
+length of <span class="math inline">\(|A|\)</span>). Then the network
+use a sepcial <strong>aggregating layer</strong> to combine the value
+and the advantage together to output the Q-value <span
+class="math inline">\(Q(s,a)\)</span>.</p>
+<p>The relationship among these qualities under a specific policy <span
+class="math inline">\(\pi\)</span> is:</p>
+<p><span class="math display">\[\begin{equation}
+A^{\pi}(s,a)=Q^{\pi}(s,a)−V^{\pi}(s)
+\end{equation}\]</span></p>
+<p>which indicates that the advantage is the Q-value but measured by the
+value of that state, in this case, we actually have: <span
+class="math inline">\(\mathbb{E}_{a \backsim
+\pi(s)}[A^{\pi}(s,a)]=0\)</span>. The advantage is a <strong>relative
+measure</strong> of the importance of each action.</p>
+<p>One important problem is that: actually, in deep Q-networks based
+algorithms, we only estimate the final output Q-values in the algorithm,
+but not explicitly estimate or give out the state values and action
+advantages, and we cannot <strong>recover</strong> these two values only
+based on the given Q-value. So, to address this issue of identifiability
+problem, the paper <strong>forced the advantage function estimator to
+offset by the maximal of all advantages or the average of all
+advantages</strong>:</p>
+<ul>
+<li><span
+class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\max_{a&#39;}⁡{A(s,a&#39;)})\)</span></li>
+<li><span
+class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\frac{1}{|A|}\sum_{a&#39;}{A(s,a&#39;)})\)</span></li>
+</ul>
+<p>This trick, on the one hand, loses the original semantics of V and A
+because they are now off-target by a constant, but on the other hand, it
+increases the stability of the optimization. What's more, this doesn't
+change the relative rank of the A (and hence Q) values and the values
+can be computed <strong>automatically</strong>.</p>
+<p>The paper evaluated the performance of the above two methods, and
+show the results based on the second equation.</p>
+]]></content>
+      <categories>
+        <category>RL Paper Notes</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Paper Notes</tag>
+        <tag>Model-Free RL</tag>
+        <tag>Deep Q-Learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[PER] Prioritized Experience Replay</title>
     <url>/2022/13-RLPaper-Te-ER-1-PER/</url>
     <content><![CDATA[<blockquote>
@@ -515,70 +601,102 @@ training.</p>
       </tags>
   </entry>
   <entry>
-    <title>Use PySC2 Learning Environment - Define Your Own Agent</title>
-    <url>/2022/2-tutorial-pysc2-2/</url>
-    <content><![CDATA[<p>This is a brief introduction to an easy approach to use the
-<code>PySC2</code> by defining your own agent. A basic template for a
-self-defined agent can be found <a
-href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.
-(The codes are also attached at the end).</p>
-<ul>
-<li>For an overview of <code>PySC2</code>, you can proceed to
-<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
-<li>For an more comprehensive approach to define your own environment
-and agent, and also control the interaction between them, you can
-proceed to <a href="/2022/3-tutorial-pysc2-3/" title="Use PySC2 Learning Environment - Control Your Own Environment and Agent">Use PySC2 Learning Environment - Control Your Own Environment and Agent</a></li>
-</ul>
+    <title>[NoisyNet] Noisy Networks for Exploration</title>
+    <url>/2022/14-RLPaper-Te-Ex-1-NoisyNet/</url>
+    <content><![CDATA[<blockquote>
+<p>Meire Fortunato, Mohammad Gheshlaghi Azar, Bilal Piot, Jacob Menick,
+Ian Osband, Alex Graves, Vlad Mnih, Remi Munos, Demis Hassabis, Olivier
+Pietquin, Charles Blundell, and Shane Legg. 2019. Noisy Networks for
+Exploration. DOI: https://doi.org/10.48550/arXiv.1706.10295</p>
+</blockquote>
 <span id="more"></span>
-<h1 id="how-to-use-custom-defined-agents">How to Use Custom-Defined
-Agents?</h1>
-<p>Run the command:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent &lt;Agent&gt;</span><br></pre></td></tr></table></figure>
-<p>Assuming that your own agent class named
-<code>MyAgentClassName</code> is defined in <code>MyAgentFile.py</code>
-in a directory <code>[PATH]</code>, then when you run command in the
-<code>[PATH]</code> directory, you can identify the agent by:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent MyAgentFile.MyAgentClassName</span><br></pre></td></tr></table></figure>
-<h1 id="how-to-design-my-own-agent-and-make-it-interact-with-pysc2">How
-to Design My Own Agent and Make It Interact with PySC2?</h1>
-<p>Any custom designed agent should derive from the
-<code>BaseAgent</code> class (in <code>pysc2.agents.base_agent</code>)
-and override the <code>step(self, obs)</code> function, where the
-argument <code>obs</code> is the observations.</p>
-<h1 id="how-to-get-observations-and-rewards-from-the-environment">How to
-Get Observations and Rewards from The Environment?</h1>
-<p>The observations (as well as the rewards) taken from environment are
-all included in the parameter <code>obs</code> of the <code>step</code>
-function, such as the feature maps, valid actions, rewards and so
-on.</p>
-<p>for example: * state, viz. different types of feature maps:
-<code>obs.observation["screen"][feature_map_name]</code> * valid
-actions: <code>obs.observation["available_actions"]</code> or
-<code>obs.observation.available_actions</code> * rewards:
-<code>obs.reward</code></p>
-<h1 id="how-to-send-actions-to-interact-with-the-environment">How to
-Send Actions to Interact with The Environment?</h1>
-<p>In the <code>step</code> function, return the action (packed up as a
-<code>FunctionCall</code> instance).</p>
-<h1 id="more-reference">More Reference</h1>
+<figure>
+<img src="/images/RLPapers/Techniques/Exploration/Images/1-1.png"
+alt="Noisy Networks for Exploration" />
+<figcaption aria-hidden="true">Noisy Networks for
+Exploration</figcaption>
+</figure>
+<h1 id="overview">Overview</h1>
+<p>The paper proposed a general framework
+<strong><em>NoisyNet</em></strong> to introduce <strong>parametric
+noise</strong> to add to the weights in the network and aid the agent to
+exploration more efficiently and effectively. The framework can be
+implemented into any RL algorithms with <strong>gradient
+descent</strong>, like DQN, DDQN, Dueling DQN, DDPG, A3C, TRPO and so
+on, which also add little computational overhead. The <em>NoisyNet</em>
+can replace the original exploration policies, like <span
+class="math inline">\(\epsilon\)</span>-greedy exploration. The paper
+conducted experiments to compare the DQN, Dueling DQN and A3C algorihtms
+with <em>NoisyNet</em> respectively with the original version of these
+algorithms, the results show higher scores for a wide range of Atari
+games.</p>
+<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
+<p>For traditional exploration policies, like entropy reward and <span
+class="math inline">\(\epsilon\)</span>-greddy, there needs additional
+hyper-parameters and more importantly, the policy is independent of the
+states and policies learned by the agents.</p>
+<h1 id="main-innovations">Main Innovations</h1>
+<p>The key idea of the <em>NoisyNet</em> is to add a parametric noise to
+the parameters (weights) (to be learned) of the networks. The added
+noise can help to make the agent to select creative behaviors. More
+importantly, as the noise is parametric, and the parameters are also
+updated in the reinforcement learning algorithm by gradient descent with
+the original parameters, so the noise can be controlled by the model
+during the learning procedure and therefore, the noise is dependent of
+the states and the policy.</p>
+<p>The main method to change an original parameter <span
+class="math inline">\(\theta\)</span> to a new set of learnable
+parameters is to define:</p>
+<p><span class="math display">\[\begin{equation}
+\theta^{new}=\mu^{\theta}+\Sigma^{\theta} \odot \epsilon^{\theta}
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\mu\)</span> can be seen as the
+original weight, and <span class="math inline">\(\Sigma\)</span> is the
+factor to be multiplied to the noise to control the noise to be added
+onto the original weight, <span class="math inline">\(\epsilon\)</span>
+is the generated <strong>zero-mean noise with fixed statics</strong>,
+<strong>element-wise multiplied</strong> by the control factor. In this
+case, the original parameter <span class="math inline">\(\theta\)</span>
+to learn is replaced by a set of parameter <span
+class="math inline">\(\zeta=[\mu^{\theta},\Sigma^{\theta}]\)</span>. We
+can see from the equation, the <em>NoisyNet</em> doesn't change or
+control the distribution of the parameters in the network, but only
+learn to control the intensity of the noise
+<strong>automatically</strong>. The parameters of the noise <span
+class="math inline">\(\Sigma\)</span> can also be learned in the RL
+algorithm accompanying the parameters from the model.</p>
+<p>The paper proposed two approaches to generate noise:</p>
 <ul>
-<li>A random agent: <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py"
-class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py</a></li>
-<li>A scripted agent: <a
-href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py"
-class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py</a></li>
+<li><strong>Independent Gaussian noise</strong>: uses an independent
+Gaussian noise entry per weight.</li>
+<li><strong>Factorised Gaussian noise</strong>: uses an independent
+noise per each output and another independent noise per each input.</li>
 </ul>
-<h1 id="template-codes">Template Codes</h1>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template for approach 1.</span></span><br><span class="line"><span class="string">The agent randomly selects actions.</span></span><br><span class="line"><span class="string">Use the `pysc2.bin.agent` module to run `MyAgent` when your commands are in the current path:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent pysc2EnvTemplate.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># to be compatible with python 2.x</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> features</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define our own agent</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line">        <span class="comment"># RL algorithm here~ #</span></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get available actions</span></span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        <span class="comment"># randomly select one action and its argument</span></span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes]</span><br><span class="line">                <span class="keyword">for</span> arg <span class="keyword">in</span> self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="comment"># pack up the actions as a `FunctionCall`</span></span><br><span class="line">        function_call = actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># return the actions a.k.a. the function_call</span></span><br><span class="line">        <span class="keyword">return</span> function_call</span><br></pre></td></tr></table></figure>
+<h1 id="implementation-details">Implementation Details</h1>
+<p>The paper implements the <em>NoisyNet</em> framework into three RL
+algorithms to build the Noisy-DQN, Noisy-Dueling-DQN, and the Noisy-A3C
+and compare them with the original algorithms respectively.</p>
+<ol type="1">
+<li>For the noisy-based algorithms, the original exploration policies,
+like <span class="math inline">\(\epsilon\)</span>-greedy is
+canceled.</li>
+<li>A noisy network agent samples a new set of parameters after every
+step of optimization. Between optimization steps, the agent acts
+according to a fixed set of parameters.</li>
+<li>The <em>NoisyNet</em> is not implemented into all parameters in the
+original network, but only replace parts of them, like in the DQN and
+Dueling DQN, the noise is only added onto parameters in the fully
+connected layers.</li>
+</ol>
 ]]></content>
       <categories>
-        <category>Tutorial</category>
+        <category>RL Paper Notes</category>
       </categories>
       <tags>
         <tag>Reinforcement Learning</tag>
-        <tag>PySC2</tag>
-        <tag>Tools</tag>
+        <tag>Paper Notes</tag>
+        <tag>RL Techniques</tag>
+        <tag>Exploration</tag>
       </tags>
   </entry>
   <entry>
@@ -687,240 +805,70 @@ here. You may not use it, but you have to define it.</p>
       </tags>
   </entry>
   <entry>
-    <title>Poisson Distribution - Expectation, Variance, Likelihood and Regression</title>
-    <url>/2022/4-ProbabilisticML-1-Poisson/</url>
-    <content><![CDATA[<p>Poisson distribution can be used to express count data, which gives
-number of events occurring in a fixed interval of time or space and
-these events occur with a known constant mean rate and independently of
-the time since the last event.</p>
-<p>This blog aims to show the detailed proof of its expectation,
-variance, likelihood and regression.</p>
-<span id="more"></span>
-<h1 id="probability-density-formula">Probability Density Formula</h1>
-<p>Suppose a discrete random variable <span
-class="math inline">\(X\)</span> of non-negative integer numbers, and
-let <span
-class="math inline">\(\lambda=\mu(x;\beta)=e^{x\beta}\geq0\)</span>.
-Then we can say:</p>
-<p><span class="math display">\[\begin{equation}
-Y \sim Poisson(\mu(x,\beta))
-\end{equation}\]</span></p>
-<p>if:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-P(Y=y_i) &amp;= e^{-\lambda_i} \frac{\lambda_i^{y_i}}{y_i!}\\
-&amp;= e^{-\mu(x_i,\beta)} \frac{\mu(x_i,\beta)^{y_i}}{y_i!}
-\end{aligned}
-\end{equation}\]</span></p>
-<h1 id="expectation-and-variance">Expectation and Variance</h1>
-<p>The expectation and the variation of Poisson distribution both
-numerically equals to <span class="math inline">\(\lambda\)</span>:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y)=\mathrm{Var}(Y)=\lambda=\mu(x;\beta)
-\end{equation}\]</span></p>
-<h2 id="expectation">Expectation</h2>
-<p>To proof:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y) &amp;= \sum_{y=0}^{\infty}{y e^{-\lambda}
-\frac{\lambda^{y}}{y!}} \\
-&amp;= \sum_{y=1}^{\infty}{y e^{-\lambda} \frac{\lambda^{y}}{y!}} \\
-&amp;= \sum_{y=1}^{\infty}{e^{-\lambda} \frac{\lambda^{y -
-1}\lambda}{(y-1)!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{\lambda^{y -
-1}}{(y-1)!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Based on the Taylor expansion:</p>
-<p><span class="math display">\[\begin{equation}
-e^x = 1 + x+\frac{x^2}{2!}+...+\frac{x^n}{n!}+... =
-\sum_{k=1}^{\infty}{\frac{x^{k-1}}{(k-1)!}}
-\end{equation}\]</span></p>
-<p>We have:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \lambda e^{-\lambda}
-\sum_{y=1}^{\infty}{\frac{\lambda^{y - 1}}{(y-1)!}} = \lambda
-e^{-\lambda} e^{\lambda} = \lambda
-\end{equation}\]</span></p>
-<h2 id="variance">Variance</h2>
-<p>To compute the variance, we firstly compute the expectation of <span
-class="math inline">\(Y^2\)</span>:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y^2) &amp;= \sum_{y=0}^{\infty}{y^2 e^{-\lambda}
-\frac{\lambda^y}{y!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{y \lambda^{y -
-1}}{(y-1)!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{(y-1+1)\lambda^{y
-- 1}}{(y-1)!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Set <span class="math inline">\(m=k-1\)</span>, we have:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y^2) &amp;= \lambda e^{-\lambda}(\sum_{m=0}^{\infty}{\frac{m
-\lambda^m}{m!}} + \sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
-&amp;= \lambda e^{-\lambda}(\lambda
-\sum_{m=1}^{\infty}{\frac{\lambda^{m-1}}{(m-1)!}} +
-\sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
-&amp;= \lambda e^{-\lambda} (\lambda e^{\lambda} +e^{\lambda} ) =
-\lambda(\lambda + 1)
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Finally, we can derive:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 = \lambda(\lambda
-+ 1) - {\lambda}^2 = \lambda
-\end{equation}\]</span></p>
-<h1 id="log-likelihood">Log-Likelihood</h1>
-<p>Then we can derive the likelihood of <span
-class="math inline">\(Y\)</span> is:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-L(y;\beta) &amp;= \prod_{i=1}^{n}{P(Y=y_i)} \\
-&amp;= \prod_{i=1}^{n}{e^{-\mu(x_i;\beta)}}\prod_{i=1}^n
-\frac{\mu(x_i;\beta)^{y_i}}{y_i!}\\
-&amp;=
-e^{-\sum_{i=1}^{n}{\mu(x_i;\beta)}}\prod_{i=1}^{n}{\frac{\mu(x_i;\beta)^{y_i}}{y_i!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Then, we can get the log-likelihood as:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\ln{L(y;\beta)} &amp;=
--\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
-\ln{\mu(x_i;\beta)}}-\sum_{i=1}^{n}{\ln{y_i!}}\\
-&amp;= -\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
-\ln{\mu(x_i;\beta)}} + const
-\end{aligned}
-\end{equation}\]</span></p>
-<h1 id="poisson-regression">Poisson Regression</h1>
-<p>We can learn the parameters <span
-class="math inline">\(\beta\)</span> based on <em>MLE</em> to do
-regression. The following codes are based on
-<code>scipy.optimize.minimize</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">N = <span class="number">10000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line">Y = np.random.poisson(np.exp(np.dot(X, beta_real)))  <span class="comment"># here, \lambda = exp(X\beta)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Poisson distribution of np.random.poisson(lam):</span></span><br><span class="line"><span class="comment"># f(k; lam) = (lam^k exp(-lam)) / (k!)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function to maximize the loge-likelihood</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">beta</span>):</span></span><br><span class="line">    Xbeta = np.dot(X, beta)</span><br><span class="line">    exp_Xbeta = np.exp(Xbeta)  <span class="comment"># \lambda = exp(X beta)</span></span><br><span class="line">    loss = exp_Xbeta.<span class="built_in">sum</span>() - np.dot(Y, Xbeta)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">beta_ini = np.zeros(P)  <span class="comment"># initialize beta with zeros</span></span><br><span class="line">result = mm(loss_function, beta_ini)</span><br><span class="line">beta_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_predicted))</span><br></pre></td></tr></table></figure>
-<p>The output of the above codes:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real beta: [-<span class="number">0.40914376</span>  <span class="number">0.29649545</span>  <span class="number">0.59736634</span>  <span class="number">1.40512766</span> -<span class="number">0.55024536</span>]</span><br><span class="line">Predicted beta: [-<span class="number">0.40346132</span>  <span class="number">0.29799245</span>  <span class="number">0.60520007</span>  <span class="number">1.40263191</span> -<span class="number">0.54896361</span>]</span><br></pre></td></tr></table></figure>
-<h1 id="main-reference">Main Reference</h1>
+    <title>Use PySC2 Learning Environment - Define Your Own Agent</title>
+    <url>/2022/2-tutorial-pysc2-2/</url>
+    <content><![CDATA[<p>This is a brief introduction to an easy approach to use the
+<code>PySC2</code> by defining your own agent. A basic template for a
+self-defined agent can be found <a
+href="https://github.com/mhz2180572509/HowToUsePySC2/blob/main/Approach_1.py">here</a>.
+(The codes are also attached at the end).</p>
 <ul>
-<li>Lecture slides by Claudia Czado: <a
-href="https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf"
-class="uri">https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf</a></li>
-<li>Poisson distribution Wikipedia: <a
-href="https://en.wikipedia.org/wiki/Poisson_distribution"
-class="uri">https://en.wikipedia.org/wiki/Poisson_distribution</a></li>
-<li>Poisson regression by <em>ahwillia</em>: <a
-href="https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a"
-class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a></li>
+<li>For an overview of <code>PySC2</code>, you can proceed to
+<a href="/2022/1-tutorial-pysc2-1/" title="A Brief Tutorial to Use PySC2 Learning Environment (Overview)">A Brief Tutorial to Use PySC2 Learning Environment (Overview)</a>.</li>
+<li>For an more comprehensive approach to define your own environment
+and agent, and also control the interaction between them, you can
+proceed to <a href="/2022/3-tutorial-pysc2-3/" title="Use PySC2 Learning Environment - Control Your Own Environment and Agent">Use PySC2 Learning Environment - Control Your Own Environment and Agent</a></li>
 </ul>
+<span id="more"></span>
+<h1 id="how-to-use-custom-defined-agents">How to Use Custom-Defined
+Agents?</h1>
+<p>Run the command:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent &lt;Agent&gt;</span><br></pre></td></tr></table></figure>
+<p>Assuming that your own agent class named
+<code>MyAgentClassName</code> is defined in <code>MyAgentFile.py</code>
+in a directory <code>[PATH]</code>, then when you run command in the
+<code>[PATH]</code> directory, you can identify the agent by:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python -m pysc2.bin.agent --map &lt;Map&gt; --agent MyAgentFile.MyAgentClassName</span><br></pre></td></tr></table></figure>
+<h1 id="how-to-design-my-own-agent-and-make-it-interact-with-pysc2">How
+to Design My Own Agent and Make It Interact with PySC2?</h1>
+<p>Any custom designed agent should derive from the
+<code>BaseAgent</code> class (in <code>pysc2.agents.base_agent</code>)
+and override the <code>step(self, obs)</code> function, where the
+argument <code>obs</code> is the observations.</p>
+<h1 id="how-to-get-observations-and-rewards-from-the-environment">How to
+Get Observations and Rewards from The Environment?</h1>
+<p>The observations (as well as the rewards) taken from environment are
+all included in the parameter <code>obs</code> of the <code>step</code>
+function, such as the feature maps, valid actions, rewards and so
+on.</p>
+<p>for example: * state, viz. different types of feature maps:
+<code>obs.observation["screen"][feature_map_name]</code> * valid
+actions: <code>obs.observation["available_actions"]</code> or
+<code>obs.observation.available_actions</code> * rewards:
+<code>obs.reward</code></p>
+<h1 id="how-to-send-actions-to-interact-with-the-environment">How to
+Send Actions to Interact with The Environment?</h1>
+<p>In the <code>step</code> function, return the action (packed up as a
+<code>FunctionCall</code> instance).</p>
+<h1 id="more-reference">More Reference</h1>
+<ul>
+<li>A random agent: <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py"
+class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/random_agent.py</a></li>
+<li>A scripted agent: <a
+href="https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py"
+class="uri">https://github.com/deepmind/pysc2/blob/master/pysc2/agents/scripted_agent.py</a></li>
+</ul>
+<h1 id="template-codes">Template Codes</h1>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">A template for approach 1.</span></span><br><span class="line"><span class="string">The agent randomly selects actions.</span></span><br><span class="line"><span class="string">Use the `pysc2.bin.agent` module to run `MyAgent` when your commands are in the current path:</span></span><br><span class="line"><span class="string">    python -m pysc2.bin.agent --map &lt;MAP_NAME&gt; --agent pysc2EnvTemplate.MyAgent</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># to be compatible with python 2.x</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> division</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># import the BaseAgent class which we should derive from</span></span><br><span class="line"><span class="keyword">from</span> pysc2.agents <span class="keyword">import</span> base_agent</span><br><span class="line"><span class="comment"># import actions</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> actions</span><br><span class="line"><span class="comment"># import features</span></span><br><span class="line"><span class="keyword">from</span> pysc2.lib <span class="keyword">import</span> features</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># define our own agent</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyAgent</span>(<span class="params">base_agent.BaseAgent</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">step</span>(<span class="params">self, obs</span>):</span></span><br><span class="line">        <span class="built_in">super</span>(MyAgent, self).step(obs)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line">        <span class="comment"># RL algorithm here~ #</span></span><br><span class="line">        <span class="comment"># -------------------#</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># get available actions</span></span><br><span class="line">        function_id = np.random.choice(obs.observation.available_actions)</span><br><span class="line">        <span class="comment"># randomly select one action and its argument</span></span><br><span class="line">        args = [[np.random.randint(<span class="number">0</span>, size) <span class="keyword">for</span> size <span class="keyword">in</span> arg.sizes]</span><br><span class="line">                <span class="keyword">for</span> arg <span class="keyword">in</span> self.action_spec.functions[function_id].args]</span><br><span class="line">        <span class="comment"># pack up the actions as a `FunctionCall`</span></span><br><span class="line">        function_call = actions.FunctionCall(function_id, args)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># return the actions a.k.a. the function_call</span></span><br><span class="line">        <span class="keyword">return</span> function_call</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>Probabilistic Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Probability Theory</tag>
-        <tag>Machine Learning</tag>
-        <tag>Math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[NoisyNet] Noisy Networks for Exploration</title>
-    <url>/2022/14-RLPaper-Te-Ex-1-NoisyNet/</url>
-    <content><![CDATA[<blockquote>
-<p>Meire Fortunato, Mohammad Gheshlaghi Azar, Bilal Piot, Jacob Menick,
-Ian Osband, Alex Graves, Vlad Mnih, Remi Munos, Demis Hassabis, Olivier
-Pietquin, Charles Blundell, and Shane Legg. 2019. Noisy Networks for
-Exploration. DOI: https://doi.org/10.48550/arXiv.1706.10295</p>
-</blockquote>
-<span id="more"></span>
-<figure>
-<img src="/images/RLPapers/Techniques/Exploration/Images/1-1.png"
-alt="Noisy Networks for Exploration" />
-<figcaption aria-hidden="true">Noisy Networks for
-Exploration</figcaption>
-</figure>
-<h1 id="overview">Overview</h1>
-<p>The paper proposed a general framework
-<strong><em>NoisyNet</em></strong> to introduce <strong>parametric
-noise</strong> to add to the weights in the network and aid the agent to
-exploration more efficiently and effectively. The framework can be
-implemented into any RL algorithms with <strong>gradient
-descent</strong>, like DQN, DDQN, Dueling DQN, DDPG, A3C, TRPO and so
-on, which also add little computational overhead. The <em>NoisyNet</em>
-can replace the original exploration policies, like <span
-class="math inline">\(\epsilon\)</span>-greedy exploration. The paper
-conducted experiments to compare the DQN, Dueling DQN and A3C algorihtms
-with <em>NoisyNet</em> respectively with the original version of these
-algorithms, the results show higher scores for a wide range of Atari
-games.</p>
-<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>For traditional exploration policies, like entropy reward and <span
-class="math inline">\(\epsilon\)</span>-greddy, there needs additional
-hyper-parameters and more importantly, the policy is independent of the
-states and policies learned by the agents.</p>
-<h1 id="main-innovations">Main Innovations</h1>
-<p>The key idea of the <em>NoisyNet</em> is to add a parametric noise to
-the parameters (weights) (to be learned) of the networks. The added
-noise can help to make the agent to select creative behaviors. More
-importantly, as the noise is parametric, and the parameters are also
-updated in the reinforcement learning algorithm by gradient descent with
-the original parameters, so the noise can be controlled by the model
-during the learning procedure and therefore, the noise is dependent of
-the states and the policy.</p>
-<p>The main method to change an original parameter <span
-class="math inline">\(\theta\)</span> to a new set of learnable
-parameters is to define:</p>
-<p><span class="math display">\[\begin{equation}
-\theta^{new}=\mu^{\theta}+\Sigma^{\theta} \odot \epsilon^{\theta}
-\end{equation}\]</span></p>
-<p>where <span class="math inline">\(\mu\)</span> can be seen as the
-original weight, and <span class="math inline">\(\Sigma\)</span> is the
-factor to be multiplied to the noise to control the noise to be added
-onto the original weight, <span class="math inline">\(\epsilon\)</span>
-is the generated <strong>zero-mean noise with fixed statics</strong>,
-<strong>element-wise multiplied</strong> by the control factor. In this
-case, the original parameter <span class="math inline">\(\theta\)</span>
-to learn is replaced by a set of parameter <span
-class="math inline">\(\zeta=[\mu^{\theta},\Sigma^{\theta}]\)</span>. We
-can see from the equation, the <em>NoisyNet</em> doesn't change or
-control the distribution of the parameters in the network, but only
-learn to control the intensity of the noise
-<strong>automatically</strong>. The parameters of the noise <span
-class="math inline">\(\Sigma\)</span> can also be learned in the RL
-algorithm accompanying the parameters from the model.</p>
-<p>The paper proposed two approaches to generate noise:</p>
-<ul>
-<li><strong>Independent Gaussian noise</strong>: uses an independent
-Gaussian noise entry per weight.</li>
-<li><strong>Factorised Gaussian noise</strong>: uses an independent
-noise per each output and another independent noise per each input.</li>
-</ul>
-<h1 id="implementation-details">Implementation Details</h1>
-<p>The paper implements the <em>NoisyNet</em> framework into three RL
-algorithms to build the Noisy-DQN, Noisy-Dueling-DQN, and the Noisy-A3C
-and compare them with the original algorithms respectively.</p>
-<ol type="1">
-<li>For the noisy-based algorithms, the original exploration policies,
-like <span class="math inline">\(\epsilon\)</span>-greedy is
-canceled.</li>
-<li>A noisy network agent samples a new set of parameters after every
-step of optimization. Between optimization steps, the agent acts
-according to a fixed set of parameters.</li>
-<li>The <em>NoisyNet</em> is not implemented into all parameters in the
-original network, but only replace parts of them, like in the DQN and
-Dueling DQN, the noise is only added onto parameters in the fully
-connected layers.</li>
-</ol>
-]]></content>
-      <categories>
-        <category>RL Paper Notes</category>
+        <category>Tutorial</category>
       </categories>
       <tags>
         <tag>Reinforcement Learning</tag>
-        <tag>Paper Notes</tag>
-        <tag>RL Techniques</tag>
-        <tag>Exploration</tag>
+        <tag>PySC2</tag>
+        <tag>Tools</tag>
       </tags>
   </entry>
   <entry>
@@ -1100,6 +1048,259 @@ class="uri">https://online.stat.psu.edu/stat510/lesson/1</a></li>
 <li>Estimation of ARMA Models by Eric Zivot: <a
 href="https://faculty.washington.edu/ezivot/econ584/notes/armaestimation.pdf"
 class="uri">https://faculty.washington.edu/ezivot/econ584/notes/armaestimation.pdf</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Probabilistic Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Probability Theory</tag>
+        <tag>Machine Learning</tag>
+        <tag>Math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Poisson Distribution - Expectation, Variance, Likelihood and Regression</title>
+    <url>/2022/4-ProbabilisticML-1-Poisson/</url>
+    <content><![CDATA[<p>Poisson distribution can be used to express count data, which gives
+number of events occurring in a fixed interval of time or space and
+these events occur with a known constant mean rate and independently of
+the time since the last event.</p>
+<p>This blog aims to show the detailed proof of its expectation,
+variance, likelihood and regression.</p>
+<span id="more"></span>
+<h1 id="probability-density-formula">Probability Density Formula</h1>
+<p>Suppose a discrete random variable <span
+class="math inline">\(X\)</span> of non-negative integer numbers, and
+let <span
+class="math inline">\(\lambda=\mu(x;\beta)=e^{x\beta}\geq0\)</span>.
+Then we can say:</p>
+<p><span class="math display">\[\begin{equation}
+Y \sim Poisson(\mu(x,\beta))
+\end{equation}\]</span></p>
+<p>if:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+P(Y=y_i) &amp;= e^{-\lambda_i} \frac{\lambda_i^{y_i}}{y_i!}\\
+&amp;= e^{-\mu(x_i,\beta)} \frac{\mu(x_i,\beta)^{y_i}}{y_i!}
+\end{aligned}
+\end{equation}\]</span></p>
+<h1 id="expectation-and-variance">Expectation and Variance</h1>
+<p>The expectation and the variation of Poisson distribution both
+numerically equals to <span class="math inline">\(\lambda\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y)=\mathrm{Var}(Y)=\lambda=\mu(x;\beta)
+\end{equation}\]</span></p>
+<h2 id="expectation">Expectation</h2>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathrm{E}(Y) &amp;= \sum_{y=0}^{\infty}{y e^{-\lambda}
+\frac{\lambda^{y}}{y!}} \\
+&amp;= \sum_{y=1}^{\infty}{y e^{-\lambda} \frac{\lambda^{y}}{y!}} \\
+&amp;= \sum_{y=1}^{\infty}{e^{-\lambda} \frac{\lambda^{y -
+1}\lambda}{(y-1)!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{\lambda^{y -
+1}}{(y-1)!}}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Based on the Taylor expansion:</p>
+<p><span class="math display">\[\begin{equation}
+e^x = 1 + x+\frac{x^2}{2!}+...+\frac{x^n}{n!}+... =
+\sum_{k=1}^{\infty}{\frac{x^{k-1}}{(k-1)!}}
+\end{equation}\]</span></p>
+<p>We have:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \lambda e^{-\lambda}
+\sum_{y=1}^{\infty}{\frac{\lambda^{y - 1}}{(y-1)!}} = \lambda
+e^{-\lambda} e^{\lambda} = \lambda
+\end{equation}\]</span></p>
+<h2 id="variance">Variance</h2>
+<p>To compute the variance, we firstly compute the expectation of <span
+class="math inline">\(Y^2\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathrm{E}(Y^2) &amp;= \sum_{y=0}^{\infty}{y^2 e^{-\lambda}
+\frac{\lambda^y}{y!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{y \lambda^{y -
+1}}{(y-1)!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{(y-1+1)\lambda^{y
+- 1}}{(y-1)!}}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Set <span class="math inline">\(m=k-1\)</span>, we have:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathrm{E}(Y^2) &amp;= \lambda e^{-\lambda}(\sum_{m=0}^{\infty}{\frac{m
+\lambda^m}{m!}} + \sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
+&amp;= \lambda e^{-\lambda}(\lambda
+\sum_{m=1}^{\infty}{\frac{\lambda^{m-1}}{(m-1)!}} +
+\sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
+&amp;= \lambda e^{-\lambda} (\lambda e^{\lambda} +e^{\lambda} ) =
+\lambda(\lambda + 1)
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Finally, we can derive:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 = \lambda(\lambda
++ 1) - {\lambda}^2 = \lambda
+\end{equation}\]</span></p>
+<h1 id="log-likelihood">Log-Likelihood</h1>
+<p>Then we can derive the likelihood of <span
+class="math inline">\(Y\)</span> is:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+L(y;\beta) &amp;= \prod_{i=1}^{n}{P(Y=y_i)} \\
+&amp;= \prod_{i=1}^{n}{e^{-\mu(x_i;\beta)}}\prod_{i=1}^n
+\frac{\mu(x_i;\beta)^{y_i}}{y_i!}\\
+&amp;=
+e^{-\sum_{i=1}^{n}{\mu(x_i;\beta)}}\prod_{i=1}^{n}{\frac{\mu(x_i;\beta)^{y_i}}{y_i!}}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Then, we can get the log-likelihood as:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\ln{L(y;\beta)} &amp;=
+-\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
+\ln{\mu(x_i;\beta)}}-\sum_{i=1}^{n}{\ln{y_i!}}\\
+&amp;= -\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
+\ln{\mu(x_i;\beta)}} + const
+\end{aligned}
+\end{equation}\]</span></p>
+<h1 id="poisson-regression">Poisson Regression</h1>
+<p>We can learn the parameters <span
+class="math inline">\(\beta\)</span> based on <em>MLE</em> to do
+regression. The following codes are based on
+<code>scipy.optimize.minimize</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">N = <span class="number">10000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line">Y = np.random.poisson(np.exp(np.dot(X, beta_real)))  <span class="comment"># here, \lambda = exp(X\beta)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Poisson distribution of np.random.poisson(lam):</span></span><br><span class="line"><span class="comment"># f(k; lam) = (lam^k exp(-lam)) / (k!)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function to maximize the loge-likelihood</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">beta</span>):</span></span><br><span class="line">    Xbeta = np.dot(X, beta)</span><br><span class="line">    exp_Xbeta = np.exp(Xbeta)  <span class="comment"># \lambda = exp(X beta)</span></span><br><span class="line">    loss = exp_Xbeta.<span class="built_in">sum</span>() - np.dot(Y, Xbeta)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">beta_ini = np.zeros(P)  <span class="comment"># initialize beta with zeros</span></span><br><span class="line">result = mm(loss_function, beta_ini)</span><br><span class="line">beta_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_predicted))</span><br></pre></td></tr></table></figure>
+<p>The output of the above codes:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real beta: [-<span class="number">0.40914376</span>  <span class="number">0.29649545</span>  <span class="number">0.59736634</span>  <span class="number">1.40512766</span> -<span class="number">0.55024536</span>]</span><br><span class="line">Predicted beta: [-<span class="number">0.40346132</span>  <span class="number">0.29799245</span>  <span class="number">0.60520007</span>  <span class="number">1.40263191</span> -<span class="number">0.54896361</span>]</span><br></pre></td></tr></table></figure>
+<h1 id="main-reference">Main Reference</h1>
+<ul>
+<li>Lecture slides by Claudia Czado: <a
+href="https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf"
+class="uri">https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf</a></li>
+<li>Poisson distribution Wikipedia: <a
+href="https://en.wikipedia.org/wiki/Poisson_distribution"
+class="uri">https://en.wikipedia.org/wiki/Poisson_distribution</a></li>
+<li>Poisson regression by <em>ahwillia</em>: <a
+href="https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a"
+class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Probabilistic Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Probability Theory</tag>
+        <tag>Machine Learning</tag>
+        <tag>Math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Negative Binomial Distribution - Expectation, Variance, Likelihood and Regression</title>
+    <url>/2022/5-ProbabilisticML-2-NB/</url>
+    <content><![CDATA[<p>This blog aims to show the detailed derivation of the expectation,
+variance, likelihood and regression of <em>Negative Binomial
+Distribution</em>.</p>
+<p>The Poisson distribution can be generalized by including a gamma
+noise variable, then we can get the negative binomial distribution.</p>
+<span id="more"></span>
+<h1 id="probability-density-formula">Probability Density Formula</h1>
+<p><span class="math display">\[\begin{equation}
+P(Y=y_i;\mu,\alpha) =
+\frac{\Gamma(y_i+\alpha^{-1})}{\Gamma(y_i+1)\Gamma(\alpha^{-1})}(\frac{\alpha^{-1}}{\alpha^{-1}\mu})^{\alpha^{-1}}(\frac{\mu}{\alpha^{-1}+\mu})^{y_i}
+\end{equation}\]</span></p>
+<p>where: <span class="math display">\[\begin{equation}
+\mu_i=e^{x_i\beta}
+\end{equation}\]</span></p>
+<p>We can set <span class="math inline">\(n=\alpha^{-1}\)</span> and
+<span
+class="math inline">\(p=\frac{\alpha^{-1}}{\alpha^{-1}+\mu}\)</span>,
+then the above formula can be rewritten as:</p>
+<p><span class="math display">\[\begin{equation}
+P(Y=y_i;n,p) =
+\frac{\Gamma(y_i+n)}{\Gamma(y_i+1)\Gamma(n)}p^n(1-p)^{y_i}
+\end{equation}\]</span></p>
+<h1 id="expectation-and-variance">Expectation and Variance</h1>
+<p>The expectation and the variance is:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \frac{n(1-p)}{p}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(Y) = \frac{n(1-p)}{p^2}
+\end{equation}\]</span></p>
+<h2 id="expectation">Expectation</h2>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\mathrm{E}(Y) &amp; =
+\sum_{y=0}^{\infty}{y\frac{(y+n-1)!}{(y)!(n-1)!}p^n(1-p)^{y}} \\
+&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{(y-1)!(n-1)!}p^n(1-p)^y}\\
+&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{y!n!}p^{n+1}(1-p)^{y-1}}\\
+&amp;= \frac{n(1-p)}{p}
+\sum_{y=1}^{\infty}{\frac{(y+n-1)!}{(y-1)!n!}p^{n+1}(1-p)^{y-1}} \\
+&amp;= \frac{n(1-p)}{p}
+\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}}
+\end{aligned}
+\end{equation*}\]</span></p>
+<p>As the integral sum of the negative binomial distribution is 1:</p>
+<p><span class="math display">\[\begin{equation}
+\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}} = 1
+\end{equation}\]</span></p>
+<p>So, we can get:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \frac{n(1-p)}{p}
+\end{equation}\]</span></p>
+<h2 id="variance">Variance</h2>
+<p>Before we compute the variance, we firstly compute <span
+class="math inline">\(\mathrm{E}(Y(Y-1))\)</span>:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\mathrm{E}(Y(Y-1)) &amp; =
+\sum_{y=0}^{\infty}{y(y-1)\frac{(y+n-1)!}{y!(n-1)!}p^n(1-p)^y} \\
+&amp;= \frac{n(r+1)(1-p)^2}{p^2}
+\sum_{y=2}^{\infty}{\frac{((n+2)+(y-2)-1)!}{(y-2)!(n+1)!}p^{n+2}(1-p)^{y-2}}
+\\
+&amp;= \frac{n(r+1)(1-p)^2}{p^2}
+\sum_{z=0}^{\infty}{\frac{((n+2)+z-1)!}{z!(n+1)!}p^{n+2}(1-p)^{z}} \\
+&amp;= \frac{n(r+1)(1-p)^2}{p^2}
+\end{aligned}
+\end{equation*}\]</span></p>
+<p>Then we can get:</p>
+<p><span class="math display">\[\begin{equation}
+E(Y^2) = E(Y(Y-1)) + E(Y) = \frac{n(n+1)(1-p)^2 + n(1-p)p}{p^2}
+\end{equation}\]</span></p>
+<p>Finally, we can compute the variance as:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 =
+\frac{n(1-p)}{p^2}
+\end{equation}\]</span></p>
+<h1 id="log-likelihood">Log-Likelihood</h1>
+<p>The log-likelihood that to maximize in an MLE approach is:</p>
+<p><span class="math display">\[\begin{equation}
+\sum_{i=1}^{n}{\ln(\Gamma(y_i+\alpha^{-1})) - \ln(\Gamma(\alpha^{-1})) -
+\ln(\Gamma(y_i+1)) - (\alpha^{-1} + y_i)\ln(1+\alpha \mu_i)
++y_i(\ln(\alpha)+\ln(\mu_i))}
+\end{equation}\]</span></p>
+<h1 id="negative-binomial-regression">Negative Binomial Regression</h1>
+<p>We can learn the parameters based on <em>MLE</em> to do regression.
+The following codes are based on
+<code>scipy.optimize.minimize</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> loggamma</span><br><span class="line"></span><br><span class="line">N = <span class="number">1000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">alpha_real = np.random.randint(<span class="number">1</span>, <span class="number">10</span>)  <span class="comment"># the real values of \alpha, a scalar</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># To apply the np.random.negative_binomial function:</span></span><br><span class="line"><span class="comment"># n = 1 / alpha_real</span></span><br><span class="line"><span class="comment"># p = (1 / alpha_real) / ((1 / alpha_real) + exp(X * real_beta))</span></span><br><span class="line"></span><br><span class="line">n = <span class="number">1</span> / alpha_real</span><br><span class="line">p = n / (n + np.exp(np.dot(X, beta_real)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># The negative binomial distribution defined from np.random.negative_binomial(n,p):</span></span><br><span class="line"><span class="comment"># P(y; n, p) = ((y+n-1)!)/(y!(n-1)!) * (p^n) * (1-p)^y</span></span><br><span class="line">Y = np.random.negative_binomial(n, p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss and gradient function</span></span><br><span class="line"><span class="comment"># params = [alpha, beta]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">params</span>):</span></span><br><span class="line">    alpha = params[<span class="number">0</span>]</span><br><span class="line">    beta = params[<span class="number">1</span>:]</span><br><span class="line">    mu = np.exp(np.dot(X, beta))</span><br><span class="line"></span><br><span class="line">    log_likelihood = loggamma(Y + <span class="number">1</span> / alpha).<span class="built_in">sum</span>() \</span><br><span class="line">                     - loggamma(alpha) * N \</span><br><span class="line">                     - loggamma(Y + <span class="number">1</span>).<span class="built_in">sum</span>() \</span><br><span class="line">                     - <span class="number">1</span> / alpha * (np.log(<span class="number">1</span> + alpha * mu).<span class="built_in">sum</span>()) \</span><br><span class="line">                     - np.dot(Y, np.log(<span class="number">1</span> + alpha * mu)) \</span><br><span class="line">                     + (Y * np.log(alpha)).<span class="built_in">sum</span>() \</span><br><span class="line">                     + np.dot(Y, np.log(mu))</span><br><span class="line">    <span class="keyword">return</span> -log_likelihood</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">params_ini = np.ones(P + <span class="number">1</span>)  <span class="comment"># initialize params ([alpha, beta]) with zeros</span></span><br><span class="line">result = mm(loss_function, params_ini)</span><br><span class="line">params_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(alpha_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">0</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">1</span>:]))</span><br></pre></td></tr></table></figure>
+<p>The output of the above codes:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real alpha: <span class="number">2</span></span><br><span class="line">Real beta: [ <span class="number">1.6794512</span>  -<span class="number">0.22624054</span>  <span class="number">1.15579192</span>  <span class="number">0.35920843</span>  <span class="number">0.09326148</span>]</span><br><span class="line">Predicted alpha: <span class="number">2.0811572484796637</span></span><br><span class="line">Predicted beta: [ <span class="number">1.69292056</span> -<span class="number">0.28083378</span>  <span class="number">1.18706627</span>  <span class="number">0.43136325</span>  <span class="number">0.1085059</span> ]</span><br></pre></td></tr></table></figure>
+<h1 id="main-reference">Main Reference</h1>
+<ul>
+<li>Wikipedia of Negative binomial distribution: <a
+href="https://en.wikipedia.org/wiki/Negative_binomial_distribution"
+class="uri">https://en.wikipedia.org/wiki/Negative_binomial_distribution</a></li>
+<li>Negative Binomial Distributio introduction: <a
+href="http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf"
+class="uri">http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf</a></li>
+<li>Chapter 326 from NCSS Statistical Software: <a
+href="https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf"
+class="uri">https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -1298,118 +1499,124 @@ class="uri">https://medium.com/analytics-vidhya/an-ar-1-model-estimation-with-me
       </tags>
   </entry>
   <entry>
-    <title>Negative Binomial Distribution - Expectation, Variance, Likelihood and Regression</title>
-    <url>/2022/5-ProbabilisticML-2-NB/</url>
-    <content><![CDATA[<p>This blog aims to show the detailed derivation of the expectation,
-variance, likelihood and regression of <em>Negative Binomial
-Distribution</em>.</p>
-<p>The Poisson distribution can be generalized by including a gamma
-noise variable, then we can get the negative binomial distribution.</p>
+    <title>[DQN] Human-level control through deep reinforcement learning</title>
+    <url>/2022/9-RLPaper-MF-1-DQN/</url>
+    <content><![CDATA[<blockquote>
+<p>[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves,
+Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. 2013. Playing
+Atari with Deep Reinforcement Learning. DOI:<a
+href="https://doi.org/10.48550/arXiv.1312.5602"
+class="uri">https://doi.org/10.48550/arXiv.1312.5602</a></p>
+</blockquote>
+<blockquote>
+<p>[2] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A. Rusu,
+Joel Veness, Marc G. Bellemare, Alex Graves, Martin Riedmiller, Andreas
+K. Fidjeland, Georg Ostrovski, Stig Petersen, Charles Beattie, Amir
+Sadik, Ioannis Antonoglou, Helen King, Dharshan Kumaran, Daan Wierstra,
+Shane Legg, and Demis Hassabis. 2015. Human-level control through deep
+reinforcement learning. Nature 518, 7540 (February 2015), 529–533.
+DOI:<a href="https://doi.org/10.1038/nature14236"
+class="uri">https://doi.org/10.1038/nature14236</a></p>
+</blockquote>
 <span id="more"></span>
-<h1 id="probability-density-formula">Probability Density Formula</h1>
-<p><span class="math display">\[\begin{equation}
-P(Y=y_i;\mu,\alpha) =
-\frac{\Gamma(y_i+\alpha^{-1})}{\Gamma(y_i+1)\Gamma(\alpha^{-1})}(\frac{\alpha^{-1}}{\alpha^{-1}\mu})^{\alpha^{-1}}(\frac{\mu}{\alpha^{-1}+\mu})^{y_i}
-\end{equation}\]</span></p>
-<p>where: <span class="math display">\[\begin{equation}
-\mu_i=e^{x_i\beta}
-\end{equation}\]</span></p>
-<p>We can set <span class="math inline">\(n=\alpha^{-1}\)</span> and
-<span
-class="math inline">\(p=\frac{\alpha^{-1}}{\alpha^{-1}+\mu}\)</span>,
-then the above formula can be rewritten as:</p>
-<p><span class="math display">\[\begin{equation}
-P(Y=y_i;n,p) =
-\frac{\Gamma(y_i+n)}{\Gamma(y_i+1)\Gamma(n)}p^n(1-p)^{y_i}
-\end{equation}\]</span></p>
-<h1 id="expectation-and-variance">Expectation and Variance</h1>
-<p>The expectation and the variance is:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \frac{n(1-p)}{p}
-\end{equation}\]</span></p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \frac{n(1-p)}{p^2}
-\end{equation}\]</span></p>
-<h2 id="expectation">Expectation</h2>
-<p>To proof:</p>
-<p><span class="math display">\[\begin{equation*}
-\begin{aligned}
-\mathrm{E}(Y) &amp; =
-\sum_{y=0}^{\infty}{y\frac{(y+n-1)!}{(y)!(n-1)!}p^n(1-p)^{y}} \\
-&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{(y-1)!(n-1)!}p^n(1-p)^y}\\
-&amp;= \sum_{y=0}^{\infty}{\frac{(y+n-1)!}{y!n!}p^{n+1}(1-p)^{y-1}}\\
-&amp;= \frac{n(1-p)}{p}
-\sum_{y=1}^{\infty}{\frac{(y+n-1)!}{(y-1)!n!}p^{n+1}(1-p)^{y-1}} \\
-&amp;= \frac{n(1-p)}{p}
-\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}}
-\end{aligned}
-\end{equation*}\]</span></p>
-<p>As the integral sum of the negative binomial distribution is 1:</p>
-<p><span class="math display">\[\begin{equation}
-\sum_{z=0}^{\infty}{\frac{((n+1)+z-1)!}{z!n!}p^{n+1}(1-p)^{z}} = 1
-\end{equation}\]</span></p>
-<p>So, we can get:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \frac{n(1-p)}{p}
-\end{equation}\]</span></p>
-<h2 id="variance">Variance</h2>
-<p>Before we compute the variance, we firstly compute <span
-class="math inline">\(\mathrm{E}(Y(Y-1))\)</span>:</p>
-<p><span class="math display">\[\begin{equation*}
-\begin{aligned}
-\mathrm{E}(Y(Y-1)) &amp; =
-\sum_{y=0}^{\infty}{y(y-1)\frac{(y+n-1)!}{y!(n-1)!}p^n(1-p)^y} \\
-&amp;= \frac{n(r+1)(1-p)^2}{p^2}
-\sum_{y=2}^{\infty}{\frac{((n+2)+(y-2)-1)!}{(y-2)!(n+1)!}p^{n+2}(1-p)^{y-2}}
-\\
-&amp;= \frac{n(r+1)(1-p)^2}{p^2}
-\sum_{z=0}^{\infty}{\frac{((n+2)+z-1)!}{z!(n+1)!}p^{n+2}(1-p)^{z}} \\
-&amp;= \frac{n(r+1)(1-p)^2}{p^2}
-\end{aligned}
-\end{equation*}\]</span></p>
-<p>Then we can get:</p>
-<p><span class="math display">\[\begin{equation}
-E(Y^2) = E(Y(Y-1)) + E(Y) = \frac{n(n+1)(1-p)^2 + n(1-p)p}{p^2}
-\end{equation}\]</span></p>
-<p>Finally, we can compute the variance as:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 =
-\frac{n(1-p)}{p^2}
-\end{equation}\]</span></p>
-<h1 id="log-likelihood">Log-Likelihood</h1>
-<p>The log-likelihood that to maximize in an MLE approach is:</p>
-<p><span class="math display">\[\begin{equation}
-\sum_{i=1}^{n}{\ln(\Gamma(y_i+\alpha^{-1})) - \ln(\Gamma(\alpha^{-1})) -
-\ln(\Gamma(y_i+1)) - (\alpha^{-1} + y_i)\ln(1+\alpha \mu_i)
-+y_i(\ln(\alpha)+\ln(\mu_i))}
-\end{equation}\]</span></p>
-<h1 id="negative-binomial-regression">Negative Binomial Regression</h1>
-<p>We can learn the parameters based on <em>MLE</em> to do regression.
-The following codes are based on
-<code>scipy.optimize.minimize</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> loggamma</span><br><span class="line"></span><br><span class="line">N = <span class="number">1000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">alpha_real = np.random.randint(<span class="number">1</span>, <span class="number">10</span>)  <span class="comment"># the real values of \alpha, a scalar</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># To apply the np.random.negative_binomial function:</span></span><br><span class="line"><span class="comment"># n = 1 / alpha_real</span></span><br><span class="line"><span class="comment"># p = (1 / alpha_real) / ((1 / alpha_real) + exp(X * real_beta))</span></span><br><span class="line"></span><br><span class="line">n = <span class="number">1</span> / alpha_real</span><br><span class="line">p = n / (n + np.exp(np.dot(X, beta_real)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># The negative binomial distribution defined from np.random.negative_binomial(n,p):</span></span><br><span class="line"><span class="comment"># P(y; n, p) = ((y+n-1)!)/(y!(n-1)!) * (p^n) * (1-p)^y</span></span><br><span class="line">Y = np.random.negative_binomial(n, p)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss and gradient function</span></span><br><span class="line"><span class="comment"># params = [alpha, beta]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">params</span>):</span></span><br><span class="line">    alpha = params[<span class="number">0</span>]</span><br><span class="line">    beta = params[<span class="number">1</span>:]</span><br><span class="line">    mu = np.exp(np.dot(X, beta))</span><br><span class="line"></span><br><span class="line">    log_likelihood = loggamma(Y + <span class="number">1</span> / alpha).<span class="built_in">sum</span>() \</span><br><span class="line">                     - loggamma(alpha) * N \</span><br><span class="line">                     - loggamma(Y + <span class="number">1</span>).<span class="built_in">sum</span>() \</span><br><span class="line">                     - <span class="number">1</span> / alpha * (np.log(<span class="number">1</span> + alpha * mu).<span class="built_in">sum</span>()) \</span><br><span class="line">                     - np.dot(Y, np.log(<span class="number">1</span> + alpha * mu)) \</span><br><span class="line">                     + (Y * np.log(alpha)).<span class="built_in">sum</span>() \</span><br><span class="line">                     + np.dot(Y, np.log(mu))</span><br><span class="line">    <span class="keyword">return</span> -log_likelihood</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">params_ini = np.ones(P + <span class="number">1</span>)  <span class="comment"># initialize params ([alpha, beta]) with zeros</span></span><br><span class="line">result = mm(loss_function, params_ini)</span><br><span class="line">params_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(alpha_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted alpha: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">0</span>]))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted[<span class="number">1</span>:]))</span><br></pre></td></tr></table></figure>
-<p>The output of the above codes:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real alpha: <span class="number">2</span></span><br><span class="line">Real beta: [ <span class="number">1.6794512</span>  -<span class="number">0.22624054</span>  <span class="number">1.15579192</span>  <span class="number">0.35920843</span>  <span class="number">0.09326148</span>]</span><br><span class="line">Predicted alpha: <span class="number">2.0811572484796637</span></span><br><span class="line">Predicted beta: [ <span class="number">1.69292056</span> -<span class="number">0.28083378</span>  <span class="number">1.18706627</span>  <span class="number">0.43136325</span>  <span class="number">0.1085059</span> ]</span><br></pre></td></tr></table></figure>
-<h1 id="main-reference">Main Reference</h1>
+<figure>
+<img src="/images/RLPapers/Model-Free/DeepQLearning/1-1.png"
+alt="Playing Atari with Deep Reinforcement Learning." />
+<figcaption aria-hidden="true">Playing Atari with Deep Reinforcement
+Learning.</figcaption>
+</figure>
+<figure>
+<img src="/images/RLPapers/Model-Free/DeepQLearning/1-2.png"
+alt="Human-level control through deep reinforcement learning." />
+<figcaption aria-hidden="true">Human-level control through deep
+reinforcement learning.</figcaption>
+</figure>
+<h1 id="overview">Overview</h1>
+<p>The proposed <strong><em>Deep Q-Learning Network</em></strong>
+(<strong><em>DQN</em></strong>) is the first algorithm to introduce
+(deep) neural networks as function approximators (in other words,
+non-linear function approximators) into reinforcement learning. DQN is a
+<strong>model-free</strong>, <strong>off-policy</strong>,
+<strong>(Q-)value based</strong> algorithm, which can be implemented
+onto environments with continuous state space but only with discrete
+action space. DQN can be trained <strong>end-to-end</strong>, which
+means it could receive high-dimensional state's representations as
+input. The paper evaluated the DQN on 7 Atari games and 49 Atari games
+with the same hyper-parameters which shows the great generalization
+ability of DQN.</p>
+<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
+<p>To introduce deep neural networks (non-linear functions) as
+approximators in reinforcement learning has to overcome some
+problems:</p>
+<ol type="1">
+<li>Most deep learning algorithms (like classifications, regressions)
+assume that the data samples are independent, however, in RL
+environments, the samples in a sequence are <strong>highly
+correlated</strong>.</li>
+<li>Most deep learning algorithms require large amounts of hand-labelled
+training data, however, RL algorithms need to learn from observations
+and information directly from environment, e.g., the scalar reward
+signals, which is frequently sparse, noisy and delayed.</li>
+<li>Most deep learning methods assume they are learnt in a fixed
+underlaying distribution, however, in RL, the <strong>data distribution
+changes</strong> as the agents updates their behaviors during the
+learning process.</li>
+</ol>
+<h1 id="main-innovations">Main Innovations</h1>
+<p>The paper mainly proposed two techniques to overcome the problems:
+(a) <strong>experience replay</strong> and (b) <strong>target network
+with periodically update</strong>:</p>
+<ol type="1">
+<li>Experience replay: initialize a replay buffer and store the
+transitions <span class="math inline">\(\{s_t,a_t,r_t,s_{t+1}\}\)</span>
+in it, for each iteration, randomly draw samples from the replay buffer
+and train the network using stochastic gradient descent (SGD).
 <ul>
-<li>Wikipedia of Negative binomial distribution: <a
-href="https://en.wikipedia.org/wiki/Negative_binomial_distribution"
-class="uri">https://en.wikipedia.org/wiki/Negative_binomial_distribution</a></li>
-<li>Negative Binomial Distributio introduction: <a
-href="http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf"
-class="uri">http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf</a></li>
-<li>Chapter 326 from NCSS Statistical Software: <a
-href="https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf"
-class="uri">https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Negative_Binomial_Regression.pdf</a></li>
+<li>Can break the correlations among samples so as to reduce the
+variance</li>
+<li>Each sample can be drawn in many rounds of updates, which allows for
+greater data efficiency.</li>
+</ul></li>
+<li>Target network with periodically update: the algorithm initializes
+two networks with the same hyper-parameters and architecture, for each
+iteration, update the policy network with SGD, for each <span
+class="math inline">\(K\)</span> (a hyper-parameter) iterations,
+directly copy the parameters in policy network to target network. In the
+training, the action is selected by target network.
+<ul>
+<li>The distribution of the behavior to select the action can be
+smooth.</li>
+</ul></li>
+</ol>
+<p>The algorithm:</p>
+<figure>
+<img src="/images/RLPapers/Model-Free/DeepQLearning/1-3.png"
+alt="DQN algorithm." />
+<figcaption aria-hidden="true">DQN algorithm.</figcaption>
+</figure>
+<h1 id="implementation-details">Implementation Details</h1>
+<ul>
+<li>Using an adaptive learning rate method such as RMSProp or ADADELTA
+that maintains a per-parameter learning rate α, and adjusts α according
+to the history of gradient updates to that parameter.</li>
+<li>Using the <strong>last 4 frames</strong> of a history and stacks
+them as the input to the Q-network, which can capture the information
+about objects' speed and acceleration.</li>
+<li>Pre-processing to change the RGB screens to gray-scale images and
+crop the central part.</li>
+<li>During the training, the agent observes the environment and selects
+an action for each <span class="math inline">\(k\)</span> frames of the
+video game.</li>
 </ul>
 ]]></content>
       <categories>
-        <category>Probabilistic Machine Learning</category>
+        <category>RL Paper Notes</category>
       </categories>
       <tags>
-        <tag>Probability Theory</tag>
-        <tag>Machine Learning</tag>
-        <tag>Math</tag>
+        <tag>Reinforcement Learning</tag>
+        <tag>Paper Notes</tag>
+        <tag>Model-Free RL</tag>
+        <tag>Deep Q-Learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1655,127 +1862,6 @@ samples if rejected.</li>
         <tag>Probability Theory</tag>
         <tag>Machine Learning</tag>
         <tag>Math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[DQN] Human-level control through deep reinforcement learning</title>
-    <url>/2022/9-RLPaper-MF-1-DQN/</url>
-    <content><![CDATA[<blockquote>
-<p>[1] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Alex Graves,
-Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. 2013. Playing
-Atari with Deep Reinforcement Learning. DOI:<a
-href="https://doi.org/10.48550/arXiv.1312.5602"
-class="uri">https://doi.org/10.48550/arXiv.1312.5602</a></p>
-</blockquote>
-<blockquote>
-<p>[2] Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A. Rusu,
-Joel Veness, Marc G. Bellemare, Alex Graves, Martin Riedmiller, Andreas
-K. Fidjeland, Georg Ostrovski, Stig Petersen, Charles Beattie, Amir
-Sadik, Ioannis Antonoglou, Helen King, Dharshan Kumaran, Daan Wierstra,
-Shane Legg, and Demis Hassabis. 2015. Human-level control through deep
-reinforcement learning. Nature 518, 7540 (February 2015), 529–533.
-DOI:<a href="https://doi.org/10.1038/nature14236"
-class="uri">https://doi.org/10.1038/nature14236</a></p>
-</blockquote>
-<span id="more"></span>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/1-1.png"
-alt="Playing Atari with Deep Reinforcement Learning." />
-<figcaption aria-hidden="true">Playing Atari with Deep Reinforcement
-Learning.</figcaption>
-</figure>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/1-2.png"
-alt="Human-level control through deep reinforcement learning." />
-<figcaption aria-hidden="true">Human-level control through deep
-reinforcement learning.</figcaption>
-</figure>
-<h1 id="overview">Overview</h1>
-<p>The proposed <strong><em>Deep Q-Learning Network</em></strong>
-(<strong><em>DQN</em></strong>) is the first algorithm to introduce
-(deep) neural networks as function approximators (in other words,
-non-linear function approximators) into reinforcement learning. DQN is a
-<strong>model-free</strong>, <strong>off-policy</strong>,
-<strong>(Q-)value based</strong> algorithm, which can be implemented
-onto environments with continuous state space but only with discrete
-action space. DQN can be trained <strong>end-to-end</strong>, which
-means it could receive high-dimensional state's representations as
-input. The paper evaluated the DQN on 7 Atari games and 49 Atari games
-with the same hyper-parameters which shows the great generalization
-ability of DQN.</p>
-<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>To introduce deep neural networks (non-linear functions) as
-approximators in reinforcement learning has to overcome some
-problems:</p>
-<ol type="1">
-<li>Most deep learning algorithms (like classifications, regressions)
-assume that the data samples are independent, however, in RL
-environments, the samples in a sequence are <strong>highly
-correlated</strong>.</li>
-<li>Most deep learning algorithms require large amounts of hand-labelled
-training data, however, RL algorithms need to learn from observations
-and information directly from environment, e.g., the scalar reward
-signals, which is frequently sparse, noisy and delayed.</li>
-<li>Most deep learning methods assume they are learnt in a fixed
-underlaying distribution, however, in RL, the <strong>data distribution
-changes</strong> as the agents updates their behaviors during the
-learning process.</li>
-</ol>
-<h1 id="main-innovations">Main Innovations</h1>
-<p>The paper mainly proposed two techniques to overcome the problems:
-(a) <strong>experience replay</strong> and (b) <strong>target network
-with periodically update</strong>:</p>
-<ol type="1">
-<li>Experience replay: initialize a replay buffer and store the
-transitions <span class="math inline">\(\{s_t,a_t,r_t,s_{t+1}\}\)</span>
-in it, for each iteration, randomly draw samples from the replay buffer
-and train the network using stochastic gradient descent (SGD).
-<ul>
-<li>Can break the correlations among samples so as to reduce the
-variance</li>
-<li>Each sample can be drawn in many rounds of updates, which allows for
-greater data efficiency.</li>
-</ul></li>
-<li>Target network with periodically update: the algorithm initializes
-two networks with the same hyper-parameters and architecture, for each
-iteration, update the policy network with SGD, for each <span
-class="math inline">\(K\)</span> (a hyper-parameter) iterations,
-directly copy the parameters in policy network to target network. In the
-training, the action is selected by target network.
-<ul>
-<li>The distribution of the behavior to select the action can be
-smooth.</li>
-</ul></li>
-</ol>
-<p>The algorithm:</p>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/1-3.png"
-alt="DQN algorithm." />
-<figcaption aria-hidden="true">DQN algorithm.</figcaption>
-</figure>
-<h1 id="implementation-details">Implementation Details</h1>
-<ul>
-<li>Using an adaptive learning rate method such as RMSProp or ADADELTA
-that maintains a per-parameter learning rate α, and adjusts α according
-to the history of gradient updates to that parameter.</li>
-<li>Using the <strong>last 4 frames</strong> of a history and stacks
-them as the input to the Q-network, which can capture the information
-about objects' speed and acceleration.</li>
-<li>Pre-processing to change the RGB screens to gray-scale images and
-crop the central part.</li>
-<li>During the training, the agent observes the environment and selects
-an action for each <span class="math inline">\(k\)</span> frames of the
-video game.</li>
-</ul>
-]]></content>
-      <categories>
-        <category>RL Paper Notes</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>Paper Notes</tag>
-        <tag>Model-Free RL</tag>
-        <tag>Deep Q-Learning</tag>
       </tags>
   </entry>
 </search>
