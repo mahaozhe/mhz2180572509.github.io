@@ -156,7 +156,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">17</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -206,6 +206,105 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/7-ProbabilisticML-4-MCMCAR1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ma Haozhe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life like Wine">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/7-ProbabilisticML-4-MCMCAR1/" class="post-title-link" itemprop="url">Markov Chain Monte Carlo (MCMC) Estimation of AR(1) Model</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-02-12 15:16:52" itemprop="dateCreated datePublished" datetime="2022-02-12T15:16:52+08:00">2022-02-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Probabilistic-Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Probabilistic Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>In the AR(1) model, we have:</p>
+<p><span class="math display">\[\begin{equation}
+x_t = \delta + \phi x_{t-1} + \omega_t
+\end{equation}\]</span></p>
+<p>with the following assumptions:</p>
+<ul>
+<li><span class="math inline">\(\omega_t \backsim
+N(0,\sigma_{\omega}^2)\)</span> i.i.d..</li>
+<li>Properties of the errors <span
+class="math inline">\(\omega_t\)</span> are independent of <span
+class="math inline">\(x_t\)</span>.</li>
+<li>The series <span class="math inline">\(x_t\)</span> is (weakly)
+stationary, which requires <span class="math inline">\(|\phi|\ &lt;
+1\)</span>.</li>
+</ul>
+<p>Now, to simplify, we set <span
+class="math inline">\(\sigma_{\omega}^2\)</span> to a constant value
+<span class="math inline">\(1\)</span>. In the following sections, we
+estimates the parameters <span class="math inline">\(\theta =
+(\delta,\phi)\)</span> by Markov Chain Monte Carlo (MCMC) method.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/7-ProbabilisticML-4-MCMCAR1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 

@@ -20,33 +20,34 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="Hado van Hasselt, Arthur Guez, and David Silver. 2016. Deep Reinforcement Learning with Double Q-Learning. Proceedings of the AAAI Conference on Artificial Intelligence 30, 1 (March 2016). DOI: h">
+<meta name="description" content="John Schulman, Philipp Moritz, Sergey Levine, Michael Jordan, and Pieter Abbeel. 2018. High-Dimensional Continuous Control Using Generalized Advantage Estimation. DOI:https:&#x2F;&#x2F;doi.org&#x2F;10.48550&#x2F;arX">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[DDQN] Deep Reinforcement Learning with Double Q-Learning">
-<meta property="og:url" content="http://example.com/2022/11-RLPaper-MF-3-DDQN/">
+<meta property="og:title" content="[GAE] High-Dimensional Continuous Control Using Generalized Advantage Estimation">
+<meta property="og:url" content="http://example.com/2022/17-RLPaper-MF-PG-3-GAE/">
 <meta property="og:site_name" content="Life like Wine">
-<meta property="og:description" content="Hado van Hasselt, Arthur Guez, and David Silver. 2016. Deep Reinforcement Learning with Double Q-Learning. Proceedings of the AAAI Conference on Artificial Intelligence 30, 1 (March 2016). DOI: h">
+<meta property="og:description" content="John Schulman, Philipp Moritz, Sergey Levine, Michael Jordan, and Pieter Abbeel. 2018. High-Dimensional Continuous Control Using Generalized Advantage Estimation. DOI:https:&#x2F;&#x2F;doi.org&#x2F;10.48550&#x2F;arX">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/3-1.png">
-<meta property="article:published_time" content="2022-08-09T12:49:51.444Z">
-<meta property="article:modified_time" content="2022-08-09T12:56:41.251Z">
+<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/PolicyGradients/3-1.png">
+<meta property="og:image" content="http://example.com/images/RLPapers/Model-Free/PolicyGradients/3-3.png">
+<meta property="article:published_time" content="2022-11-17T13:07:57.000Z">
+<meta property="article:modified_time" content="2022-11-17T13:54:57.514Z">
 <meta property="article:author" content="Ma Haozhe">
 <meta property="article:tag" content="Reinforcement Learning">
 <meta property="article:tag" content="Paper Notes">
 <meta property="article:tag" content="Model-Free RL">
-<meta property="article:tag" content="Deep Q-Learning">
+<meta property="article:tag" content="Policy Gradients">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/RLPapers/Model-Free/DeepQLearning/3-1.png">
+<meta name="twitter:image" content="http://example.com/images/RLPapers/Model-Free/PolicyGradients/3-1.png">
 
 
-<link rel="canonical" href="http://example.com/2022/11-RLPaper-MF-3-DDQN/">
+<link rel="canonical" href="http://example.com/2022/17-RLPaper-MF-PG-3-GAE/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/11-RLPaper-MF-3-DDQN/","path":"2022/11-RLPaper-MF-3-DDQN/","title":"[DDQN] Deep Reinforcement Learning with Double Q-Learning"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/17-RLPaper-MF-PG-3-GAE/","path":"2022/17-RLPaper-MF-PG-3-GAE/","title":"[GAE] High-Dimensional Continuous Control Using Generalized Advantage Estimation"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>[DDQN] Deep Reinforcement Learning with Double Q-Learning | Life like Wine</title>
+<title>[GAE] High-Dimensional Continuous Control Using Generalized Advantage Estimation | Life like Wine</title>
   
 
 
@@ -151,7 +152,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-problems-to-solve"><span class="nav-number">2.</span> <span class="nav-text">Main Problems to Solve</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-innovations"><span class="nav-number">3.</span> <span class="nav-text">Main Innovations</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-problems-to-solve"><span class="nav-number">2.</span> <span class="nav-text">Main Problems to Solve</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-innovations"><span class="nav-number">3.</span> <span class="nav-text">Main Innovations</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#experiments"><span class="nav-number">4.</span> <span class="nav-text">Experiments</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -226,7 +227,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11-RLPaper-MF-3-DDQN/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/17-RLPaper-MF-PG-3-GAE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -239,7 +240,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          [DDQN] Deep Reinforcement Learning with Double Q-Learning
+          [GAE] High-Dimensional Continuous Control Using Generalized Advantage Estimation
         </h1>
 
         <div class="post-meta-container">
@@ -251,7 +252,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2022-08-09 20:49:51 / Modified: 20:56:41" itemprop="dateCreated datePublished" datetime="2022-08-09T20:49:51+08:00">2022-08-09</time>
+      <time title="Created: 2022-11-17 21:07:57 / Modified: 21:54:57" itemprop="dateCreated datePublished" datetime="2022-11-17T21:07:57+08:00">2022-11-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -274,93 +275,118 @@
     
     <div class="post-body" itemprop="articleBody">
         <blockquote>
-<p>Hado van Hasselt, Arthur Guez, and David Silver. 2016. Deep
-Reinforcement Learning with Double Q-Learning. Proceedings of the AAAI
-Conference on Artificial Intelligence 30, 1 (March 2016). DOI:
-https://doi.org/10.1609/aaai.v30i1.10295</p>
+<p>John Schulman, Philipp Moritz, Sergey Levine, Michael Jordan, and
+Pieter Abbeel. 2018. High-Dimensional Continuous Control Using
+Generalized Advantage Estimation.
+DOI:https://doi.org/10.48550/arXiv.1506.02438</p>
 </blockquote>
 <span id="more"></span>
 <figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/3-1.png"
-alt="Deep Reinforcement Learning with Double Q-Learning" />
-<figcaption aria-hidden="true">Deep Reinforcement Learning with Double
-Q-Learning</figcaption>
+<img src="/images/RLPapers/Model-Free/PolicyGradients/3-1.png"
+alt="High-Dimensional Continuous Control Using Generalized Advantage Estimation" />
+<figcaption aria-hidden="true">High-Dimensional Continuous Control Using
+Generalized Advantage Estimation</figcaption>
 </figure>
 <h1 id="overview">Overview</h1>
-<p>The paper mainly answered the questions that why there exists
-<strong>overestimation</strong> in the previous reinforcement learning
-(RL) algorithms and how serious the overestimation is to harm the
-performance and lead to sub-optimal policies
-<strong>theoretically</strong>. The paper gives substantial proof of
-this problem and introduced the idea of <strong><em>Double
-Q-Learning</em></strong> [1] to the function approximation scenario to
-propose the <strong><em>Double Deep Q-Networks</em></strong>
-(<strong><em>DDQN</em></strong>) algorithm. The authors show
-experimental results on Atari games to compare the DDQN with the
-standard DQN and show it can not only yields more accurate value
-estimates, but also leads to much higher scores (better policies).</p>
+<p>The paper proposed an scheme called <strong><em>Generalized Advantage
+Estimation</em></strong> (<strong><em>GAE</em></strong>), which aims to
+trade off between reducing the variance and introduced bias. The
+algorithm is a <strong>policy gradient</strong> based algorithm,
+controlled by one hyper-parameter, the algorithm lives between
+<strong>Monte Carlo</strong> and <strong>Temporal Difference</strong>,
+and the two edges are inclusive. The algorithm is an <strong>on-line
+learning</strong> approach. The GAE applies the idea analogous to the
+TD(<span class="math inline">\(\lambda\)</span>), but the difference is
+that GAE works on advantage function, but TD(<span
+class="math inline">\(\lambda\)</span>) works on value function. The
+paper implemented the proposed GAE in the <em>Trust Region Policy
+Optimization</em> (<em>TRPO</em>) [1] algorithm, and conducted
+experiments in some challenging 3D robotics tasks.</p>
 <h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>The paper mainly want to overcome/relieve the overestimation problem
-in standard DQN algorithm.</p>
-<h1 id="main-innovations">Main Innovations</h1>
-<p>The core idea for DDQN algorithm to reduce overestimation is to
-<strong>decompose the max operation in the TD-target into <em>action
-selection</em> and <em>action evaluation</em></strong>. DDQN is based on
-the standard DQN algorithm and uses the existing architecture
-<strong>without requiring additional networks or
-parameters</strong>.</p>
-<p>In the DQN algorithm, it initialized two networks, one is called
-<strong>(online) policy network</strong> (with parameters <span
-class="math inline">\(\theta\)</span>) and another is called
-<strong>target network</strong> (with parameters <span
-class="math inline">\(\theta&#39;\)</span>). The parameters are copied
-from policy network to target network periodically. To update parameters
-of the policy network at each step, the algorithm randomly draw
-transition samples from the experience replay buffer and minimize the
-distance between the <strong>TD-target</strong> <span
-class="math inline">\(Y\)</span> and the current Q-value.</p>
-<p>The main difference is how to compute the TD-target:</p>
-<ul>
-<li><p>For the standard DQN:</p>
-<p><span class="math display">\[\begin{equation}
-  Y^{DQN}=r_{t+1}+\gamma \max_{a&#39;}⁡{Q(s_{t+1},a&#39;|\theta&#39;)}
-  \end{equation}\]</span></p>
-<p>which can be written as:</p>
-<p><span class="math display">\[\begin{equation}
-  Y^{DQN}=r_{t+1}+\gamma
-Q(s_{t+1},\arg\max_{a&#39;}{Q(s_{t+1},a&#39;|\theta&#39;)}|\theta&#39;)
-  \end{equation}\]</span></p>
-<p>where we can see that the selection of the action with maximal
-Q-value and compute the corresponding Q-value is all conducted by the
-target network (so it directly return the maximal Q-value among the
-outputs from the target network).</p></li>
-<li><p>For the double DQN:</p>
-<p><span class="math display">\[\begin{equation}
-  Y^{DDQN}=r_{t+1}+\gamma
-Q(s_{t+1},\arg\max_{a&#39;}{Q(s_{t+1},a&#39;|\theta)}|\theta&#39;)
-  \end{equation}\]</span></p>
-<p>where we can see that the selection of the action with maximal
-Q-value is conducted by the policy network but the computation of the
-corresponding Q-value is conducted by the target network.</p></li>
-</ul>
-<p>The process to compute the TD-target can be described as follows:</p>
+<p>For the non-linear function approximators, e.g., neural networks, in
+deep reinforcement learning, the two main challenges are:</p>
 <ol type="1">
-<li>Input the state <span class="math inline">\(s_{t+1}\)</span> into
-the policy network (with parameters <span
-class="math inline">\(\theta\)</span>), select the action with the
-maximal Q-value from the output head, suppose the action is <span
-class="math inline">\(a^+\)</span>.</li>
-<li>Input the state <span class="math inline">\(s_{t+1}\)</span> into
-the target network (with parameters <span
-class="math inline">\(\theta&#39;\)</span>), return the Q-value of <span
-class="math inline">\(Q(s_{t+1},a^+)\)</span> from the output head.</li>
-<li>Use the returned Q-value to compute the TD-target.</li>
+<li>usually requires large number of samples</li>
+<li>usually difficult to obtain stable and steady improvement despite
+the nonstationarity of the incoming data.</li>
 </ol>
+<h1 id="main-innovations">Main Innovations</h1>
+<ol type="1">
+<li><p>The algorithm proposed one method to trade off between the
+<strong>variance</strong> and <strong>bias</strong>:</p>
+<ul>
+<li>The <strong>variance</strong> mainly means the algorithm learning is
+unstable, so there will be very high vibrate.</li>
+<li>The <strong>bias</strong> mainly comes from the estimation of the
+real value function, q-function, advantage function and so on,
+especially when we use discounted cumulative rewards or the temporal
+difference estimation.</li>
+</ul>
+<p>In this case, the algorithm uses two hyper-parameters <span
+class="math inline">\(\gamma\)</span> and <span
+class="math inline">\(\lambda\)</span>, then proposed the
+<strong><em>Generalized Advantage Estimation</em></strong>
+(<strong><em>GAE</em></strong>) of the advantage function which is
+defined as:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{A}_t^{GAE}(\gamma,\lambda):=\sum_{l=0}^{\infty}{(\gamma \lambda)^l
+\delta_{t+l}^V}
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\delta_{t+l}^V:= r_{t+l}+\gamma
+V(s_{t+l}) − V(s_{t+l−1})\)</span>, so the GAE advantage can be wrote
+as:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{A}_t^{GAE}(\gamma,\lambda):=\sum_{l=0}^{\infty}{(\gamma \lambda)^l
+(r_{t+l}+\gamma V(s_{t+l}) − V(s_{t+l−1}))}
+\end{equation}\]</span></p></li>
+<li><p>The two edges of the GAE advantage are <span
+class="math inline">\(\lambda=0\)</span> and <span
+class="math inline">\(\lambda=1\)</span> respectively:</p>
+<ul>
+<li><span class="math inline">\(\lambda=0\)</span>: <span
+class="math inline">\(GAE(\gamma,0)\)</span>: <span
+class="math inline">\(\hat{A}_t := r_t + \gamma V(s_{t+1}) −
+V(s_t)\)</span>, in this case, will introduce high bias but have lowest
+variance.</li>
+<li><span class="math inline">\(\lambda=1\)</span>: <span
+class="math inline">\(GAE(\gamma,1)\)</span>: <span
+class="math inline">\(hat{A}_t := \sum_{l=0}^{\infty}{\gamma^l r_{t+l}}
+− V(s_t)\)</span>, in this case, will have high variance as many terms
+are summed up.</li>
+</ul></li>
+<li><p>For the <span class="math inline">\(0 &lt; \lambda &lt;
+1\)</span>, the GAE can trade off between variance and bias.</p></li>
+<li><p>The paper also gives an another view to interpret the GAE as a
+kind of reward reshaping.</p></li>
+<li><p>Finally, the paper combines the proposed GAE into the popular (at
+that time) algorithm <em>TRPO</em> to use the GAE to estimate both the
+policy function and the value function. The algorithm to implement GAE
+into trust region based algorithm is shown as: <img
+src="/images/RLPapers/Model-Free/PolicyGradients/3-2.png"
+alt="The GAE implemented TRPO algorithm." /></p></li>
+</ol>
+<h1 id="experiments">Experiments</h1>
+<p>The paper conducted many experiments in
+<strong>high-dimensional</strong> environments with
+<strong>continuous</strong> action spaces. One results they shown in the
+paper that is worth to mention here is they evaluate the learning
+performance with different values of <span
+class="math inline">\(\lambda\)</span> and <span
+class="math inline">\(\gamma\)</span>:</p>
+<figure>
+<img src="/images/RLPapers/Model-Free/PolicyGradients/3-3.png"
+alt="The experimental results showing the performance with differnt sets of hyper-parameters." />
+<figcaption aria-hidden="true">The experimental results showing the
+performance with differnt sets of hyper-parameters.</figcaption>
+</figure>
+<p>The figure (white means high value, black means low value) provides
+some insights to set these two hyper-parameters.</p>
 <h1 id="reference">Reference</h1>
-<p>[1] Hado Hasselt. 2010. Double Q-learning. In Advances in Neural
-Information Processing Systems, Curran Associates, Inc. Retrieved August
-8, 2022 from
-https://proceedings.neurips.cc/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-Abstract.html</p>
+<p>[1] John Schulman, Sergey Levine, Pieter Abbeel, Michael Jordan, and
+Philipp Moritz. 2015. Trust Region Policy Optimization. In Proceedings
+of the 32nd International Conference on Machine Learning, PMLR,
+1889–1897. Retrieved October 4, 2022 from
+https://proceedings.mlr.press/v37/schulman15.html</p>
 
     </div>
 
@@ -373,21 +399,18 @@ https://proceedings.neurips.cc/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-
               <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
               <a href="/tags/Paper-Notes/" rel="tag"># Paper Notes</a>
               <a href="/tags/Model-Free-RL/" rel="tag"># Model-Free RL</a>
-              <a href="/tags/Deep-Q-Learning/" rel="tag"># Deep Q-Learning</a>
+              <a href="/tags/Policy-Gradients/" rel="tag"># Policy Gradients</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/10-RLPaper-MF-2-DRQN/" rel="prev" title="[DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs">
-                  <i class="fa fa-chevron-left"></i> [DRQN] Deep Recurrent Q-Learning for Partially Observable MDPs
+                <a href="/2022/16-RLPaper-MF-PG-2-TRPO/" rel="prev" title="[TRPO] Trust Region Policy Optimization">
+                  <i class="fa fa-chevron-left"></i> [TRPO] Trust Region Policy Optimization
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/12-RLPaper-MF-4-DuelingDQN/" rel="next" title="[Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning">
-                  [Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
