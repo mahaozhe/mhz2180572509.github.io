@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Metropolis algorithm is selected as one of the top 10 algorithms that had the greatest influence on science and engineering in the 20th century. (Beichl &amp; Sullivan 2000)  This blog mainly in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Monte Carlo Inference (Sampling)">
+<meta property="og:url" content="http://example.com/2022/18-ProbabilisticML-6-MCInference/">
+<meta property="og:site_name" content="Life like Wine">
+<meta property="og:description" content="Metropolis algorithm is selected as one of the top 10 algorithms that had the greatest influence on science and engineering in the 20th century. (Beichl &amp; Sullivan 2000)  This blog mainly in">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/MCMC/1.png">
+<meta property="og:image" content="http://example.com/images/MCMC/2.png">
+<meta property="og:image" content="http://example.com/images/MCMC/3.png">
+<meta property="article:published_time" content="2022-11-26T15:02:04.000Z">
+<meta property="article:modified_time" content="2022-11-26T15:15:53.882Z">
+<meta property="article:author" content="Ma Haozhe">
+<meta property="article:tag" content="Probability Theory">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Math">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/MCMC/1.png">
+
+
+<link rel="canonical" href="http://example.com/2022/18-ProbabilisticML-6-MCInference/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/18-ProbabilisticML-6-MCInference/","path":"2022/18-ProbabilisticML-6-MCInference/","title":"Monte Carlo Inference (Sampling)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Monte Carlo Inference (Sampling) | Life like Wine</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Life like Wine</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#why-do-we-need-sampling"><span class="nav-number">1.</span> <span class="nav-text">Why Do We Need Sampling?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#why-can-sampling-estimate"><span class="nav-number">2.</span> <span class="nav-text">Why Can Sampling Estimate?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rejection-sampling"><span class="nav-number">3.</span> <span class="nav-text">Rejection Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method"><span class="nav-number">3.1.</span> <span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm"><span class="nav-number">3.2.</span> <span class="nav-text">Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#notes"><span class="nav-number">3.3.</span> <span class="nav-text">Notes</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#importance-sampling"><span class="nav-number">4.</span> <span class="nav-text">Importance Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-1"><span class="nav-number">4.1.</span> <span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm-1"><span class="nav-number">4.2.</span> <span class="nav-text">Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#notes-1"><span class="nav-number">4.3.</span> <span class="nav-text">Notes</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#markov-chain-monte-carlo-mcmc"><span class="nav-number">5.</span> <span class="nav-text">Markov Chain Monte Carlo
+(MCMC)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#metropolis-hasting-algorithm"><span class="nav-number">5.1.</span> <span class="nav-text">Metropolis-Hasting Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#metropolis-algorithm"><span class="nav-number">5.2.</span> <span class="nav-text">Metropolis Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm-2"><span class="nav-number">5.3.</span> <span class="nav-text">Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gibbs-sampling"><span class="nav-number">5.4.</span> <span class="nav-text">Gibbs Sampling</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#main-reference"><span class="nav-number">6.</span> <span class="nav-text">Main Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ma Haozhe"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Ma Haozhe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/mhz2180572509" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;mhz2180572509" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:haozhe.ma@u.nus.edu" title="E-Mail → mailto:haozhe.ma@u.nus.edu" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/18-ProbabilisticML-6-MCInference/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Ma Haozhe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Life like Wine">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Monte Carlo Inference (Sampling)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2022-11-26 23:02:04 / Modified: 23:15:53" itemprop="dateCreated datePublished" datetime="2022-11-26T23:02:04+08:00">2022-11-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Probabilistic-Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Probabilistic Machine Learning</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>Metropolis algorithm is selected as one of the top 10 algorithms that
+had the greatest influence on science and engineering in the 20th
+century. (Beichl &amp; Sullivan 2000)</p>
+</blockquote>
+<p>This blog mainly introduce the basic ideas of <strong><em>Monte Carlo
+Inference</em></strong>, including <strong><em>Rejection
+Sampling</em></strong>, <strong><em>Importance Sampling</em></strong>
+and different versions of <strong><em>Markov Chain Monte
+Carlo</em></strong> algorithms.</p>
+<span id="more"></span>
+<h1 id="why-do-we-need-sampling">Why Do We Need Sampling?</h1>
+<p>Usually, <strong>sampling is a very effective approach to estimate
+some distributions/functions that we don't know</strong>.</p>
+<ul>
+<li><p>Sampling is very helpful to solve <strong>intractable
+integration</strong> problems, for example, in Bayesian
+inference/learning:</p>
+<ul>
+<li><strong>Normalization</strong>: for unknown variables <span
+class="math inline">\(X\)</span> and observed variables <span
+class="math inline">\(Y\)</span>. We know the prior <span
+class="math inline">\(p(y)\)</span> and can observe the likelihood <span
+class="math inline">\(p(y|x)\)</span>, usually, we want to calculate the
+posterior:</li>
+</ul>
+<p><span class="math display">\[\begin{equation}
+  p(x│y)=\frac{p(y│x)p(x)}{\int_X{p(y│x&#39;)p(x&#39;)}dx&#39;}
+  \end{equation}\]</span></p>
+<ul>
+<li><strong>Marginalization</strong>: if we have two variables <span
+class="math inline">\(X\)</span> and <span
+class="math inline">\(Z\)</span>, however, we are only interested in the
+marginal distribution of <span class="math inline">\(X\)</span>:</li>
+</ul>
+<p><span class="math display">\[\begin{equation}
+  p(x)=\int_Z{p(x,z)}dz
+  \end{equation}\]</span></p>
+<ul>
+<li><strong>Expectation</strong>: in many analysis, we want to obtain
+the summary statistics of some objective:</li>
+</ul>
+<p><span class="math display">\[\begin{equation}
+  \mathbb{E}_{p(x)}{[f(x)]}=\int_X{p(x)f(x)}dx
+  \end{equation}\]</span></p></li>
+<li><p>Sampling is also very important in some
+<strong>optimization</strong> problems, for example, we want to minimize
+or maximize some objective function from a large set of variables, the
+set can be <strong>continuous and unbounded</strong>, in this case, we
+use samples to estimate different sets and draw the minimal or maximal
+values.</p></li>
+</ul>
+<h1 id="why-can-sampling-estimate">Why Can Sampling Estimate?</h1>
+<p>Based on the <strong><em>Law of Large Numbers</em></strong>
+(<strong><em>LLN</em></strong>) theorem, the result of performing the
+same experiment a large number of times will approximate to the real
+distribution, the result will tend to become closer to the expected
+distribution as more trials are performed. So if we can draw a number of
+samples, we can well estimate the original distribution.</p>
+<p>Based on the <strong><em>Monte Carlo Principle</em></strong>:</p>
+<p><span class="math display">\[\begin{equation}
+\int_X{p(x)f(x)}dx=\mathbb{E}_{p(x)}{[f(x)]} \approx \frac{1}{N}
+\sum_{i=1}^N{f(x_i)}
+\end{equation}\]</span></p>
+<p>if <span class="math inline">\(x_i (iid) \sim X\)</span>, <span
+class="math inline">\(N \rightarrow \infty\)</span>. We can estimate the
+integration or expectation by calculating the mean of all samples.</p>
+<p>One distribution can be represented:</p>
+<ul>
+<li><strong>Parametrically</strong>: using the function, e.g., using the
+mean and covariance to represent a Gaussian distribution.</li>
+<li><strong>Non-parametrically</strong>: using a set of
+<em>hypotheses</em> (samples) drawn from the distribution. The advantage
+is that there is no restriction on the type of the distribution.</li>
+</ul>
+<h1 id="rejection-sampling">Rejection Sampling</h1>
+<p>Let's start from a simple but common condition, i.e., we can write
+one distribution <span class="math inline">\(p(x)\)</span> with an
+unnormalized <span class="math inline">\(\tilde{p}(x)\)</span> and the
+<strong>unknown</strong> normalizing constant <span
+class="math inline">\(Z_p\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+p(x)=\frac{\tilde{p}(x)}{Z_p}
+\end{equation}\]</span></p>
+<p>Suppose the <span class="math inline">\(\tilde{p}(x)\)</span> can
+<strong>be readily evaluated</strong>, so the main problem we want solve
+is to <strong>normalize</strong> the distribution, in this case, we can
+use <strong><em>rejection sampling</em></strong>.</p>
+<h2 id="method">Method</h2>
+<p>The main idea is we define a <strong>easy-to-sample</strong>
+distribution <span class="math inline">\(q(x)\)</span> and an
+<strong>appropriate</strong> factor <span
+class="math inline">\(k\)</span>. We draw a candidate sample from <span
+class="math inline">\(q(x)\)</span> and we accept it with the
+probability <span
+class="math inline">\(\frac{\tilde{p}(x)}{kq(x)}\)</span>.</p>
+<ul>
+<li>The <span class="math inline">\(q(x)\)</span> could be any
+applicable distribution that is easy to draw samples from, e.g.,
+Gaussian, uniform distributions.</li>
+<li>The <span class="math inline">\(k\)</span> is better to be defined
+to make the <span class="math inline">\(kq(x)\)</span>
+<strong>preferably close to and slightly higher than</strong> the <span
+class="math inline">\(\tilde{p}(x)\)</span>. (However, it's very
+<strong>difficult</strong>.)</li>
+</ul>
+<p>For example, in the following figures, we demonstrate to use one
+Gaussian and one uniform distribution respectively:</p>
+<figure>
+<img src="/images/MCMC/1.png" alt="Rejection sampling" />
+<figcaption aria-hidden="true">Rejection sampling</figcaption>
+</figure>
+<p>Why do we define the <strong>acceptance probability</strong> as <span
+class="math inline">\(\frac{\tilde{p}(x)}{kq(x)}\)</span>? The two
+example samples in the figures can intutively explain this:</p>
+<ul>
+<li>For the sample <span class="math inline">\(x_1\)</span>, where <span
+class="math inline">\(p(x_1)\)</span> is relatively high, then the
+differnce between <span class="math inline">\(\tilde{p}(x_1)\)</span>
+and <span class="math inline">\(kq(x_1)\)</span> is very small, which
+means at the point <span class="math inline">\(x_1\)</span>, <span
+class="math inline">\(kq(x_1)\)</span> is a better approximation to
+<span class="math inline">\(\tilde{p}(x_1)\)</span>. So we accept <span
+class="math inline">\(x_1\)</span> with a high probability.</li>
+<li>For the sample <span class="math inline">\(x_2\)</span>, where <span
+class="math inline">\(p(x_2)\)</span> is relatively low, then the
+differnce between <span class="math inline">\(\tilde{p}(x_2)\)</span>
+and <span class="math inline">\(kq(x_2)\)</span> is very large, so we
+accept <span class="math inline">\(x_2\)</span> with a low
+probability.</li>
+</ul>
+<h2 id="algorithm">Algorithm</h2>
+<p>The <strong><em>Rejection Sampling</em></strong> algorithm can be
+given as follows:</p>
+<hr />
+<ol type="1">
+<li>Repeat until enough samples:
+<ol type="1">
+<li>sample <span class="math inline">\(x_i \sim q(x)\)</span> and <span
+class="math inline">\(u \sim U(0,1)\)</span></li>
+<li>compute <span
+class="math inline">\(r=\frac{\tilde{p}(x_i)}{kq(x_i)}\)</span></li>
+<li>if <span class="math inline">\(u&lt;r\)</span>: accept the <span
+class="math inline">\(x_i\)</span> as a new sample</li>
+<li>else: reject <span class="math inline">\(x_i\)</span></li>
+</ol></li>
+</ol>
+<hr />
+<h2 id="notes">Notes</h2>
+<p>The rejection sampling is a very simple approach, which shows some
+<strong>limitations</strong> in application:</p>
+<ul>
+<li>Usually, it's hard to indicate a proper hyperparameter <span
+class="math inline">\(k\)</span>, if the <span
+class="math inline">\(k\)</span> is too small, then at some points,
+<span class="math inline">\(\tilde{p}(x)&gt;kq(x)\)</span>, which leads
+to the accepance probability <span
+class="math inline">\(r&gt;1\)</span>, so these samples will be accepted
+without any difference; if <span class="math inline">\(k\)</span> is too
+big, then for all samples, the acceptance probability will be too small,
+then accepting new samples will be inefficient.</li>
+<li>Rejection sampling is usually impractical in high dimensional space
+scenarios.</li>
+</ul>
+<p>As the rejection sampling mainly aims to solve the normalization
+problem, which can be approximated by doing integration. However,
+estimating the integration of one unnormalized distribution <span
+class="math inline">\(\tilde{p}(x)\)</span> goes much more difficult
+when the dimension of the variable becomes higher, so sampling is still
+one efficient approach.</p>
+<h1 id="importance-sampling">Importance Sampling</h1>
+<p>In the scenario where we want to compute the expectation of a
+function <span class="math inline">\(f(x)\)</span> over one unknown
+distribution <span class="math inline">\(p(x)\)</span>, the main idea
+for Importance Sampling is to sample from a simple distribution, called
+proposal distribution <span class="math inline">\(q(x)\)</span>, and
+then eliminate the bias introduced by <span
+class="math inline">\(q(x)\)</span>. As the following figure shows:</p>
+<figure>
+<img src="/images/MCMC/2.png" alt="Importance sampling" />
+<figcaption aria-hidden="true">Importance sampling</figcaption>
+</figure>
+<p>We want to compute the expectation: <span
+class="math inline">\(\mathbb{E}_{x \sim p(x)}[f(x)]\)</span>, where we
+introduce the <span class="math inline">\(q(x)\)</span> to help do
+sampling.</p>
+<h2 id="method-1">Method</h2>
+<p>We can derive the expectation as (we require <span
+class="math inline">\(q(x) \neq 0\)</span>):</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathbb{E}_{x \sim p(x)}[f(x)] &amp;= \int_x{p(x)f(x)}dx \\
+&amp;=\int_x{p(x)f(x)\frac{q(x)}{q(x)}}dx \\
+&amp;=\int_x{q(x)f(x)\frac{p(x)}{q(x)}}dx \\
+&amp;=\mathbb{E}_{x \sim q(x)} \Big[f(x) \frac{p(x)}{q(x)} \Big] \\
+&amp;\approx \frac{1}{N} \sum_{i=1}^N{\frac{p(x_i)}{q(x_i)} f(x_i)}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>By introducing the proposal distribution <span
+class="math inline">\(q(x)\)</span>, we can <strong>sample from the
+simple distribution</strong> <span class="math inline">\(q(x)\)</span>,
+and we compute the expectation of <span
+class="math inline">\(f(x)\)</span> by multiplying the factor <span
+class="math inline">\(\frac{p(x)}{q(x)}\)</span> to <strong>correct the
+bias</strong> that caused by sampling from another distribution.</p>
+<ul>
+<li>We call the factor <span
+class="math inline">\(r_i=\frac{p(x_i)}{q(x_i)}\)</span> as
+<strong><em>importance weights</em></strong>.</li>
+<li>In the importance sampling, we retain all samples that generated
+from the proposal distribution <span
+class="math inline">\(q(x)\)</span>.</li>
+</ul>
+<p>However, one important problem is: <strong>how to compute the
+importance weight as we still don't know</strong> <span
+class="math inline">\(p(x)\)</span>. To solve this key problem, we
+assume that we can write the <span
+class="math inline">\(p(x)=\frac{\tilde{p}(x)}{Z_p}\)</span> , where
+<span class="math inline">\(\tilde{p}(x)\)</span> is easy to get but the
+normalization factor <span class="math inline">\(Z_p\)</span> is
+unknown. To coorporate, we also rewrite the proposal distribution in a
+similar format: <span
+class="math inline">\(q(x)=\frac{\tilde{q}(x)}{Z_q}\)</span> , but
+<strong>we know both the numerator and the denominator</strong>, even we
+can set <span class="math inline">\(Z_q=1\)</span>. In this case, we can
+further derive:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathbb{E}_{x \sim p(x)}[f(x)] &amp;= \int_x{p(x)f(x)}dx \\
+&amp;=\frac{Z_q}{Z_p}\int_x{q(x)f(x)
+\frac{\tilde{p}(x))}{\tilde{q}(x)}}dx \\
+&amp;\approx \frac{Z_q}{Z_p} \frac{1}{N} \sum_{i=1}^N{\tilde{r}_i
+f(x_i)}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Where $_i=. In this equation, we can easily compute the right part as
+<strong>we know</strong> <span
+class="math inline">\(\tilde{r}_i\)</span> <strong>directly</strong>. We
+<strong>need to compute the ratio</strong> <span
+class="math inline">\(r_z=\frac{Z_q}{Z_p}\)</span> , but this is pretty
+easy, that we can calculate <strong>with the same set of
+samples</strong>:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\frac{1}{r_z} &amp;= \frac{Z_p}{Z_q} \\
+&amp;=\frac{1}{Z_q} \int_x{\tilde{p}(x)}dx \\
+&amp;=\int_x{\frac{\tilde{p}(x)}{\tilde{q}(x)} q(x)}dx \\
+&amp;\approx \frac{1}{N}
+\sum_{i=1}^N{\frac{\tilde{p}(x_i)}{\tilde{q}(x_i)}} \\
+&amp;= \frac{1}{N} \sum_{i=1}^N{\tilde{r}_i}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>Finally we can give the equation to use samples drawn from <span
+class="math inline">\(q(x)\)</span> to approximinate the
+expectation"</p>
+<p><span class="math display">\[\begin{equation}
+\mathbb{E}_{x \sim p(x)} [f(x)] \approx \sum_{i=1}^N{w_i f(x_i)}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+w_i=\frac{\tilde{r}_i}{\sum_m{\tilde{r}_m}}=\frac{\tilde{p}(x_i)/q(x_i)}{\sum_m{\tilde{p}(x_m)/q(x_m)}}
+\end{equation}\]</span></p>
+<h2 id="algorithm-1">Algorithm</h2>
+<p>The <strong><em>Importance Sampling</em></strong> algorithm is pretty
+straightforward:</p>
+<hr />
+<ol type="1">
+<li>Draw <span class="math inline">\(N\)</span> samples from <span
+class="math inline">\(q(x)\)</span></li>
+<li>Compute the factor <span class="math inline">\(w_i\)</span> for each
+sample <span class="math inline">\(x_i\)</span></li>
+<li>Compute the expectation by summing up all samples <span
+class="math inline">\(\sum_{i=1}^N{w_i f(x_i)}\)</span></li>
+</ol>
+<hr />
+<h2 id="notes-1">Notes</h2>
+<ul>
+<li>The success of the importance sampling approach depends crucially on
+how well <span class="math inline">\(q(x)\)</span> matches <span
+class="math inline">\(p(x)\)</span>.</li>
+<li>The set of importance weights <span
+class="math inline">\(\{r_i\}\)</span> may be dominated by a few weights
+having large values, with the remaining weights being relatively
+insignificant.</li>
+<li>The main application scenario for importance sampling is to estimate
+the expectation, so we can combine it with the
+<strong><em>Expectation-Maximization algorithm</em></strong>
+(<strong><em>EM algorithm</em></strong>) to approximate the <span
+class="math inline">\(Q(\theta,\theta^{old})\)</span>: <span
+class="math display">\[\begin{equation}
+  Q(\theta,\theta^{old})=\int_z{p(z│x,\theta^{old})
+\ln{⁡p(z,x│\theta)}}dz \approx
+\frac{1}{N}\sum_{i=1}^N{\ln{⁡p(z_i,x|\theta)}}
+  \end{equation}\]</span> The combined algorithm is called
+<strong><em>Monte Carlo EM algorithm</em></strong>.</li>
+</ul>
+<h1 id="markov-chain-monte-carlo-mcmc">Markov Chain Monte Carlo
+(MCMC)</h1>
+<p><strong><em>Markov Chain Monte Carlo</em></strong>
+(<strong><em>MCMC</em></strong>) algorithm use a strategy to generate
+samples <span class="math inline">\(x_i\)</span> not from a fixed
+proposal distribution (e.g. the importance sampling), but use a
+<strong>dynamic proposal distribution</strong> <span
+class="math inline">\(q(x&#39;|x_i)\)</span>, where the next sample (a
+candidate sample <span class="math inline">\(x&#39;\)</span> is
+conditional on the last sample <span
+class="math inline">\(x_i\)</span>), this means we <strong>generate next
+sample based on the current sample</strong>. The main process of MCMC
+algorithm can be illustrated as the following figures:</p>
+<ul>
+<li>Firstly, suppose we want to sample from a distribution <span
+class="math inline">\(p(x)\)</span> (in red color), we initialize one
+sample <span class="math inline">\(x_i\)</span>, we define the
+<strong>dynamic proposal distribution</strong> as <span
+class="math inline">\(x&#39; \sim N(x_i,\sigma^2)\)</span></li>
+</ul>
+<figure>
+<img src="/images/MCMC/3.png" alt="Markov Chain Monte Carlo" />
+<figcaption aria-hidden="true">Markov Chain Monte Carlo</figcaption>
+</figure>
+<ul>
+<li>We draw a candidate sample <span
+class="math inline">\(x&#39;\)</span> from <span
+class="math inline">\(N(x_i,\sigma^2)\)</span>, and we <strong>accept
+the candidate with an <em>acceptance ratio</em></strong> <span
+class="math inline">\(r\)</span></li>
+<li>If we accept the candidate <span
+class="math inline">\(x&#39;\)</span>, then we assign <span
+class="math inline">\(x_{i+1}=x&#39;\)</span>, if we reject the
+candidate <span class="math inline">\(x&#39;\)</span>, we assign <span
+class="math inline">\(x_{i+1}=x_i\)</span></li>
+</ul>
+<p>The main idea for MCMC is to <strong>generate more samples in most
+important regions</strong>, if the acceptance is higher, then it will
+stay longer time at the near region, then we can get more samples;
+otherwise, if the acceptance is lower, then it will stay shorter time
+around, then we get fewer samples.</p>
+<p>In MCMC, as the initial sample depends the starting point of the
+sequence of samples, so the sampling will differ from varies initial
+samples, but will finally converge to the target distribution. To avoid
+this problem, we usually set some <strong><em>burn-in</em></strong>
+steps, that will be abandon after sampling.</p>
+<p>The overall process of MCMC algorithm is pretty simple, the most
+important part is how to define and calculate the <strong><em>acceptance
+ratio</em></strong> <span class="math inline">\(r\)</span>. We'll
+introduce three main branches of MCMC algorithms.</p>
+<h2 id="metropolis-hasting-algorithm">Metropolis-Hasting Algorithm</h2>
+<p><strong><em>Metropolis-Hasting algorithm</em></strong> defines the
+<strong>acceptance ratio</strong> as:</p>
+<p><span class="math display">\[\begin{equation}
+r=\min⁡\Big\{1,\frac{p(x&#39;)q(x_i│x&#39;)}{p(x_i)q(x&#39;│x_i)}\Big\}
+\end{equation}\]</span></p>
+<p>In the acceptance ratio, it's hard to calculate the <span
+class="math inline">\(p(x&#39;)\)</span> and <span
+class="math inline">\(p(x_i)\)</span>, however, we can replace these two
+terms by <span class="math inline">\(\tilde{p}(x&#39;)\)</span> and
+<span class="math inline">\(\tilde{p}(x_i)\)</span> respectively at the
+same time, because the normalization factor <span
+class="math inline">\(Z_p\)</span> will be eliminated from both
+numerator and denominator.</p>
+<h2 id="metropolis-algorithm">Metropolis Algorithm</h2>
+<p><strong><em>Metropolis algorithm</em></strong> is a special case of
+<em>Metropolis-Hasting algorithm</em>, where we assume the proposal
+distribution <span class="math inline">\(p(x&#39;|x_i)\)</span> as an
+<strong>isotropic</strong> distribution, in other words, the
+distribution is <strong>symmetric</strong>. In this case, we have <span
+class="math inline">\(q(x&#39;│x_i)=q(x_i|x&#39;)\)</span>, so we can
+reduce the acceptance ration as:</p>
+<p><span class="math display">\[\begin{equation}
+r=\min\Big\{1,\frac{p(x&#39;)}{p(x_i)}\Big\}
+\end{equation}\]</span></p>
+<p>Similarly, the <span class="math inline">\(p(x&#39;)\)</span> and
+<span class="math inline">\(p(x_i)\)</span> can be replaced by <span
+class="math inline">\(\tilde{p}(x&#39;)\)</span> and <span
+class="math inline">\(\tilde{p}(x_i)\)</span>.</p>
+<h2 id="algorithm-2">Algorithm</h2>
+<p>We can give the main process of both the <em>Metropolis-Hasting
+algorithm</em> and the <em>Metropolis algorithm</em> as follows:</p>
+<hr />
+<ol type="1">
+<li>Given the target distribution <span
+class="math inline">\(p(x)=\frac{\tilde{p}(x)}{Z_p}\)</span></li>
+<li>Given the proposal distribution <span
+class="math inline">\(q(x&#39;|x_i)\)</span></li>
+<li>Initialize the first sample <span
+class="math inline">\(x_0\)</span></li>
+<li>Define a burn-in steps <span class="math inline">\(B\)</span> and
+total number of samples to draw <span
+class="math inline">\(N\)</span></li>
+<li>for i from 0 to B+N:
+<ol type="1">
+<li>Generate a candidate sample <span class="math inline">\(x&#39; \sim
+q(x&#39;|x_0)\)</span></li>
+<li>Compute the acceptance ratio <span
+class="math inline">\(r\)</span></li>
+<li>Draw a sample <span class="math inline">\(u \sim
+U(0,1)\)</span></li>
+<li>if <span class="math inline">\(u&lt;r\)</span>:
+<ul>
+<li>Accept the candidate sample and set <span
+class="math inline">\(x_(i+1)=x&#39;\)</span></li>
+</ul></li>
+<li>else:
+<ul>
+<li>Reject the candidate sample and set <span
+class="math inline">\(x_(i+1)=x_i\)</span></li>
+</ul></li>
+</ol></li>
+<li>Only reserve the samples from B to B+N</li>
+</ol>
+<hr />
+<h2 id="gibbs-sampling">Gibbs Sampling</h2>
+<p><strong><em>Gibbs sampling</em></strong> is also a special case of
+<em>Metropolis-Hasting algorithm</em>, but can be applied into <span
+class="math inline">\(k\)</span>-dimensional random variable <span
+class="math inline">\(x=[x^1,x^2,…,x^k]^T\)</span>, e.g., a
+multiple-parameter problem, where <span
+class="math inline">\(\theta=[\alpha,\beta,\gamma]\)</span>.</p>
+<p>If we can derive the conditional distribution of each entry
+conditioned on all other entries <span
+class="math inline">\(p(x^j│x^1,…,x^(j−1),x^(j+1),…,x^k)\)</span>. In
+our parameter example, we need to derive the distributions like <span
+class="math inline">\(p(\alpha|\beta,\gamma)\)</span>, <span
+class="math inline">\(p(\beta|\alpha,\gamma)\)</span> and <span
+class="math inline">\(p(\gamma|\alpha,\beta)\)</span>. However, please
+note in the derivation, we don't need the exact form of these
+distribution, we can <strong>freely use "<em>proportional to</em>"
+option</strong>, as the normalization factor will be eliminate in the
+acceptance ratio. Then in <em>Gibbs sampling</em>, we <strong>set the
+derived conditional distribution as the proposal
+distribution</strong>:</p>
+<p><span class="math display">\[\begin{equation}
+q(x&#39;│x_i)=\tilde{p}({x^j}&#39;|{x_i}^1,…,{x_i}^{j−1},{x_i}^{j+1},…,{x_i}^k)
+\end{equation}\]</span></p>
+<p>By calculating the acceptance ratio, we found that <span
+class="math inline">\(r=1\)</span> all the time, so in <span
+class="math inline">\(Gibbs sampling\)</span>, we never reject
+samples.</p>
+<p>The limitation to use <em>Gibbs</em> sampling is we need to derive
+the conditional distribution of each entry conditioned on all other
+entries, however, one delightful thing is we only need to derive <span
+class="math inline">\(\tilde{p}\)</span> but no need to derive the
+exactly <span class="math inline">\(p\)</span>, so we can use <span
+class="math inline">\(\propto\)</span> option freely.</p>
+<h1 id="main-reference">Main Reference</h1>
+<p>[1] Lecture slides from CS5340 module "Uncertainty Modeling in AI" of
+School of Computing of National University of Singapore.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Probability-Theory/" rel="tag"># Probability Theory</a>
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+              <a href="/tags/Math/" rel="tag"># Math</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/17-RLPaper-MF-PG-3-GAE/" rel="prev" title="[GAE] High-Dimensional Continuous Control Using Generalized Advantage Estimation">
+                  <i class="fa fa-chevron-left"></i> [GAE] High-Dimensional Continuous Control Using Generalized Advantage Estimation
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ma Haozhe</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
