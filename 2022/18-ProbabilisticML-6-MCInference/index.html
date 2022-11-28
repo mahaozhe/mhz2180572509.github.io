@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://example.com/images/MCMC/2.png">
 <meta property="og:image" content="http://example.com/images/MCMC/3.png">
 <meta property="article:published_time" content="2022-11-26T15:02:04.000Z">
-<meta property="article:modified_time" content="2022-11-26T15:15:53.882Z">
+<meta property="article:modified_time" content="2022-11-28T02:06:22.446Z">
 <meta property="article:author" content="Ma Haozhe">
 <meta property="article:tag" content="Probability Theory">
 <meta property="article:tag" content="Machine Learning">
@@ -251,9 +251,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2022-11-26 23:02:04 / Modified: 23:15:53" itemprop="dateCreated datePublished" datetime="2022-11-26T23:02:04+08:00">2022-11-26</time>
+      <time title="Created: 2022-11-26 23:02:04" itemprop="dateCreated datePublished" datetime="2022-11-26T23:02:04+08:00">2022-11-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-11-28 10:06:22" itemprop="dateModified" datetime="2022-11-28T10:06:22+08:00">2022-11-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -280,8 +286,8 @@
 had the greatest influence on science and engineering in the 20th
 century. (Beichl &amp; Sullivan 2000)</p>
 </blockquote>
-<p>This blog mainly introduce the basic ideas of <strong><em>Monte Carlo
-Inference</em></strong>, including <strong><em>Rejection
+<p>This blog mainly introduces the basic ideas of <strong><em>Monte
+Carlo Inference</em></strong>, including <strong><em>Rejection
 Sampling</em></strong>, <strong><em>Importance Sampling</em></strong>
 and different versions of <strong><em>Markov Chain Monte
 Carlo</em></strong> algorithms.</p>
@@ -674,12 +680,12 @@ U(0,1)\)</span></li>
 <li>if <span class="math inline">\(u&lt;r\)</span>:
 <ul>
 <li>Accept the candidate sample and set <span
-class="math inline">\(x_(i+1)=x&#39;\)</span></li>
+class="math inline">\(x_{i+1}=x&#39;\)</span></li>
 </ul></li>
 <li>else:
 <ul>
 <li>Reject the candidate sample and set <span
-class="math inline">\(x_(i+1)=x_i\)</span></li>
+class="math inline">\(x_{i+1}=x_i\)</span></li>
 </ul></li>
 </ol></li>
 <li>Only reserve the samples from B to B+N</li>
@@ -694,14 +700,14 @@ multiple-parameter problem, where <span
 class="math inline">\(\theta=[\alpha,\beta,\gamma]\)</span>.</p>
 <p>If we can derive the conditional distribution of each entry
 conditioned on all other entries <span
-class="math inline">\(p(x^j│x^1,…,x^(j−1),x^(j+1),…,x^k)\)</span>. In
+class="math inline">\(p(x^j│x^1,…,x^{j−1},x^{j+1},…,x^k)\)</span>. In
 our parameter example, we need to derive the distributions like <span
 class="math inline">\(p(\alpha|\beta,\gamma)\)</span>, <span
 class="math inline">\(p(\beta|\alpha,\gamma)\)</span> and <span
 class="math inline">\(p(\gamma|\alpha,\beta)\)</span>. However, please
 note in the derivation, we don't need the exact form of these
 distribution, we can <strong>freely use "<em>proportional to</em>"
-option</strong>, as the normalization factor will be eliminate in the
+option</strong>, as the normalization factor will be eliminated in the
 acceptance ratio. Then in <em>Gibbs sampling</em>, we <strong>set the
 derived conditional distribution as the proposal
 distribution</strong>:</p>
@@ -709,9 +715,8 @@ distribution</strong>:</p>
 q(x&#39;│x_i)=\tilde{p}({x^j}&#39;|{x_i}^1,…,{x_i}^{j−1},{x_i}^{j+1},…,{x_i}^k)
 \end{equation}\]</span></p>
 <p>By calculating the acceptance ratio, we found that <span
-class="math inline">\(r=1\)</span> all the time, so in <span
-class="math inline">\(Gibbs sampling\)</span>, we never reject
-samples.</p>
+class="math inline">\(r=1\)</span> all the time, so in <em>Gibbs
+sampling</em>, we never reject samples.</p>
 <p>The limitation to use <em>Gibbs</em> sampling is we need to derive
 the conditional distribution of each entry conditioned on all other
 entries, however, one delightful thing is we only need to derive <span

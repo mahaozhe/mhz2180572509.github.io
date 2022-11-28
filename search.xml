@@ -233,100 +233,6 @@ on POMDP can work normally on environments modeled by MDP.</p>
       </tags>
   </entry>
   <entry>
-    <title>[Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning</title>
-    <url>/2022/12-RLPaper-MF-4-DuelingDQN/</url>
-    <content><![CDATA[<blockquote>
-<p>Ziyu Wang, Tom Schaul, Matteo Hessel, Hado Hasselt, Marc Lanctot, and
-Nando Freitas. 2016. Dueling Network Architectures for Deep
-Reinforcement Learning. In Proceedings of The 33rd International
-Conference on Machine Learning, PMLR, 1995–2003. Retrieved August 8,
-2022 from https://proceedings.mlr.press/v48/wangf16.html</p>
-</blockquote>
-<span id="more"></span>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/4-1.png"
-alt="Dueling Network Architectures for Deep Reinforcement Learning" />
-<figcaption aria-hidden="true">Dueling Network Architectures for Deep
-Reinforcement Learning</figcaption>
-</figure>
-<h1 id="overview">Overview</h1>
-<p>The paper proposed a creative network <strong>architecture</strong>
-called <strong><em>dueling network</em></strong> to <strong>decouple the
-value and advantage</strong> in deep Q-networks algorithm. The
-architecture can be used to replace the original network in any
-applicable deep RL algorithm without imposing any change to the
-underlying algorithm. The authors conducted experiments to show better
-performances that outperform the state-of-the-art algorithms (2016-6) on
-Atari games domain.</p>
-<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>The new architecture main solves the following problems:</p>
-<ul>
-<li>In most environments, for many states, the selection of actions is
-almost irrelevant, which means, for these states, selecting any action
-by the agent does not affect the environment any more.</li>
-<li>In most popular deep RL algorithms, like DQN, DDQN, the difference
-of the Q-values among different actions are usually very small, which is
-easy to be influenced by any noise or oscillation.</li>
-</ul>
-<h1 id="main-innovations">Main Innovations</h1>
-<p>The proposed architecture is shown in the following figure:</p>
-<figure>
-<img src="/images/RLPapers/Model-Free/DeepQLearning/4-2.png"
-alt="Dueling network architecture" />
-<figcaption aria-hidden="true">Dueling network architecture</figcaption>
-</figure>
-<p>At the end of the convolutional layers, the dueling network separate
-the output to two streams, one to estimate the state value <span
-class="math inline">\(V(s)\)</span> (a scaler) and one to estimate the
-<strong><em>advantage function</em></strong> of each action for the
-current state <span class="math inline">\(A(s,a)\)</span> (a vector with
-length of <span class="math inline">\(|A|\)</span>). Then the network
-use a sepcial <strong>aggregating layer</strong> to combine the value
-and the advantage together to output the Q-value <span
-class="math inline">\(Q(s,a)\)</span>.</p>
-<p>The relationship among these qualities under a specific policy <span
-class="math inline">\(\pi\)</span> is:</p>
-<p><span class="math display">\[\begin{equation}
-A^{\pi}(s,a)=Q^{\pi}(s,a)−V^{\pi}(s)
-\end{equation}\]</span></p>
-<p>which indicates that the advantage is the Q-value but measured by the
-value of that state, in this case, we actually have: <span
-class="math inline">\(\mathbb{E}_{a \backsim
-\pi(s)}[A^{\pi}(s,a)]=0\)</span>. The advantage is a <strong>relative
-measure</strong> of the importance of each action.</p>
-<p>One important problem is that: actually, in deep Q-networks based
-algorithms, we only estimate the final output Q-values in the algorithm,
-but not explicitly estimate or give out the state values and action
-advantages, and we cannot <strong>recover</strong> these two values only
-based on the given Q-value. So, to address this issue of identifiability
-problem, the paper <strong>forced the advantage function estimator to
-offset by the maximal of all advantages or the average of all
-advantages</strong>:</p>
-<ul>
-<li><span
-class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\max_{a&#39;}⁡{A(s,a&#39;)})\)</span></li>
-<li><span
-class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\frac{1}{|A|}\sum_{a&#39;}{A(s,a&#39;)})\)</span></li>
-</ul>
-<p>This trick, on the one hand, loses the original semantics of V and A
-because they are now off-target by a constant, but on the other hand, it
-increases the stability of the optimization. What's more, this doesn't
-change the relative rank of the A (and hence Q) values and the values
-can be computed <strong>automatically</strong>.</p>
-<p>The paper evaluated the performance of the above two methods, and
-show the results based on the second equation.</p>
-]]></content>
-      <categories>
-        <category>RL Paper Notes</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>Paper Notes</tag>
-        <tag>Model-Free RL</tag>
-        <tag>Deep Q-Learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>[PER] Prioritized Experience Replay</title>
     <url>/2022/13-RLPaper-Te-ER-1-PER/</url>
     <content><![CDATA[<blockquote>
@@ -410,6 +316,105 @@ training.</p>
         <tag>Paper Notes</tag>
         <tag>Experience Replay</tag>
         <tag>RL Techniques</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[NoisyNet] Noisy Networks for Exploration</title>
+    <url>/2022/14-RLPaper-Te-Ex-1-NoisyNet/</url>
+    <content><![CDATA[<blockquote>
+<p>Meire Fortunato, Mohammad Gheshlaghi Azar, Bilal Piot, Jacob Menick,
+Ian Osband, Alex Graves, Vlad Mnih, Remi Munos, Demis Hassabis, Olivier
+Pietquin, Charles Blundell, and Shane Legg. 2019. Noisy Networks for
+Exploration. DOI: https://doi.org/10.48550/arXiv.1706.10295</p>
+</blockquote>
+<span id="more"></span>
+<figure>
+<img src="/images/RLPapers/Techniques/Exploration/Images/1-1.png"
+alt="Noisy Networks for Exploration" />
+<figcaption aria-hidden="true">Noisy Networks for
+Exploration</figcaption>
+</figure>
+<h1 id="overview">Overview</h1>
+<p>The paper proposed a general framework
+<strong><em>NoisyNet</em></strong> to introduce <strong>parametric
+noise</strong> to add to the weights in the network and aid the agent to
+exploration more efficiently and effectively. The framework can be
+implemented into any RL algorithms with <strong>gradient
+descent</strong>, like DQN, DDQN, Dueling DQN, DDPG, A3C, TRPO and so
+on, which also add little computational overhead. The <em>NoisyNet</em>
+can replace the original exploration policies, like <span
+class="math inline">\(\epsilon\)</span>-greedy exploration. The paper
+conducted experiments to compare the DQN, Dueling DQN and A3C algorihtms
+with <em>NoisyNet</em> respectively with the original version of these
+algorithms, the results show higher scores for a wide range of Atari
+games.</p>
+<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
+<p>For traditional exploration policies, like entropy reward and <span
+class="math inline">\(\epsilon\)</span>-greddy, there needs additional
+hyper-parameters and more importantly, the policy is independent of the
+states and policies learned by the agents.</p>
+<h1 id="main-innovations">Main Innovations</h1>
+<p>The key idea of the <em>NoisyNet</em> is to add a parametric noise to
+the parameters (weights) (to be learned) of the networks. The added
+noise can help to make the agent to select creative behaviors. More
+importantly, as the noise is parametric, and the parameters are also
+updated in the reinforcement learning algorithm by gradient descent with
+the original parameters, so the noise can be controlled by the model
+during the learning procedure and therefore, the noise is dependent of
+the states and the policy.</p>
+<p>The main method to change an original parameter <span
+class="math inline">\(\theta\)</span> to a new set of learnable
+parameters is to define:</p>
+<p><span class="math display">\[\begin{equation}
+\theta^{new}=\mu^{\theta}+\Sigma^{\theta} \odot \epsilon^{\theta}
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\mu\)</span> can be seen as the
+original weight, and <span class="math inline">\(\Sigma\)</span> is the
+factor to be multiplied to the noise to control the noise to be added
+onto the original weight, <span class="math inline">\(\epsilon\)</span>
+is the generated <strong>zero-mean noise with fixed statics</strong>,
+<strong>element-wise multiplied</strong> by the control factor. In this
+case, the original parameter <span class="math inline">\(\theta\)</span>
+to learn is replaced by a set of parameter <span
+class="math inline">\(\zeta=[\mu^{\theta},\Sigma^{\theta}]\)</span>. We
+can see from the equation, the <em>NoisyNet</em> doesn't change or
+control the distribution of the parameters in the network, but only
+learn to control the intensity of the noise
+<strong>automatically</strong>. The parameters of the noise <span
+class="math inline">\(\Sigma\)</span> can also be learned in the RL
+algorithm accompanying the parameters from the model.</p>
+<p>The paper proposed two approaches to generate noise:</p>
+<ul>
+<li><strong>Independent Gaussian noise</strong>: uses an independent
+Gaussian noise entry per weight.</li>
+<li><strong>Factorised Gaussian noise</strong>: uses an independent
+noise per each output and another independent noise per each input.</li>
+</ul>
+<h1 id="implementation-details">Implementation Details</h1>
+<p>The paper implements the <em>NoisyNet</em> framework into three RL
+algorithms to build the Noisy-DQN, Noisy-Dueling-DQN, and the Noisy-A3C
+and compare them with the original algorithms respectively.</p>
+<ol type="1">
+<li>For the noisy-based algorithms, the original exploration policies,
+like <span class="math inline">\(\epsilon\)</span>-greedy is
+canceled.</li>
+<li>A noisy network agent samples a new set of parameters after every
+step of optimization. Between optimization steps, the agent acts
+according to a fixed set of parameters.</li>
+<li>The <em>NoisyNet</em> is not implemented into all parameters in the
+original network, but only replace parts of them, like in the DQN and
+Dueling DQN, the noise is only added onto parameters in the fully
+connected layers.</li>
+</ol>
+]]></content>
+      <categories>
+        <category>RL Paper Notes</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Paper Notes</tag>
+        <tag>RL Techniques</tag>
+        <tag>Exploration</tag>
       </tags>
   </entry>
   <entry>
@@ -515,306 +520,88 @@ https://proceedings.neurips.cc/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-
       </tags>
   </entry>
   <entry>
-    <title>[NoisyNet] Noisy Networks for Exploration</title>
-    <url>/2022/14-RLPaper-Te-Ex-1-NoisyNet/</url>
+    <title>[Dueling DQN] Dueling Network Architectures for Deep Reinforcement Learning</title>
+    <url>/2022/12-RLPaper-MF-4-DuelingDQN/</url>
     <content><![CDATA[<blockquote>
-<p>Meire Fortunato, Mohammad Gheshlaghi Azar, Bilal Piot, Jacob Menick,
-Ian Osband, Alex Graves, Vlad Mnih, Remi Munos, Demis Hassabis, Olivier
-Pietquin, Charles Blundell, and Shane Legg. 2019. Noisy Networks for
-Exploration. DOI: https://doi.org/10.48550/arXiv.1706.10295</p>
+<p>Ziyu Wang, Tom Schaul, Matteo Hessel, Hado Hasselt, Marc Lanctot, and
+Nando Freitas. 2016. Dueling Network Architectures for Deep
+Reinforcement Learning. In Proceedings of The 33rd International
+Conference on Machine Learning, PMLR, 1995–2003. Retrieved August 8,
+2022 from https://proceedings.mlr.press/v48/wangf16.html</p>
 </blockquote>
 <span id="more"></span>
 <figure>
-<img src="/images/RLPapers/Techniques/Exploration/Images/1-1.png"
-alt="Noisy Networks for Exploration" />
-<figcaption aria-hidden="true">Noisy Networks for
-Exploration</figcaption>
-</figure>
-<h1 id="overview">Overview</h1>
-<p>The paper proposed a general framework
-<strong><em>NoisyNet</em></strong> to introduce <strong>parametric
-noise</strong> to add to the weights in the network and aid the agent to
-exploration more efficiently and effectively. The framework can be
-implemented into any RL algorithms with <strong>gradient
-descent</strong>, like DQN, DDQN, Dueling DQN, DDPG, A3C, TRPO and so
-on, which also add little computational overhead. The <em>NoisyNet</em>
-can replace the original exploration policies, like <span
-class="math inline">\(\epsilon\)</span>-greedy exploration. The paper
-conducted experiments to compare the DQN, Dueling DQN and A3C algorihtms
-with <em>NoisyNet</em> respectively with the original version of these
-algorithms, the results show higher scores for a wide range of Atari
-games.</p>
-<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>For traditional exploration policies, like entropy reward and <span
-class="math inline">\(\epsilon\)</span>-greddy, there needs additional
-hyper-parameters and more importantly, the policy is independent of the
-states and policies learned by the agents.</p>
-<h1 id="main-innovations">Main Innovations</h1>
-<p>The key idea of the <em>NoisyNet</em> is to add a parametric noise to
-the parameters (weights) (to be learned) of the networks. The added
-noise can help to make the agent to select creative behaviors. More
-importantly, as the noise is parametric, and the parameters are also
-updated in the reinforcement learning algorithm by gradient descent with
-the original parameters, so the noise can be controlled by the model
-during the learning procedure and therefore, the noise is dependent of
-the states and the policy.</p>
-<p>The main method to change an original parameter <span
-class="math inline">\(\theta\)</span> to a new set of learnable
-parameters is to define:</p>
-<p><span class="math display">\[\begin{equation}
-\theta^{new}=\mu^{\theta}+\Sigma^{\theta} \odot \epsilon^{\theta}
-\end{equation}\]</span></p>
-<p>where <span class="math inline">\(\mu\)</span> can be seen as the
-original weight, and <span class="math inline">\(\Sigma\)</span> is the
-factor to be multiplied to the noise to control the noise to be added
-onto the original weight, <span class="math inline">\(\epsilon\)</span>
-is the generated <strong>zero-mean noise with fixed statics</strong>,
-<strong>element-wise multiplied</strong> by the control factor. In this
-case, the original parameter <span class="math inline">\(\theta\)</span>
-to learn is replaced by a set of parameter <span
-class="math inline">\(\zeta=[\mu^{\theta},\Sigma^{\theta}]\)</span>. We
-can see from the equation, the <em>NoisyNet</em> doesn't change or
-control the distribution of the parameters in the network, but only
-learn to control the intensity of the noise
-<strong>automatically</strong>. The parameters of the noise <span
-class="math inline">\(\Sigma\)</span> can also be learned in the RL
-algorithm accompanying the parameters from the model.</p>
-<p>The paper proposed two approaches to generate noise:</p>
-<ul>
-<li><strong>Independent Gaussian noise</strong>: uses an independent
-Gaussian noise entry per weight.</li>
-<li><strong>Factorised Gaussian noise</strong>: uses an independent
-noise per each output and another independent noise per each input.</li>
-</ul>
-<h1 id="implementation-details">Implementation Details</h1>
-<p>The paper implements the <em>NoisyNet</em> framework into three RL
-algorithms to build the Noisy-DQN, Noisy-Dueling-DQN, and the Noisy-A3C
-and compare them with the original algorithms respectively.</p>
-<ol type="1">
-<li>For the noisy-based algorithms, the original exploration policies,
-like <span class="math inline">\(\epsilon\)</span>-greedy is
-canceled.</li>
-<li>A noisy network agent samples a new set of parameters after every
-step of optimization. Between optimization steps, the agent acts
-according to a fixed set of parameters.</li>
-<li>The <em>NoisyNet</em> is not implemented into all parameters in the
-original network, but only replace parts of them, like in the DQN and
-Dueling DQN, the noise is only added onto parameters in the fully
-connected layers.</li>
-</ol>
-]]></content>
-      <categories>
-        <category>RL Paper Notes</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>Paper Notes</tag>
-        <tag>RL Techniques</tag>
-        <tag>Exploration</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[A3C] Asynchronous Methods for Deep Reinforcement Learning</title>
-    <url>/2022/15-RLPaper-MF-PG-1-A3C/</url>
-    <content><![CDATA[<blockquote>
-<p>Volodymyr Mnih, Adria Puigdomenech Badia, Mehdi Mirza, Alex Graves,
-Timothy Lillicrap, Tim Harley, David Silver, and Koray Kavukcuoglu.
-2016. Asynchronous Methods for Deep Reinforcement Learning. In
-Proceedings of The 33rd International Conference on Machine Learning,
-PMLR, 1928–1937. Retrieved October 4, 2022 from
-https://proceedings.mlr.press/v48/mniha16.html</p>
-</blockquote>
-<span id="more"></span>
-<figure>
-<img src="/images/RLPapers/Model-Free/PolicyGradients/1-1.png"
-alt="Asynchronous Methods for Deep Reinforcement Learning" />
-<figcaption aria-hidden="true">Asynchronous Methods for Deep
+<img src="/images/RLPapers/Model-Free/DeepQLearning/4-1.png"
+alt="Dueling Network Architectures for Deep Reinforcement Learning" />
+<figcaption aria-hidden="true">Dueling Network Architectures for Deep
 Reinforcement Learning</figcaption>
 </figure>
-<h2 id="overview">Overview</h2>
-<p>The paper proposed a general framework to train RL agents
-asynchronously. The main idea is to initialize multiple learners on
-multiple threads of the multiple-core CPUs. There is a
-<strong>global</strong> learner and multiple <strong>actor</strong>
-learners. The actor learners push their parameters to the global learner
-and pull parameters from it. In this case, the samples from multiple
-learners can <strong>de-correlate</strong> the relations from the
-sequential trajectories, so that on-line learning can be conducted in
-deep RL domain, and save time and computing resources effectively. The
-paper implemented the asynchronous approach into four existing RL
-algorithms:</p>
-<ul>
-<li>Asynchronous one-step Q-learning</li>
-<li>Asynchronous one-step SARSA</li>
-<li>Asynchronous n-step Q-learning</li>
-<li><strong><em>Asynchronous Advantage Actor-Critic
-(A3C)</em></strong></li>
-</ul>
-<p>where the last one achieves best performance. The paper conducted
-some experiments on Atari games and show the A3C algorithm outperforms
-the best current baselines.</p>
-<h2 id="main-problems-to-solve">Main Problems to Solve</h2>
-<ol type="1">
-<li>Many deep reinforcement learning algorithms turns to off-policy
-approaches, as online learning cannot decorrelate the relations among
-the sequential transitions. So many techniques are proposed, e.g.,
-experience replay to <strong>aggregate over memory</strong>. In this
-case, they usually requires off-policy learning.</li>
-<li>The experience replay based algorithms or massively distributed
-architectures use more memory and computation per real interaction.</li>
-</ol>
-<h2 id="main-innovations">Main Innovations</h2>
-<p>The paper proposed a conceptually simple and lightweight framework
-for deep reinforcement learning that uses asynchronous gradient descent
-for optimization of deep neural network controllers. The algorithm
-instantiates multiple learners on multiple threads on multiple-core CPUs
-and one global learner. The workers parallelly learn in their own
-environment instances and share gradients or parameters with the global
-learner. In this case, there are several advantages:</p>
-<ol type="1">
-<li>The workers sample and learn by interacting with their own
-environments, so the samples are not correlated with each other, which
-solves the main problem of on-line RL approaches.</li>
-<li>Since the parallelism can decorrelates the data, then no experience
-replay is needed, which saves much time and computing resources, makes
-it possible to train agents on multiple-core CPUs but not GPUs, and even
-use much shorter time than training on GPUs.</li>
-<li>The main idea can make on-line algorithms to be implemented into
-deep RL domains, like actor-critic.</li>
-<li>Compared with the massively distributed approaches, the workers and
-the global learner are set on one single machine but multiple cores of
-CPU, so there is no need to cost time and resources on the communication
-between the machines.</li>
-<li>Different learners can have different exploration policies, so that
-better de-correlate the samples.</li>
-</ol>
-]]></content>
-      <categories>
-        <category>RL Paper Notes</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>Paper Notes</tag>
-        <tag>Model-Free RL</tag>
-        <tag>Policy Gradients</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[GAE] High-Dimensional Continuous Control Using Generalized Advantage Estimation</title>
-    <url>/2022/17-RLPaper-MF-PG-3-GAE/</url>
-    <content><![CDATA[<blockquote>
-<p>John Schulman, Philipp Moritz, Sergey Levine, Michael Jordan, and
-Pieter Abbeel. 2018. High-Dimensional Continuous Control Using
-Generalized Advantage Estimation.
-DOI:https://doi.org/10.48550/arXiv.1506.02438</p>
-</blockquote>
-<span id="more"></span>
-<figure>
-<img src="/images/RLPapers/Model-Free/PolicyGradients/3-1.png"
-alt="High-Dimensional Continuous Control Using Generalized Advantage Estimation" />
-<figcaption aria-hidden="true">High-Dimensional Continuous Control Using
-Generalized Advantage Estimation</figcaption>
-</figure>
 <h1 id="overview">Overview</h1>
-<p>The paper proposed an scheme called <strong><em>Generalized Advantage
-Estimation</em></strong> (<strong><em>GAE</em></strong>), which aims to
-trade off between reducing the variance and introduced bias. The
-algorithm is a <strong>policy gradient</strong> based algorithm,
-controlled by one hyper-parameter, the algorithm lives between
-<strong>Monte Carlo</strong> and <strong>Temporal Difference</strong>,
-and the two edges are inclusive. The algorithm is an <strong>on-line
-learning</strong> approach. The GAE applies the idea analogous to the
-TD(<span class="math inline">\(\lambda\)</span>), but the difference is
-that GAE works on advantage function, but TD(<span
-class="math inline">\(\lambda\)</span>) works on value function. The
-paper implemented the proposed GAE in the <em>Trust Region Policy
-Optimization</em> (<em>TRPO</em>) [1] algorithm, and conducted
-experiments in some challenging 3D robotics tasks.</p>
+<p>The paper proposed a creative network <strong>architecture</strong>
+called <strong><em>dueling network</em></strong> to <strong>decouple the
+value and advantage</strong> in deep Q-networks algorithm. The
+architecture can be used to replace the original network in any
+applicable deep RL algorithm without imposing any change to the
+underlying algorithm. The authors conducted experiments to show better
+performances that outperform the state-of-the-art algorithms (2016-6) on
+Atari games domain.</p>
 <h1 id="main-problems-to-solve">Main Problems to Solve</h1>
-<p>For the non-linear function approximators, e.g., neural networks, in
-deep reinforcement learning, the two main challenges are:</p>
-<ol type="1">
-<li>usually requires large number of samples</li>
-<li>usually difficult to obtain stable and steady improvement despite
-the nonstationarity of the incoming data.</li>
-</ol>
-<h1 id="main-innovations">Main Innovations</h1>
-<ol type="1">
-<li><p>The algorithm proposed one method to trade off between the
-<strong>variance</strong> and <strong>bias</strong>:</p>
+<p>The new architecture main solves the following problems:</p>
 <ul>
-<li>The <strong>variance</strong> mainly means the algorithm learning is
-unstable, so there will be very high vibrate.</li>
-<li>The <strong>bias</strong> mainly comes from the estimation of the
-real value function, q-function, advantage function and so on,
-especially when we use discounted cumulative rewards or the temporal
-difference estimation.</li>
+<li>In most environments, for many states, the selection of actions is
+almost irrelevant, which means, for these states, selecting any action
+by the agent does not affect the environment any more.</li>
+<li>In most popular deep RL algorithms, like DQN, DDQN, the difference
+of the Q-values among different actions are usually very small, which is
+easy to be influenced by any noise or oscillation.</li>
 </ul>
-<p>In this case, the algorithm uses two hyper-parameters <span
-class="math inline">\(\gamma\)</span> and <span
-class="math inline">\(\lambda\)</span>, then proposed the
-<strong><em>Generalized Advantage Estimation</em></strong>
-(<strong><em>GAE</em></strong>) of the advantage function which is
-defined as:</p>
-<p><span class="math display">\[\begin{equation}
-\hat{A}_t^{GAE}(\gamma,\lambda):=\sum_{l=0}^{\infty}{(\gamma \lambda)^l
-\delta_{t+l}^V}
-\end{equation}\]</span></p>
-<p>where <span class="math inline">\(\delta_{t+l}^V:= r_{t+l}+\gamma
-V(s_{t+l}) − V(s_{t+l−1})\)</span>, so the GAE advantage can be wrote
-as:</p>
-<p><span class="math display">\[\begin{equation}
-\hat{A}_t^{GAE}(\gamma,\lambda):=\sum_{l=0}^{\infty}{(\gamma \lambda)^l
-(r_{t+l}+\gamma V(s_{t+l}) − V(s_{t+l−1}))}
-\end{equation}\]</span></p></li>
-<li><p>The two edges of the GAE advantage are <span
-class="math inline">\(\lambda=0\)</span> and <span
-class="math inline">\(\lambda=1\)</span> respectively:</p>
-<ul>
-<li><span class="math inline">\(\lambda=0\)</span>: <span
-class="math inline">\(GAE(\gamma,0)\)</span>: <span
-class="math inline">\(\hat{A}_t := r_t + \gamma V(s_{t+1}) −
-V(s_t)\)</span>, in this case, will introduce high bias but have lowest
-variance.</li>
-<li><span class="math inline">\(\lambda=1\)</span>: <span
-class="math inline">\(GAE(\gamma,1)\)</span>: <span
-class="math inline">\(hat{A}_t := \sum_{l=0}^{\infty}{\gamma^l r_{t+l}}
-− V(s_t)\)</span>, in this case, will have high variance as many terms
-are summed up.</li>
-</ul></li>
-<li><p>For the <span class="math inline">\(0 &lt; \lambda &lt;
-1\)</span>, the GAE can trade off between variance and bias.</p></li>
-<li><p>The paper also gives an another view to interpret the GAE as a
-kind of reward reshaping.</p></li>
-<li><p>Finally, the paper combines the proposed GAE into the popular (at
-that time) algorithm <em>TRPO</em> to use the GAE to estimate both the
-policy function and the value function. The algorithm to implement GAE
-into trust region based algorithm is shown as: <img
-src="/images/RLPapers/Model-Free/PolicyGradients/3-2.png"
-alt="The GAE implemented TRPO algorithm." /></p></li>
-</ol>
-<h1 id="experiments">Experiments</h1>
-<p>The paper conducted many experiments in
-<strong>high-dimensional</strong> environments with
-<strong>continuous</strong> action spaces. One results they shown in the
-paper that is worth to mention here is they evaluate the learning
-performance with different values of <span
-class="math inline">\(\lambda\)</span> and <span
-class="math inline">\(\gamma\)</span>:</p>
+<h1 id="main-innovations">Main Innovations</h1>
+<p>The proposed architecture is shown in the following figure:</p>
 <figure>
-<img src="/images/RLPapers/Model-Free/PolicyGradients/3-3.png"
-alt="The experimental results showing the performance with differnt sets of hyper-parameters." />
-<figcaption aria-hidden="true">The experimental results showing the
-performance with differnt sets of hyper-parameters.</figcaption>
+<img src="/images/RLPapers/Model-Free/DeepQLearning/4-2.png"
+alt="Dueling network architecture" />
+<figcaption aria-hidden="true">Dueling network architecture</figcaption>
 </figure>
-<p>The figure (white means high value, black means low value) provides
-some insights to set these two hyper-parameters.</p>
-<h1 id="reference">Reference</h1>
-<p>[1] John Schulman, Sergey Levine, Pieter Abbeel, Michael Jordan, and
-Philipp Moritz. 2015. Trust Region Policy Optimization. In Proceedings
-of the 32nd International Conference on Machine Learning, PMLR,
-1889–1897. Retrieved October 4, 2022 from
-https://proceedings.mlr.press/v37/schulman15.html</p>
+<p>At the end of the convolutional layers, the dueling network separate
+the output to two streams, one to estimate the state value <span
+class="math inline">\(V(s)\)</span> (a scaler) and one to estimate the
+<strong><em>advantage function</em></strong> of each action for the
+current state <span class="math inline">\(A(s,a)\)</span> (a vector with
+length of <span class="math inline">\(|A|\)</span>). Then the network
+use a sepcial <strong>aggregating layer</strong> to combine the value
+and the advantage together to output the Q-value <span
+class="math inline">\(Q(s,a)\)</span>.</p>
+<p>The relationship among these qualities under a specific policy <span
+class="math inline">\(\pi\)</span> is:</p>
+<p><span class="math display">\[\begin{equation}
+A^{\pi}(s,a)=Q^{\pi}(s,a)−V^{\pi}(s)
+\end{equation}\]</span></p>
+<p>which indicates that the advantage is the Q-value but measured by the
+value of that state, in this case, we actually have: <span
+class="math inline">\(\mathbb{E}_{a \backsim
+\pi(s)}[A^{\pi}(s,a)]=0\)</span>. The advantage is a <strong>relative
+measure</strong> of the importance of each action.</p>
+<p>One important problem is that: actually, in deep Q-networks based
+algorithms, we only estimate the final output Q-values in the algorithm,
+but not explicitly estimate or give out the state values and action
+advantages, and we cannot <strong>recover</strong> these two values only
+based on the given Q-value. So, to address this issue of identifiability
+problem, the paper <strong>forced the advantage function estimator to
+offset by the maximal of all advantages or the average of all
+advantages</strong>:</p>
+<ul>
+<li><span
+class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\max_{a&#39;}⁡{A(s,a&#39;)})\)</span></li>
+<li><span
+class="math inline">\(Q(s,a)=V(s)+(A(s,a)−\frac{1}{|A|}\sum_{a&#39;}{A(s,a&#39;)})\)</span></li>
+</ul>
+<p>This trick, on the one hand, loses the original semantics of V and A
+because they are now off-target by a constant, but on the other hand, it
+increases the stability of the optimization. What's more, this doesn't
+change the relative rank of the A (and hence Q) values and the values
+can be computed <strong>automatically</strong>.</p>
+<p>The paper evaluated the performance of the above two methods, and
+show the results based on the second equation.</p>
 ]]></content>
       <categories>
         <category>RL Paper Notes</category>
@@ -823,7 +610,7 @@ https://proceedings.mlr.press/v37/schulman15.html</p>
         <tag>Reinforcement Learning</tag>
         <tag>Paper Notes</tag>
         <tag>Model-Free RL</tag>
-        <tag>Policy Gradients</tag>
+        <tag>Deep Q-Learning</tag>
       </tags>
   </entry>
   <entry>
@@ -834,8 +621,8 @@ https://proceedings.mlr.press/v37/schulman15.html</p>
 had the greatest influence on science and engineering in the 20th
 century. (Beichl &amp; Sullivan 2000)</p>
 </blockquote>
-<p>This blog mainly introduce the basic ideas of <strong><em>Monte Carlo
-Inference</em></strong>, including <strong><em>Rejection
+<p>This blog mainly introduces the basic ideas of <strong><em>Monte
+Carlo Inference</em></strong>, including <strong><em>Rejection
 Sampling</em></strong>, <strong><em>Importance Sampling</em></strong>
 and different versions of <strong><em>Markov Chain Monte
 Carlo</em></strong> algorithms.</p>
@@ -1228,12 +1015,12 @@ U(0,1)\)</span></li>
 <li>if <span class="math inline">\(u&lt;r\)</span>:
 <ul>
 <li>Accept the candidate sample and set <span
-class="math inline">\(x_(i+1)=x&#39;\)</span></li>
+class="math inline">\(x_{i+1}=x&#39;\)</span></li>
 </ul></li>
 <li>else:
 <ul>
 <li>Reject the candidate sample and set <span
-class="math inline">\(x_(i+1)=x_i\)</span></li>
+class="math inline">\(x_{i+1}=x_i\)</span></li>
 </ul></li>
 </ol></li>
 <li>Only reserve the samples from B to B+N</li>
@@ -1248,14 +1035,14 @@ multiple-parameter problem, where <span
 class="math inline">\(\theta=[\alpha,\beta,\gamma]\)</span>.</p>
 <p>If we can derive the conditional distribution of each entry
 conditioned on all other entries <span
-class="math inline">\(p(x^j│x^1,…,x^(j−1),x^(j+1),…,x^k)\)</span>. In
+class="math inline">\(p(x^j│x^1,…,x^{j−1},x^{j+1},…,x^k)\)</span>. In
 our parameter example, we need to derive the distributions like <span
 class="math inline">\(p(\alpha|\beta,\gamma)\)</span>, <span
 class="math inline">\(p(\beta|\alpha,\gamma)\)</span> and <span
 class="math inline">\(p(\gamma|\alpha,\beta)\)</span>. However, please
 note in the derivation, we don't need the exact form of these
 distribution, we can <strong>freely use "<em>proportional to</em>"
-option</strong>, as the normalization factor will be eliminate in the
+option</strong>, as the normalization factor will be eliminated in the
 acceptance ratio. Then in <em>Gibbs sampling</em>, we <strong>set the
 derived conditional distribution as the proposal
 distribution</strong>:</p>
@@ -1263,9 +1050,8 @@ distribution</strong>:</p>
 q(x&#39;│x_i)=\tilde{p}({x^j}&#39;|{x_i}^1,…,{x_i}^{j−1},{x_i}^{j+1},…,{x_i}^k)
 \end{equation}\]</span></p>
 <p>By calculating the acceptance ratio, we found that <span
-class="math inline">\(r=1\)</span> all the time, so in <span
-class="math inline">\(Gibbs sampling\)</span>, we never reject
-samples.</p>
+class="math inline">\(r=1\)</span> all the time, so in <em>Gibbs
+sampling</em>, we never reject samples.</p>
 <p>The limitation to use <em>Gibbs</em> sampling is we need to derive
 the conditional distribution of each entry conditioned on all other
 entries, however, one delightful thing is we only need to derive <span
@@ -1275,403 +1061,6 @@ class="math inline">\(\propto\)</span> option freely.</p>
 <h1 id="main-reference">Main Reference</h1>
 <p>[1] Lecture slides from CS5340 module "Uncertainty Modeling in AI" of
 School of Computing of National University of Singapore.</p>
-]]></content>
-      <categories>
-        <category>Probabilistic Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Probability Theory</tag>
-        <tag>Machine Learning</tag>
-        <tag>Math</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>[TRPO] Trust Region Policy Optimization</title>
-    <url>/2022/16-RLPaper-MF-PG-2-TRPO/</url>
-    <content><![CDATA[<blockquote>
-<p>John Schulman, Sergey Levine, Pieter Abbeel, Michael Jordan, and
-Philipp Moritz. 2015. Trust Region Policy Optimization. In Proceedings
-of the 32nd International Conference on Machine Learning, PMLR,
-1889–1897. Retrieved October 4, 2022 from
-https://proceedings.mlr.press/v37/schulman15.html</p>
-</blockquote>
-<span id="more"></span>
-<figure>
-<img src="/images/RLPapers/Model-Free/PolicyGradients/2-1.png"
-alt="Trust Region Policy Optimization" />
-<figcaption aria-hidden="true">Trust Region Policy
-Optimization</figcaption>
-</figure>
-<h1 id="overview">Overview</h1>
-<p>The paper proposed a new <strong>practical</strong> algorithm called
-<strong><em>Trust Region Policy Optimization</em></strong>
-(<strong><em>TRPO</em></strong>). The algorithm is
-<strong>practical</strong> as it can be implemented into plenty
-large-space environments and continuous control problems. The main
-innovation of the TPRO is its derivation based on the
-theoretically-justified algorithm [1] to do <strong>many rounds of
-reasonable approximations</strong> to make the optimizing objective be
-calculated effectively. Most importantly, the paper proves the proposed
-algorithm is <strong>guaranteed to be improved monotonically</strong>.
-TRPO is a model-free, policy-based, <strong>on-policy</strong>,
-<strong>Monte Carlo</strong> algorithm that can be used in environments
-with <strong>continuous state space and action space</strong>, and also
-support high-dimensional input and large nonlinear policies such as
-neural networks. The key idea is how to do approximation of the
-optimization objective. The paper conducts experiments in a wide range
-of tasks, including the robotic and Atari games domains, which shows
-great performance.</p>
-<h1 id="main-approximation-procedure">Main Approximation Procedure</h1>
-<p>In this section, we will show how does the paper approximate the
-optimization objective step-by-step. In the following sub-sections, the
-notions used in this paper is a bit different from common ones. To
-define the MDP model, it doesn't use the reward function, but uses the
-<strong>cost function</strong> <span class="math inline">\(c:S
-\rightarrow \mathbb{R}\)</span>, so the main target is to
-<strong>minimize the expected cost</strong>, defined as <span
-class="math inline">\(\eta(\pi)=\mathbb{E}[\sum_{t=0}^{\infty}{\gamma^t
-c(s_t)}]\)</span>.</p>
-<h2 id="preliminaries">Preliminaries</h2>
-<p>Overall, we know the following basic concepts:</p>
-<p><span class="math display">\[\begin{equation}
-Q_{\pi}(s_t,a_t)=\mathbb{E}[\sum_{l=0}^{\infty}{\gamma^l c(s_{t+l})}],
-a_t \sim \pi(s_t)
-\end{equation}\]</span></p>
-<p><span class="math display">\[\begin{equation}
-V_{\pi} (s_t)=\mathbb{E}[\sum_{l=0}^{\infty}{\gamma^l c(s_{t+l})}]
-\end{equation}\]</span></p>
-<p>We also have the advantage function:</p>
-<p><span class="math display">\[\begin{equation}
-A_{\pi}(s,a)=Q_{\pi}(s,a)−V_{\pi}(s)
-\end{equation}\]</span></p>
-<p>Kakade &amp; Lanford (2002) [1] derived the relationship of the
-expected discounted cost between two policies <span
-class="math inline">\(\pi\)</span> and <span
-class="math inline">\(\tilde{\pi}\)</span> to have the following
-equation:</p>
-<p><span class="math display">\[\begin{equation}
-\eta(\tilde{\pi})=\eta(\pi)+\mathbb{E}_{s_0,a_0,s_1,a_1...}[\sum_{t=0}^{\infty}{\gamma^t
-A_{\pi}(s_t,a_t)}]
-\end{equation}\]</span></p>
-<p>Where the transitions are generated based on <strong>the
-policy</strong> <span class="math inline">\(\tilde{\pi}\)</span>.</p>
-<p>This is very straightforward, the actions are selected from policy
-<span class="math inline">\(\tilde{\pi}\)</span> but the advantages are
-computed by policy <span class="math inline">\(\pi\)</span>.</p>
-<p>The paper introduced the <strong>(unnormalized) discounted visitation
-frequencies</strong> as:</p>
-<p><span class="math display">\[\begin{equation}
-\rho_{\pi}(s)=P(s_0=s)+\gamma P(s_1=s)+...+\gamma^{\tau}
-P(s_{\tau}=s)+...
-\end{equation}\]</span></p>
-<p>So the expected discounted cost can be rearranged as:</p>
-<p><span class="math display">\[\begin{equation}
-\eta(\tilde{\pi})=\eta(\pi)+\sum_{s}{\rho_{\tilde{\pi}}(s)
-\sum_{a}{\tilde{\pi}(a│s) A_{\pi}(s,a)}}\end{equation}\]</span></p>
-<p>In this case, we can see that, the cost function for the new policy
-<span class="math inline">\(\tilde{\pi}\)</span> equals to adding an
-additional term to the original cost function, so if the term <span
-class="math inline">\(\sum_{s}{\rho_{\tilde{\pi}}(s)
-\sum_{a}{\tilde{\pi}(a│s) A_{\pi}(s,a)}}\)</span> <strong>guarantees to
-be a negative value</strong>, then the update can <strong>guarantee to
-reduce the cost function</strong> <span
-class="math inline">\(\eta\)</span>.</p>
-<p>All of the following derivations are based on this formula, and many
-rounds of approximations are done from it.</p>
-<h2 id="mathematically-approximations">Mathematically
-Approximations</h2>
-<p>Firstly, the paper defines the <span
-class="math inline">\(\eta(\tilde{\pi})\)</span> as the main obejctive
-to minimize, denoted as <span
-class="math inline">\(L_{\pi}(\tilde{\pi})\)</span>:</p>
-<p><span class="math display">\[\begin{equation}
-L_{\pi}(\tilde{\pi})=\eta(\pi)+\sum_{s}{\rho_{\tilde{\pi}}(s)
-\sum_{a}{\tilde{\pi}(a│s) A_{\pi}(s,a)}}
-\end{equation}\]</span></p>
-<ul>
-<li><p>The <strong><em>first approximation</em></strong>: As the
-distribution of the states under a new policy is difficult to get, so it
-replaces the new policy <strong>with the old policy</strong>, which
-ignores the changes in state visitation density due to changes in the
-policy: <span class="math display">\[\begin{equation}
-L_{\pi}(\tilde{\pi})=\eta(\pi)+\sum_{s}{\rho_{\pi}(s)
-\sum_{a}{\tilde{\pi}(a│s) A_{\pi}(s,a)}}
-\end{equation}\]</span> So in this case, we use the old policy <span
-class="math inline">\(\pi\)</span> for the state-visitation
-distribution.</p></li>
-<li><p>Then based on the <strong>conservative policy iteration</strong>:
-<span class="math display">\[\begin{equation}
-\pi_{new} (a│s)=(1−\alpha)\pi_{old}(a│s)+\alpha \pi&#39;(a|s)
-\end{equation}\]</span> And the inequation that Kakade and Langford
-proved: <span class="math display">\[\begin{equation}
-\eta(\pi_{new}) \leq L_{\pi_{old}}(\pi_{new})+ \frac{2\epsilon
-\gamma}{(1−\gamma(1−\alpha))(1−\gamma)\alpha^2}
-\end{equation}\]</span> Where <span
-class="math inline">\(\epsilon=\max_s{⁡|\mathbb{E}_{a \sim \pi&#39;
-(a│s)} [A_{\pi}(s,a)]|}\)</span></p>
-<p>The <strong><em>second approximation</em></strong>: As <span
-class="math inline">\(\alpha \ll 1\)</span>, we can approximate the
-above inequation as:</p>
-<p><span class="math display">\[\begin{equation}
-\eta(\pi_{new}) \leq L_{\pi_{old}}(\pi_{new})+\frac{2 \epsilon
-\gamma}{(1−\gamma)^2 \alpha^2}
-\end{equation}\]</span></p></li>
-</ul>
-<h2
-id="from-conservative-policy-iteration-to-general-stochastic-policies">From
-Conservative Policy Iteration to General Stochastic Policies</h2>
-<p>The second approximation is based on the conservative policy
-iteration, however, which is not commonly used in a wide range of
-problems, so make the algorithm applicable to more general stochastic
-policies methods, the crucial is to eliminate the <strong>step
-factor</strong> to extend the ineuqation (the guarantee) to practical
-problems.</p>
-<ul>
-<li>The <strong><em>third approximation</em></strong>: replace <span
-class="math inline">\(\alpha\)</span> with a distance measure between
-<span class="math inline">\(\pi\)</span> and <span
-class="math inline">\(\tilde{\pi}\)</span>. The paper uses the
-<strong>total variance divergence</strong> to replace <span
-class="math inline">\(\alpha\)</span>: <span
-class="math display">\[\begin{equation}
-\alpha=D_{TE}^{max}(\pi_{old},\pi_{new})
-\end{equation}\]</span></li>
-<li>The <strong><em>fourth approximation</em></strong>: replace the
-total variance divergence with the <strong>KL divergence</strong> based
-on their unequal relationship <span class="math inline">\(D_{TV}(p||q)^2
-\leq D_{K}(p||q)\)</span>: <span class="math display">\[\begin{equation}
-\alpha=D_{KL}^{max}(\pi_{old},\pi_{new})
-\end{equation}\]</span></li>
-</ul>
-<p>For now, based on the finally derived objective to be minimized, the
-algorithm can be shown as</p>
-<figure>
-<img src="/images/RLPapers/Model-Free/PolicyGradients/2-2.png"
-alt="Algorithm: Approximate policy iteration algorithm guaranteeing non-increasing expected cost" />
-<figcaption aria-hidden="true">Algorithm: Approximate policy iteration
-algorithm guaranteeing non-increasing expected cost</figcaption>
-</figure>
-<p>The algorithm provides the theorical formula to update the policies
-based on the assumption that we know all of the transition functions and
-we can directly compute the <span class="math inline">\(argmin\)</span>
-part. However, we usually have no exact form of the policies, which
-means we <strong>cannot directly compute the</strong> <span
-class="math inline">\(argmin\)</span>, so in the following sections, we
-consider the <strong>parameterized</strong> policy function <span
-class="math inline">\(\pi_{\theta}\)</span>.</p>
-<h2 id="optimization-of-parameterized-policies">Optimization of
-Parameterized Policies</h2>
-<p>In this section, we consider the <strong>parameterized</strong>
-policy function <span class="math inline">\(\pi_{\theta}\)</span> to see
-how can we directly update the parameters from <span
-class="math inline">\(\theta_{old}\)</span> to <span
-class="math inline">\(\theta\)</span>. To rewrite the objective in a
-parameterized form, we have:</p>
-<p><span class="math inline">\(\eta(\theta) &lt;
-L_{\theta_{old}}(\theta)+C
-D_{KL}^{max}(\theta_{old},\theta)\)</span></p>
-<ul>
-<li>The <strong><em>fifth approximation</em></strong>: to use a
-constraint on the KL divergence between the new policy and the old
-policy, i.e., a <strong>trust region constraint</strong>: <span
-class="math display">\[\begin{equation}
-\min_{\theta}[L_{\theta_{old}}(\theta)]
-\end{equation}\]</span> <span class="math display">\[\begin{equation}
-s.t. D_{KL}^{max}(\theta_{old},\theta)\leq \delta
-\end{equation}\]</span></li>
-<li>The <strong><em>sixth approximation</em></strong>: as the <span
-class="math inline">\(max\)</span> operator makes the optimizaion hard,
-so we can use the average KL divergence instead of the maximal: <span
-class="math display">\[\begin{equation}
-\min_{\theta}[L_{\theta_{old}}(\theta)]
-\end{equation}\]</span> <span class="math display">\[\begin{equation}
-s.t. D_{KL}^{\rho_{\theta_{old}}}(\theta_{old},\theta) \leq \delta
-\end{equation}\]</span></li>
-</ul>
-<h2 id="sample-based-estimation">Sample-Based Estimation</h2>
-<p>Now we have had the theoretical formula, but in practice, we cannot
-compute the exact value of the main objective and the constraint, we
-usually need to estimate these values by sampling, so in this section,
-the paper introduced how to use <strong><em>importance
-sampling</em></strong> to estimate the two values.</p>
-<ul>
-<li>The <strong><em>seventh approximation</em></strong>: to use
-importance sampling to estimate the expectation term: <span
-class="math display">\[\begin{equation}
-\sum_{a}{\pi_{\theta}(a│s_n)A_{\pi_{\theta}}(s_n,a)} \approx
-\mathbb{E}_{a \sim q} \Big[\frac{\pi_{\theta}(a│s)}{q(a│s)}
-A_{\theta_{old}}(s,a)\Big]
-\end{equation}\]</span></li>
-<li>The <strong><em>eighth approximation</em></strong>: to avoid
-computing the advantage functions, just replace it using the
-Q-functions, so the final objective to optimize is: <span
-class="math display">\[\begin{equation}
-\min_{\theta}⁡{\mathbb{E}_{s \sim \rho_{\theta_{old}}, a \sim
-q}\Big[\frac{\pi_{\theta}(a│s)}{q(a│s)} A_{\theta_{old}}(s,a)\Big]}
-\end{equation}\]</span> <span class="math display">\[\begin{equation}
-s.t. \mathbb{E}_{s \sim \rho_{\theta_{old}}} [D_{KL}
-(\pi_{\theta_{old}}(\cdot│s)||\pi_{\theta} (\cdot|s))] \leq \delta
-\end{equation}\]</span></li>
-</ul>
-<h2 id="two-variant-sampling-approaches">Two Variant Sampling
-Approaches</h2>
-<p>The paper further proposed two variant sampling approaches:</p>
-<ul>
-<li><strong>Single Path</strong>: typically used for policy estimation
-and is based on sampling individual trajectories.</li>
-<li><strong>Vine</strong>: construct a rollout set and then perform
-multiple actions from each sate in the rollout set.</li>
-</ul>
-<figure>
-<img src="/images/RLPapers/Model-Free/PolicyGradients/2-3.png"
-alt="Two variant sampling approaches" />
-<figcaption aria-hidden="true">Two variant sampling
-approaches</figcaption>
-</figure>
-<h1 id="reference">Reference</h1>
-<p>[1] Sham Kakade and John Langford. 2002. Approximately Optimal
-Approximate Reinforcement Learning. In Proceedings of the Nineteenth
-International Conference on Machine Learning (ICML ’02), Morgan Kaufmann
-Publishers Inc., San Francisco, CA, USA, 267–274.</p>
-]]></content>
-      <categories>
-        <category>RL Paper Notes</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>Paper Notes</tag>
-        <tag>Model-Free RL</tag>
-        <tag>Policy Gradients</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Poisson Distribution - Expectation, Variance, Likelihood and Regression</title>
-    <url>/2022/4-ProbabilisticML-1-Poisson/</url>
-    <content><![CDATA[<p>Poisson distribution can be used to express count data, which gives
-number of events occurring in a fixed interval of time or space and
-these events occur with a known constant mean rate and independently of
-the time since the last event.</p>
-<p>This blog aims to show the detailed proof of its expectation,
-variance, likelihood and regression.</p>
-<span id="more"></span>
-<h1 id="probability-density-formula">Probability Density Formula</h1>
-<p>Suppose a discrete random variable <span
-class="math inline">\(X\)</span> of non-negative integer numbers, and
-let <span
-class="math inline">\(\lambda=\mu(x;\beta)=e^{x\beta}\geq0\)</span>.
-Then we can say:</p>
-<p><span class="math display">\[\begin{equation}
-Y \sim Poisson(\mu(x,\beta))
-\end{equation}\]</span></p>
-<p>if:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-P(Y=y_i) &amp;= e^{-\lambda_i} \frac{\lambda_i^{y_i}}{y_i!}\\
-&amp;= e^{-\mu(x_i,\beta)} \frac{\mu(x_i,\beta)^{y_i}}{y_i!}
-\end{aligned}
-\end{equation}\]</span></p>
-<h1 id="expectation-and-variance">Expectation and Variance</h1>
-<p>The expectation and the variation of Poisson distribution both
-numerically equals to <span class="math inline">\(\lambda\)</span>:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y)=\mathrm{Var}(Y)=\lambda=\mu(x;\beta)
-\end{equation}\]</span></p>
-<h2 id="expectation">Expectation</h2>
-<p>To proof:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y) &amp;= \sum_{y=0}^{\infty}{y e^{-\lambda}
-\frac{\lambda^{y}}{y!}} \\
-&amp;= \sum_{y=1}^{\infty}{y e^{-\lambda} \frac{\lambda^{y}}{y!}} \\
-&amp;= \sum_{y=1}^{\infty}{e^{-\lambda} \frac{\lambda^{y -
-1}\lambda}{(y-1)!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{\lambda^{y -
-1}}{(y-1)!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Based on the Taylor expansion:</p>
-<p><span class="math display">\[\begin{equation}
-e^x = 1 + x+\frac{x^2}{2!}+...+\frac{x^n}{n!}+... =
-\sum_{k=1}^{\infty}{\frac{x^{k-1}}{(k-1)!}}
-\end{equation}\]</span></p>
-<p>We have:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(Y) = \lambda e^{-\lambda}
-\sum_{y=1}^{\infty}{\frac{\lambda^{y - 1}}{(y-1)!}} = \lambda
-e^{-\lambda} e^{\lambda} = \lambda
-\end{equation}\]</span></p>
-<h2 id="variance">Variance</h2>
-<p>To compute the variance, we firstly compute the expectation of <span
-class="math inline">\(Y^2\)</span>:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y^2) &amp;= \sum_{y=0}^{\infty}{y^2 e^{-\lambda}
-\frac{\lambda^y}{y!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{y \lambda^{y -
-1}}{(y-1)!}} \\
-&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{(y-1+1)\lambda^{y
-- 1}}{(y-1)!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Set <span class="math inline">\(m=k-1\)</span>, we have:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\mathrm{E}(Y^2) &amp;= \lambda e^{-\lambda}(\sum_{m=0}^{\infty}{\frac{m
-\lambda^m}{m!}} + \sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
-&amp;= \lambda e^{-\lambda}(\lambda
-\sum_{m=1}^{\infty}{\frac{\lambda^{m-1}}{(m-1)!}} +
-\sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
-&amp;= \lambda e^{-\lambda} (\lambda e^{\lambda} +e^{\lambda} ) =
-\lambda(\lambda + 1)
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Finally, we can derive:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 = \lambda(\lambda
-+ 1) - {\lambda}^2 = \lambda
-\end{equation}\]</span></p>
-<h1 id="log-likelihood">Log-Likelihood</h1>
-<p>Then we can derive the likelihood of <span
-class="math inline">\(Y\)</span> is:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-L(y;\beta) &amp;= \prod_{i=1}^{n}{P(Y=y_i)} \\
-&amp;= \prod_{i=1}^{n}{e^{-\mu(x_i;\beta)}}\prod_{i=1}^n
-\frac{\mu(x_i;\beta)^{y_i}}{y_i!}\\
-&amp;=
-e^{-\sum_{i=1}^{n}{\mu(x_i;\beta)}}\prod_{i=1}^{n}{\frac{\mu(x_i;\beta)^{y_i}}{y_i!}}
-\end{aligned}
-\end{equation}\]</span></p>
-<p>Then, we can get the log-likelihood as:</p>
-<p><span class="math display">\[\begin{equation}
-\begin{aligned}
-\ln{L(y;\beta)} &amp;=
--\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
-\ln{\mu(x_i;\beta)}}-\sum_{i=1}^{n}{\ln{y_i!}}\\
-&amp;= -\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
-\ln{\mu(x_i;\beta)}} + const
-\end{aligned}
-\end{equation}\]</span></p>
-<h1 id="poisson-regression">Poisson Regression</h1>
-<p>We can learn the parameters <span
-class="math inline">\(\beta\)</span> based on <em>MLE</em> to do
-regression. The following codes are based on
-<code>scipy.optimize.minimize</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">N = <span class="number">10000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line">Y = np.random.poisson(np.exp(np.dot(X, beta_real)))  <span class="comment"># here, \lambda = exp(X\beta)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Poisson distribution of np.random.poisson(lam):</span></span><br><span class="line"><span class="comment"># f(k; lam) = (lam^k exp(-lam)) / (k!)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function to maximize the loge-likelihood</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">beta</span>):</span></span><br><span class="line">    Xbeta = np.dot(X, beta)</span><br><span class="line">    exp_Xbeta = np.exp(Xbeta)  <span class="comment"># \lambda = exp(X beta)</span></span><br><span class="line">    loss = exp_Xbeta.<span class="built_in">sum</span>() - np.dot(Y, Xbeta)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">beta_ini = np.zeros(P)  <span class="comment"># initialize beta with zeros</span></span><br><span class="line">result = mm(loss_function, beta_ini)</span><br><span class="line">beta_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_predicted))</span><br></pre></td></tr></table></figure>
-<p>The output of the above codes:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real beta: [-<span class="number">0.40914376</span>  <span class="number">0.29649545</span>  <span class="number">0.59736634</span>  <span class="number">1.40512766</span> -<span class="number">0.55024536</span>]</span><br><span class="line">Predicted beta: [-<span class="number">0.40346132</span>  <span class="number">0.29799245</span>  <span class="number">0.60520007</span>  <span class="number">1.40263191</span> -<span class="number">0.54896361</span>]</span><br></pre></td></tr></table></figure>
-<h1 id="main-reference">Main Reference</h1>
-<ul>
-<li>Lecture slides by Claudia Czado: <a
-href="https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf"
-class="uri">https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf</a></li>
-<li>Poisson distribution Wikipedia: <a
-href="https://en.wikipedia.org/wiki/Poisson_distribution"
-class="uri">https://en.wikipedia.org/wiki/Poisson_distribution</a></li>
-<li>Poisson regression by <em>ahwillia</em>: <a
-href="https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a"
-class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a></li>
-</ul>
 ]]></content>
       <categories>
         <category>Probabilistic Machine Learning</category>
@@ -1855,182 +1244,132 @@ here. You may not use it, but you have to define it.</p>
       </tags>
   </entry>
   <entry>
-    <title>First Order AutoRegression (AR(1)) - Expectation, Variance, Likelihood and Regression</title>
-    <url>/2022/6-ProbabilisticML-3-AR1/</url>
-    <content><![CDATA[<p>This blog aims to show the detailed derivation of the expectation,
-variance, likelihood and regression of <em>First-order autoregression
-(AR(1))</em> model.</p>
+    <title>Poisson Distribution - Expectation, Variance, Likelihood and Regression</title>
+    <url>/2022/4-ProbabilisticML-1-Poisson/</url>
+    <content><![CDATA[<p>Poisson distribution can be used to express count data, which gives
+number of events occurring in a fixed interval of time or space and
+these events occur with a known constant mean rate and independently of
+the time since the last event.</p>
+<p>This blog aims to show the detailed proof of its expectation,
+variance, likelihood and regression.</p>
 <span id="more"></span>
 <h1 id="probability-density-formula">Probability Density Formula</h1>
-<p>The <em>first-order autoregression</em> (<em>AR(1)</em>) can model
-(weakly) stationary time series, if the series <span
-class="math inline">\(x_t\)</span> satisfy the following properties:</p>
-<ul>
-<li>The mean <span class="math inline">\(\mathrm{E}(x_t)\)</span> is the
-same for all <span class="math inline">\(t\)</span>.</li>
-<li>The variance <span class="math inline">\(\mathrm{Var}(x_t)\)</span>
-is the same for all <span class="math inline">\(t\)</span>.</li>
-<li>The covariance (and also correlation) between <span
-class="math inline">\(x_t\)</span> and <span
-class="math inline">\(x_{t-h}\)</span> is the same for all <span
-class="math inline">\(t\)</span> at each lag <span
-class="math inline">\(h=1,2,3\)</span>, etc.</li>
-</ul>
-<p>In the first-order autoregression model, the value of <span
-class="math inline">\(x\)</span> at time <span
-class="math inline">\(t\)</span> is a linear function of the value of
-<span class="math inline">\(x\)</span> at time <span
-class="math inline">\(t-1\)</span>, which can be written as:</p>
+<p>Suppose a discrete random variable <span
+class="math inline">\(X\)</span> of non-negative integer numbers, and
+let <span
+class="math inline">\(\lambda=\mu(x;\beta)=e^{x\beta}\geq0\)</span>.
+Then we can say:</p>
 <p><span class="math display">\[\begin{equation}
-x_t = \delta + \phi x_{t-1} + \omega_t
+Y \sim Poisson(\mu(x,\beta))
 \end{equation}\]</span></p>
-<p>with the following assumptions:</p>
-<ul>
-<li><span class="math inline">\(\omega_t \backsim
-N(0,\sigma_{\omega}^2)\)</span> i.i.d..</li>
-<li>Properties of the errors <span
-class="math inline">\(\omega_t\)</span> are independent of <span
-class="math inline">\(x_t\)</span>.</li>
-<li>The series <span class="math inline">\(x_t\)</span> is (weakly)
-stationary, which requires <span class="math inline">\(|\phi|\ &lt;
-1\)</span>.</li>
-</ul>
+<p>if:</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+P(Y=y_i) &amp;= e^{-\lambda_i} \frac{\lambda_i^{y_i}}{y_i!}\\
+&amp;= e^{-\mu(x_i,\beta)} \frac{\mu(x_i,\beta)^{y_i}}{y_i!}
+\end{aligned}
+\end{equation}\]</span></p>
 <h1 id="expectation-and-variance">Expectation and Variance</h1>
+<p>The expectation and the variation of Poisson distribution both
+numerically equals to <span class="math inline">\(\lambda\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y)=\mathrm{Var}(Y)=\lambda=\mu(x;\beta)
+\end{equation}\]</span></p>
 <h2 id="expectation">Expectation</h2>
-<p>The expectation of AR(1) model is:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(x_t)=\frac{\delta}{1-\phi}
-\end{equation}\]</span></p>
 <p>To proof:</p>
 <p><span class="math display">\[\begin{equation}
-\mathrm{E}(x_t)=\mathrm{E}(\delta + \phi x_{t-1} +
-\omega_t)=\mathrm{E}(\delta) + \mathrm{E}(\phi x_{t-1})+
-\mathrm{E}(\omega_t) = \delta + \phi \mathrm{E}(x_{t-1})
+\begin{aligned}
+\mathrm{E}(Y) &amp;= \sum_{y=0}^{\infty}{y e^{-\lambda}
+\frac{\lambda^{y}}{y!}} \\
+&amp;= \sum_{y=1}^{\infty}{y e^{-\lambda} \frac{\lambda^{y}}{y!}} \\
+&amp;= \sum_{y=1}^{\infty}{e^{-\lambda} \frac{\lambda^{y -
+1}\lambda}{(y-1)!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{\lambda^{y -
+1}}{(y-1)!}}
+\end{aligned}
 \end{equation}\]</span></p>
-<p>With the stationary assumption, <span
-class="math inline">\(\mathrm{E}(x_t) = \mathrm{E}(x_{t-1})\)</span>, we
-can solve the equation to get:</p>
+<p>Based on the Taylor expansion:</p>
 <p><span class="math display">\[\begin{equation}
-\mathrm{E}(x_t)=\frac{\delta}{1-\phi}
-\end{equation}\]</span>.</p>
+e^x = 1 + x+\frac{x^2}{2!}+...+\frac{x^n}{n!}+... =
+\sum_{k=1}^{\infty}{\frac{x^{k-1}}{(k-1)!}}
+\end{equation}\]</span></p>
+<p>We have:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(Y) = \lambda e^{-\lambda}
+\sum_{y=1}^{\infty}{\frac{\lambda^{y - 1}}{(y-1)!}} = \lambda
+e^{-\lambda} e^{\lambda} = \lambda
+\end{equation}\]</span></p>
 <h2 id="variance">Variance</h2>
-<p>The variance of AR(1) model is:</p>
+<p>To compute the variance, we firstly compute the expectation of <span
+class="math inline">\(Y^2\)</span>:</p>
 <p><span class="math display">\[\begin{equation}
-\mathrm{Var}(x_t)=\frac{\sigma_{\omega}^2}{1-\phi^2}
+\begin{aligned}
+\mathrm{E}(Y^2) &amp;= \sum_{y=0}^{\infty}{y^2 e^{-\lambda}
+\frac{\lambda^y}{y!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{y \lambda^{y -
+1}}{(y-1)!}} \\
+&amp;= \lambda e^{-\lambda} \sum_{y=1}^{\infty}{\frac{(y-1+1)\lambda^{y
+- 1}}{(y-1)!}}
+\end{aligned}
 \end{equation}\]</span></p>
-<p>To proof:</p>
+<p>Set <span class="math inline">\(m=k-1\)</span>, we have:</p>
 <p><span class="math display">\[\begin{equation}
-\mathrm{Var}(x_t)=\mathrm{Var}(\delta) + \mathrm{Var}(\phi x_{t-1})+
-\mathrm{Var}(\omega_t) = \phi^2 \mathrm{Var}(x_{t-1}) +
-\sigma_{\omega}^2
+\begin{aligned}
+\mathrm{E}(Y^2) &amp;= \lambda e^{-\lambda}(\sum_{m=0}^{\infty}{\frac{m
+\lambda^m}{m!}} + \sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
+&amp;= \lambda e^{-\lambda}(\lambda
+\sum_{m=1}^{\infty}{\frac{\lambda^{m-1}}{(m-1)!}} +
+\sum_{m=0}^{\infty}{\frac{\lambda^m}{m!}}) \\
+&amp;= \lambda e^{-\lambda} (\lambda e^{\lambda} +e^{\lambda} ) =
+\lambda(\lambda + 1)
+\end{aligned}
 \end{equation}\]</span></p>
-<p>With the stationary assumption, <span
-class="math inline">\(\mathrm{Var}(x_t) =
-\mathrm{Var}(x_{t-1})\)</span>, we can solve the equation to get:</p>
+<p>Finally, we can derive:</p>
 <p><span class="math display">\[\begin{equation}
-\mathrm{Var}(x_t)=\frac{\sigma_{\omega}^2}{1-\phi^2}
-\end{equation}\]</span>.</p>
+\mathrm{Var}(Y) = \mathrm{E}(Y^2) - (\mathrm{E}(Y))^2 = \lambda(\lambda
++ 1) - {\lambda}^2 = \lambda
+\end{equation}\]</span></p>
 <h1 id="log-likelihood">Log-Likelihood</h1>
-<p>In this part, we will derive the log-likelihood of the AR(1) model,
-which can be used to estimate the parameters in the MLE approach.</p>
-<p>Firstly, we define the parameters: <span class="math inline">\(\theta
-= (\delta,\phi,\sigma_{\omega}^2)\)</span>.</p>
-<p>Based on the Bayesian theory:</p>
+<p>Then we can derive the likelihood of <span
+class="math inline">\(Y\)</span> is:</p>
 <p><span class="math display">\[\begin{equation}
-P(x_t,x_{t-1},...,x_1;\theta) =
-P(x_t|x_{t-1},x_{t-2},...,x_1;\theta)P(x_{t-1}|x_{t-2},...,x_1;\theta)...P(x_2|x_1;\theta)P(x_1;\theta)
-\end{equation}\]</span></p>
-<p>As in the AR(1) model, we assume that the <span
-class="math inline">\(x_t\)</span> only directly conditional on <span
-class="math inline">\(x_{t-1}\)</span>, then the above equation can be
-simplified as:</p>
-<p><span class="math display">\[\begin{equation}
-P(x_t,x_{t-1},...,x_1;\theta) =
-P(x_t|x_{t-1};\theta)P(x_{t-1}|x_{t-2};\theta)...P(x_2|x_1;\theta)P(x_1;\theta)
-\end{equation}\]</span></p>
-<p>Then we can rewrite the log-likelihood as:</p>
-<p><span class="math display">\[\begin{equation}
-\ln{L(\theta|x)} =\sum_{t=2}^{T}{\ln{P(x_t|x_{t-1};\theta)}} +
-\ln{P(x_1;\theta)}
-\end{equation}\]</span></p>
-<p>Secondly, consider the (weakly) stationary AR(1) model, we have:</p>
-<p><span class="math display">\[\begin{equation}
-x_t = \delta + \phi x_{t-1} + \omega_t
-\end{equation}\]</span></p>
-<p>where <span class="math inline">\(\omega_t \backsim i.i.d.
-N(0,\sigma_{\omega}^2)\)</span> and <span
-class="math inline">\(|\phi|&lt;1\)</span>.</p>
-<p>Based on this, we can rewrite it as:</p>
-<p><span class="math display">\[\begin{equation}
-x_t|x_{t-1} \backsim N(\delta +\phi x_{t-1},\sigma_{\omega}^2)
-\end{equation}\]</span></p>
-<p>which equals to:</p>
-<p><span class="math display">\[\begin{equation}
-P(x_t|x_{t-1};\theta) =
-\frac{1}{\sqrt{2\pi}\sigma_{\omega}}e^{-\frac{1}{2\sigma_{\omega}^2}(x_t-\delta-\phi
-x_{t-1})^2}
-\end{equation}\]</span></p>
-<p>Then we can derive:</p>
-<p><span class="math display">\[\begin{equation*}
 \begin{aligned}
-\sum_{t=2}^{T}{\ln{P(x_t|x_{t-1};\theta)}} &amp;=
-\sum_{t=2}^{T}{-\frac{1}{2}\ln{2\pi
-\sigma_{\omega}^2}-\frac{1}{2\sigma_{\omega}^2}(x_t-\delta-\phi
-x_{t-1})^2} \\
+L(y;\beta) &amp;= \prod_{i=1}^{n}{P(Y=y_i)} \\
+&amp;= \prod_{i=1}^{n}{e^{-\mu(x_i;\beta)}}\prod_{i=1}^n
+\frac{\mu(x_i;\beta)^{y_i}}{y_i!}\\
 &amp;=
--\frac{T-1}{2}\ln{2\pi}-\frac{T-1}{2}\ln{\sigma_{\omega}^2}-\frac{1}{2\sigma_{\omega}^2}\sum_{t=2}^{T}{(x_t-\delta-\phi
-x_{t-1})^2}
+e^{-\sum_{i=1}^{n}{\mu(x_i;\beta)}}\prod_{i=1}^{n}{\frac{\mu(x_i;\beta)^{y_i}}{y_i!}}
 \end{aligned}
-\end{equation*}\]</span></p>
-<p>Next, we have proven that for all <span
-class="math inline">\(t\in{1,2,...,T}\)</span>, the expectation and
-variance of <span class="math inline">\(x_t\)</span> is
-respectively:</p>
-<p><span class="math display">\[\begin{equation}
-\mathrm{E}(x_t)=\frac{\delta}{1-\phi}
 \end{equation}\]</span></p>
+<p>Then, we can get the log-likelihood as:</p>
 <p><span class="math display">\[\begin{equation}
-\mathrm{Var}(x_t)=\frac{\sigma_{\omega}^2}{1-\phi^2}
-\end{equation}\]</span></p>
-<p>So for <span class="math inline">\(x_1\)</span>, we have:</p>
-<p><span class="math display">\[\begin{equation}
-x_1 \backsim N(\frac{\delta}{1-\phi},\frac{\sigma_{\omega}^2}{1-\phi^2})
-\end{equation}\]</span></p>
-<p>which equals to:</p>
-<p><span class="math display">\[\begin{equation}
-P(x_1;\theta) =
-\frac{\sqrt{1-\phi^2}}{\sqrt{2\pi}\sigma_{\omega}}e^{-\frac{1-\phi^2}{2\sigma_{\omega}^2}(x_1-\frac{\delta}{1-\phi})^2}
-\end{equation}\]</span></p>
-<p>Then we can derive:</p>
-<p><span class="math display">\[\begin{equation}
-\ln{P(x_1;\theta)} =
--\frac{1}{2}\ln{2\pi}-\frac{1}{2}\ln{\frac{\delta^2}{1-\phi^2}}-\frac{1-\phi^2}{2\sigma_{\omega}^2}(x_1-\frac{\delta}{1-\phi})^2
-\end{equation}\]</span></p>
-<p>Finally we can have the log-likelihood as:</p>
-<p><span class="math display">\[\begin{equation*}
 \begin{aligned}
-\ln{L(\theta|x)} &amp;= \sum_{t=2}^{T}{\ln{P(x_t|x_{t-1};\theta)}} +
-\ln{P(x_1;\theta)}\\
-&amp;= -\frac{T}{2}\ln{2\pi} - \frac{1}{2}
-\ln{\frac{\sigma_{\omega}^2}{1-\phi^2}}-\frac{1-\phi^2}{2\sigma_{\omega}^2}(x_1-\frac{\delta}{1-\phi})^2-\frac{T-1}{2}\ln{\sigma_{\omega}^2}-\frac{1}{2\sigma_{\omega}^2}\sum_{t=2}^{T}{(x_t-\delta-\phi
-x_{t-1})^2}
+\ln{L(y;\beta)} &amp;=
+-\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
+\ln{\mu(x_i;\beta)}}-\sum_{i=1}^{n}{\ln{y_i!}}\\
+&amp;= -\sum_{i=1}^{n}{\mu(x_i;\beta)}+\sum_{i=1}^{n}{y_i
+\ln{\mu(x_i;\beta)}} + const
 \end{aligned}
-\end{equation*}\]</span></p>
-<h1 id="mle-regression">MLE Regression</h1>
-<p>We can learn the parameters based on <em>MLE</em> to do regression.
-The following codes are based on
+\end{equation}\]</span></p>
+<h1 id="poisson-regression">Poisson Regression</h1>
+<p>We can learn the parameters <span
+class="math inline">\(\beta\)</span> based on <em>MLE</em> to do
+regression. The following codes are based on
 <code>scipy.optimize.minimize</code>:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">theta_real = [<span class="number">5</span>, <span class="number">0.6</span>, <span class="number">1</span>]  <span class="comment"># parameters \theta is defined as [\delta, \phi, \sigma]</span></span><br><span class="line">expectation_real = theta_real[<span class="number">0</span>] / (<span class="number">1</span> - theta_real[<span class="number">1</span>])  <span class="comment"># expectation</span></span><br><span class="line">variance_real = theta_real[<span class="number">2</span>] ** <span class="number">2</span> / (<span class="number">1</span> - theta_real[<span class="number">1</span>] ** <span class="number">2</span>)  <span class="comment"># variance</span></span><br><span class="line"></span><br><span class="line">T = <span class="number">100</span>  <span class="comment"># number of time points</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># generate x_1</span></span><br><span class="line">x_1 = np.random.normal(expectation_real, variance_real)</span><br><span class="line"><span class="comment"># generate x_t, t=2,3,...,T</span></span><br><span class="line">data = [x_1]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(T - <span class="number">1</span>):</span><br><span class="line">    x_next = theta_real[<span class="number">0</span>] + theta_real[<span class="number">1</span>] * data[-<span class="number">1</span>] + np.random.normal(<span class="number">0</span>, theta_real[<span class="number">2</span>] ** <span class="number">2</span>)</span><br><span class="line">    data.append(x_next)</span><br><span class="line"></span><br><span class="line">data = np.array(data)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function (negative of log-likelihood)</span></span><br><span class="line"><span class="comment"># params: \theta = [\delta, \phi, \sigma]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">params</span>):</span></span><br><span class="line">    <span class="keyword">assert</span> <span class="built_in">len</span>(params) == <span class="number">3</span>, <span class="string">&quot;incorrect shape of parameters&quot;</span></span><br><span class="line">    delta, phi, sigma = params</span><br><span class="line"></span><br><span class="line">    x_t = data[<span class="number">1</span>:]</span><br><span class="line">    x_t_1 = data[:-<span class="number">1</span>]</span><br><span class="line">    sum_2_T = np.<span class="built_in">sum</span>((x_t - delta - phi * x_t_1) ** <span class="number">2</span>)</span><br><span class="line">    log_likelihood = - <span class="number">0.5</span> * T * np.log(<span class="number">2</span> * <span class="number">3.14</span>) \</span><br><span class="line">                     - <span class="number">0.5</span> * np.log(sigma ** <span class="number">2</span> / (<span class="number">1</span> - phi ** <span class="number">2</span>)) \</span><br><span class="line">                     - <span class="number">0.5</span> * (<span class="number">1</span> - phi ** <span class="number">2</span>) / (sigma ** <span class="number">2</span>) * ((x_1 - delta / (<span class="number">1</span> - phi)) ** <span class="number">2</span>) \</span><br><span class="line">                     - (T - <span class="number">1</span>) / <span class="number">2</span> * np.log(sigma ** <span class="number">2</span>) \</span><br><span class="line">                     - <span class="number">0.5</span> / (sigma ** <span class="number">2</span>) * sum_2_T</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> -log_likelihood</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">params_ini = np.random.rand(<span class="number">3</span>)  <span class="comment"># initialize params ([\delta, \phi, \sigma])</span></span><br><span class="line">params_bounds = ((<span class="number">0</span>, <span class="number">10</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">2</span>))  <span class="comment"># set some boundaries for the parameters</span></span><br><span class="line">result = mm(loss_function, params_ini, bounds=params_bounds, method=<span class="string">&#x27;Powell&#x27;</span>, tol=<span class="number">1e-10</span>)</span><br><span class="line">params_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real parameters [\delta, \phi, \sigma]: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(theta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted parameters [\delta, \phi, \sigma]: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted))</span><br></pre></td></tr></table></figure>
-<p>One of the results of the above codes is:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real parameters [\delta, \phi, \sigma]: [<span class="number">5</span>, <span class="number">0.6</span>, <span class="number">1</span>]</span><br><span class="line">Predicted parameters [\delta, \phi, \sigma]: [<span class="number">4.84142903</span> <span class="number">0.60249039</span> <span class="number">1.0670589</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">N = <span class="number">10000</span>  <span class="comment"># number of data points</span></span><br><span class="line">P = <span class="number">5</span>  <span class="comment"># number of features</span></span><br><span class="line"></span><br><span class="line">X = np.random.randn(N, P)  <span class="comment"># matrix X in shape of NxP</span></span><br><span class="line">beta_real = np.random.randn(P)  <span class="comment"># the real values of \beta, in shape of P</span></span><br><span class="line">Y = np.random.poisson(np.exp(np.dot(X, beta_real)))  <span class="comment"># here, \lambda = exp(X\beta)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># The Poisson distribution of np.random.poisson(lam):</span></span><br><span class="line"><span class="comment"># f(k; lam) = (lam^k exp(-lam)) / (k!)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function to maximize the loge-likelihood</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">beta</span>):</span></span><br><span class="line">    Xbeta = np.dot(X, beta)</span><br><span class="line">    exp_Xbeta = np.exp(Xbeta)  <span class="comment"># \lambda = exp(X beta)</span></span><br><span class="line">    loss = exp_Xbeta.<span class="built_in">sum</span>() - np.dot(Y, Xbeta)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">beta_ini = np.zeros(P)  <span class="comment"># initialize beta with zeros</span></span><br><span class="line">result = mm(loss_function, beta_ini)</span><br><span class="line">beta_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted beta: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(beta_predicted))</span><br></pre></td></tr></table></figure>
+<p>The output of the above codes:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real beta: [-<span class="number">0.40914376</span>  <span class="number">0.29649545</span>  <span class="number">0.59736634</span>  <span class="number">1.40512766</span> -<span class="number">0.55024536</span>]</span><br><span class="line">Predicted beta: [-<span class="number">0.40346132</span>  <span class="number">0.29799245</span>  <span class="number">0.60520007</span>  <span class="number">1.40263191</span> -<span class="number">0.54896361</span>]</span><br></pre></td></tr></table></figure>
 <h1 id="main-reference">Main Reference</h1>
 <ul>
-<li>STAT 510 Course (1.1 &amp; 1.2) of Eberly College of Science of
-*PennState: <a href="https://online.stat.psu.edu/stat510/lesson/1"
-class="uri">https://online.stat.psu.edu/stat510/lesson/1</a></li>
-<li>Estimation of ARMA Models by Eric Zivot: <a
-href="https://faculty.washington.edu/ezivot/econ584/notes/armaestimation.pdf"
-class="uri">https://faculty.washington.edu/ezivot/econ584/notes/armaestimation.pdf</a></li>
+<li>Lecture slides by Claudia Czado: <a
+href="https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf"
+class="uri">https://www.groups.ma.tum.de/fileadmin/w00ccg/statistics/czado/lec6.pdf</a></li>
+<li>Poisson distribution Wikipedia: <a
+href="https://en.wikipedia.org/wiki/Poisson_distribution"
+class="uri">https://en.wikipedia.org/wiki/Poisson_distribution</a></li>
+<li>Poisson regression by <em>ahwillia</em>: <a
+href="https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a"
+class="uri">https://gist.github.com/ahwillia/40cdbe3b2f2df1806358dd1e6de0743a</a></li>
 </ul>
 ]]></content>
       <categories>
@@ -2155,6 +1494,133 @@ class="uri">https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Proc
         <tag>Probability Theory</tag>
         <tag>Machine Learning</tag>
         <tag>Math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[GAE] High-Dimensional Continuous Control Using Generalized Advantage Estimation</title>
+    <url>/2022/17-RLPaper-MF-PG-3-GAE/</url>
+    <content><![CDATA[<blockquote>
+<p>John Schulman, Philipp Moritz, Sergey Levine, Michael Jordan, and
+Pieter Abbeel. 2018. High-Dimensional Continuous Control Using
+Generalized Advantage Estimation.
+DOI:https://doi.org/10.48550/arXiv.1506.02438</p>
+</blockquote>
+<span id="more"></span>
+<figure>
+<img src="/images/RLPapers/Model-Free/PolicyGradients/3-1.png"
+alt="High-Dimensional Continuous Control Using Generalized Advantage Estimation" />
+<figcaption aria-hidden="true">High-Dimensional Continuous Control Using
+Generalized Advantage Estimation</figcaption>
+</figure>
+<h1 id="overview">Overview</h1>
+<p>The paper proposed an scheme called <strong><em>Generalized Advantage
+Estimation</em></strong> (<strong><em>GAE</em></strong>), which aims to
+trade off between reducing the variance and introduced bias. The
+algorithm is a <strong>policy gradient</strong> based algorithm,
+controlled by one hyper-parameter, the algorithm lives between
+<strong>Monte Carlo</strong> and <strong>Temporal Difference</strong>,
+and the two edges are inclusive. The algorithm is an <strong>on-line
+learning</strong> approach. The GAE applies the idea analogous to the
+TD(<span class="math inline">\(\lambda\)</span>), but the difference is
+that GAE works on advantage function, but TD(<span
+class="math inline">\(\lambda\)</span>) works on value function. The
+paper implemented the proposed GAE in the <em>Trust Region Policy
+Optimization</em> (<em>TRPO</em>) [1] algorithm, and conducted
+experiments in some challenging 3D robotics tasks.</p>
+<h1 id="main-problems-to-solve">Main Problems to Solve</h1>
+<p>For the non-linear function approximators, e.g., neural networks, in
+deep reinforcement learning, the two main challenges are:</p>
+<ol type="1">
+<li>usually requires large number of samples</li>
+<li>usually difficult to obtain stable and steady improvement despite
+the nonstationarity of the incoming data.</li>
+</ol>
+<h1 id="main-innovations">Main Innovations</h1>
+<ol type="1">
+<li><p>The algorithm proposed one method to trade off between the
+<strong>variance</strong> and <strong>bias</strong>:</p>
+<ul>
+<li>The <strong>variance</strong> mainly means the algorithm learning is
+unstable, so there will be very high vibrate.</li>
+<li>The <strong>bias</strong> mainly comes from the estimation of the
+real value function, q-function, advantage function and so on,
+especially when we use discounted cumulative rewards or the temporal
+difference estimation.</li>
+</ul>
+<p>In this case, the algorithm uses two hyper-parameters <span
+class="math inline">\(\gamma\)</span> and <span
+class="math inline">\(\lambda\)</span>, then proposed the
+<strong><em>Generalized Advantage Estimation</em></strong>
+(<strong><em>GAE</em></strong>) of the advantage function which is
+defined as:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{A}_t^{GAE}(\gamma,\lambda):=\sum_{l=0}^{\infty}{(\gamma \lambda)^l
+\delta_{t+l}^V}
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\delta_{t+l}^V:= r_{t+l}+\gamma
+V(s_{t+l}) − V(s_{t+l−1})\)</span>, so the GAE advantage can be wrote
+as:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{A}_t^{GAE}(\gamma,\lambda):=\sum_{l=0}^{\infty}{(\gamma \lambda)^l
+(r_{t+l}+\gamma V(s_{t+l}) − V(s_{t+l−1}))}
+\end{equation}\]</span></p></li>
+<li><p>The two edges of the GAE advantage are <span
+class="math inline">\(\lambda=0\)</span> and <span
+class="math inline">\(\lambda=1\)</span> respectively:</p>
+<ul>
+<li><span class="math inline">\(\lambda=0\)</span>: <span
+class="math inline">\(GAE(\gamma,0)\)</span>: <span
+class="math inline">\(\hat{A}_t := r_t + \gamma V(s_{t+1}) −
+V(s_t)\)</span>, in this case, will introduce high bias but have lowest
+variance.</li>
+<li><span class="math inline">\(\lambda=1\)</span>: <span
+class="math inline">\(GAE(\gamma,1)\)</span>: <span
+class="math inline">\(hat{A}_t := \sum_{l=0}^{\infty}{\gamma^l r_{t+l}}
+− V(s_t)\)</span>, in this case, will have high variance as many terms
+are summed up.</li>
+</ul></li>
+<li><p>For the <span class="math inline">\(0 &lt; \lambda &lt;
+1\)</span>, the GAE can trade off between variance and bias.</p></li>
+<li><p>The paper also gives an another view to interpret the GAE as a
+kind of reward reshaping.</p></li>
+<li><p>Finally, the paper combines the proposed GAE into the popular (at
+that time) algorithm <em>TRPO</em> to use the GAE to estimate both the
+policy function and the value function. The algorithm to implement GAE
+into trust region based algorithm is shown as: <img
+src="/images/RLPapers/Model-Free/PolicyGradients/3-2.png"
+alt="The GAE implemented TRPO algorithm." /></p></li>
+</ol>
+<h1 id="experiments">Experiments</h1>
+<p>The paper conducted many experiments in
+<strong>high-dimensional</strong> environments with
+<strong>continuous</strong> action spaces. One results they shown in the
+paper that is worth to mention here is they evaluate the learning
+performance with different values of <span
+class="math inline">\(\lambda\)</span> and <span
+class="math inline">\(\gamma\)</span>:</p>
+<figure>
+<img src="/images/RLPapers/Model-Free/PolicyGradients/3-3.png"
+alt="The experimental results showing the performance with differnt sets of hyper-parameters." />
+<figcaption aria-hidden="true">The experimental results showing the
+performance with differnt sets of hyper-parameters.</figcaption>
+</figure>
+<p>The figure (white means high value, black means low value) provides
+some insights to set these two hyper-parameters.</p>
+<h1 id="reference">Reference</h1>
+<p>[1] John Schulman, Sergey Levine, Pieter Abbeel, Michael Jordan, and
+Philipp Moritz. 2015. Trust Region Policy Optimization. In Proceedings
+of the 32nd International Conference on Machine Learning, PMLR,
+1889–1897. Retrieved October 4, 2022 from
+https://proceedings.mlr.press/v37/schulman15.html</p>
+]]></content>
+      <categories>
+        <category>RL Paper Notes</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Paper Notes</tag>
+        <tag>Model-Free RL</tag>
+        <tag>Policy Gradients</tag>
       </tags>
   </entry>
   <entry>
@@ -2588,6 +2054,351 @@ samples if rejected.</li>
       </tags>
   </entry>
   <entry>
+    <title>[TRPO] Trust Region Policy Optimization</title>
+    <url>/2022/16-RLPaper-MF-PG-2-TRPO/</url>
+    <content><![CDATA[<blockquote>
+<p>John Schulman, Sergey Levine, Pieter Abbeel, Michael Jordan, and
+Philipp Moritz. 2015. Trust Region Policy Optimization. In Proceedings
+of the 32nd International Conference on Machine Learning, PMLR,
+1889–1897. Retrieved October 4, 2022 from
+https://proceedings.mlr.press/v37/schulman15.html</p>
+</blockquote>
+<span id="more"></span>
+<figure>
+<img src="/images/RLPapers/Model-Free/PolicyGradients/2-1.png"
+alt="Trust Region Policy Optimization" />
+<figcaption aria-hidden="true">Trust Region Policy
+Optimization</figcaption>
+</figure>
+<h1 id="overview">Overview</h1>
+<p>The paper proposed a new <strong>practical</strong> algorithm called
+<strong><em>Trust Region Policy Optimization</em></strong>
+(<strong><em>TRPO</em></strong>). The algorithm is
+<strong>practical</strong> as it can be implemented into plenty
+large-space environments and continuous control problems. The main
+innovation of the TPRO is its derivation based on the
+theoretically-justified algorithm [1] to do <strong>many rounds of
+reasonable approximations</strong> to make the optimizing objective be
+calculated effectively. Most importantly, the paper proves the proposed
+algorithm is <strong>guaranteed to be improved monotonically</strong>.
+TRPO is a model-free, policy-based, <strong>on-policy</strong>,
+<strong>Monte Carlo</strong> algorithm that can be used in environments
+with <strong>continuous state space and action space</strong>, and also
+support high-dimensional input and large nonlinear policies such as
+neural networks. The key idea is how to do approximation of the
+optimization objective. The paper conducts experiments in a wide range
+of tasks, including the robotic and Atari games domains, which shows
+great performance.</p>
+<h1 id="main-approximation-procedure">Main Approximation Procedure</h1>
+<p>In this section, we will show how does the paper approximate the
+optimization objective step-by-step. In the following sub-sections, the
+notions used in this paper is a bit different from common ones. To
+define the MDP model, it doesn't use the reward function, but uses the
+<strong>cost function</strong> <span class="math inline">\(c:S
+\rightarrow \mathbb{R}\)</span>, so the main target is to
+<strong>minimize the expected cost</strong>, defined as <span
+class="math inline">\(\eta(\pi)=\mathbb{E}[\sum_{t=0}^{\infty}{\gamma^t
+c(s_t)}]\)</span>.</p>
+<h2 id="preliminaries">Preliminaries</h2>
+<p>Overall, we know the following basic concepts:</p>
+<p><span class="math display">\[\begin{equation}
+Q_{\pi}(s_t,a_t)=\mathbb{E}[\sum_{l=0}^{\infty}{\gamma^l c(s_{t+l})}],
+a_t \sim \pi(s_t)
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+V_{\pi} (s_t)=\mathbb{E}[\sum_{l=0}^{\infty}{\gamma^l c(s_{t+l})}]
+\end{equation}\]</span></p>
+<p>We also have the advantage function:</p>
+<p><span class="math display">\[\begin{equation}
+A_{\pi}(s,a)=Q_{\pi}(s,a)−V_{\pi}(s)
+\end{equation}\]</span></p>
+<p>Kakade &amp; Lanford (2002) [1] derived the relationship of the
+expected discounted cost between two policies <span
+class="math inline">\(\pi\)</span> and <span
+class="math inline">\(\tilde{\pi}\)</span> to have the following
+equation:</p>
+<p><span class="math display">\[\begin{equation}
+\eta(\tilde{\pi})=\eta(\pi)+\mathbb{E}_{s_0,a_0,s_1,a_1...}[\sum_{t=0}^{\infty}{\gamma^t
+A_{\pi}(s_t,a_t)}]
+\end{equation}\]</span></p>
+<p>Where the transitions are generated based on <strong>the
+policy</strong> <span class="math inline">\(\tilde{\pi}\)</span>.</p>
+<p>This is very straightforward, the actions are selected from policy
+<span class="math inline">\(\tilde{\pi}\)</span> but the advantages are
+computed by policy <span class="math inline">\(\pi\)</span>.</p>
+<p>The paper introduced the <strong>(unnormalized) discounted visitation
+frequencies</strong> as:</p>
+<p><span class="math display">\[\begin{equation}
+\rho_{\pi}(s)=P(s_0=s)+\gamma P(s_1=s)+...+\gamma^{\tau}
+P(s_{\tau}=s)+...
+\end{equation}\]</span></p>
+<p>So the expected discounted cost can be rearranged as:</p>
+<p><span class="math display">\[\begin{equation}
+\eta(\tilde{\pi})=\eta(\pi)+\sum_{s}{\rho_{\tilde{\pi}}(s)
+\sum_{a}{\tilde{\pi}(a│s) A_{\pi}(s,a)}}\end{equation}\]</span></p>
+<p>In this case, we can see that, the cost function for the new policy
+<span class="math inline">\(\tilde{\pi}\)</span> equals to adding an
+additional term to the original cost function, so if the term <span
+class="math inline">\(\sum_{s}{\rho_{\tilde{\pi}}(s)
+\sum_{a}{\tilde{\pi}(a│s) A_{\pi}(s,a)}}\)</span> <strong>guarantees to
+be a negative value</strong>, then the update can <strong>guarantee to
+reduce the cost function</strong> <span
+class="math inline">\(\eta\)</span>.</p>
+<p>All of the following derivations are based on this formula, and many
+rounds of approximations are done from it.</p>
+<h2 id="mathematically-approximations">Mathematically
+Approximations</h2>
+<p>Firstly, the paper defines the <span
+class="math inline">\(\eta(\tilde{\pi})\)</span> as the main obejctive
+to minimize, denoted as <span
+class="math inline">\(L_{\pi}(\tilde{\pi})\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+L_{\pi}(\tilde{\pi})=\eta(\pi)+\sum_{s}{\rho_{\tilde{\pi}}(s)
+\sum_{a}{\tilde{\pi}(a│s) A_{\pi}(s,a)}}
+\end{equation}\]</span></p>
+<ul>
+<li><p>The <strong><em>first approximation</em></strong>: As the
+distribution of the states under a new policy is difficult to get, so it
+replaces the new policy <strong>with the old policy</strong>, which
+ignores the changes in state visitation density due to changes in the
+policy: <span class="math display">\[\begin{equation}
+L_{\pi}(\tilde{\pi})=\eta(\pi)+\sum_{s}{\rho_{\pi}(s)
+\sum_{a}{\tilde{\pi}(a│s) A_{\pi}(s,a)}}
+\end{equation}\]</span> So in this case, we use the old policy <span
+class="math inline">\(\pi\)</span> for the state-visitation
+distribution.</p></li>
+<li><p>Then based on the <strong>conservative policy iteration</strong>:
+<span class="math display">\[\begin{equation}
+\pi_{new} (a│s)=(1−\alpha)\pi_{old}(a│s)+\alpha \pi&#39;(a|s)
+\end{equation}\]</span> And the inequation that Kakade and Langford
+proved: <span class="math display">\[\begin{equation}
+\eta(\pi_{new}) \leq L_{\pi_{old}}(\pi_{new})+ \frac{2\epsilon
+\gamma}{(1−\gamma(1−\alpha))(1−\gamma)\alpha^2}
+\end{equation}\]</span> Where <span
+class="math inline">\(\epsilon=\max_s{⁡|\mathbb{E}_{a \sim \pi&#39;
+(a│s)} [A_{\pi}(s,a)]|}\)</span></p>
+<p>The <strong><em>second approximation</em></strong>: As <span
+class="math inline">\(\alpha \ll 1\)</span>, we can approximate the
+above inequation as:</p>
+<p><span class="math display">\[\begin{equation}
+\eta(\pi_{new}) \leq L_{\pi_{old}}(\pi_{new})+\frac{2 \epsilon
+\gamma}{(1−\gamma)^2 \alpha^2}
+\end{equation}\]</span></p></li>
+</ul>
+<h2
+id="from-conservative-policy-iteration-to-general-stochastic-policies">From
+Conservative Policy Iteration to General Stochastic Policies</h2>
+<p>The second approximation is based on the conservative policy
+iteration, however, which is not commonly used in a wide range of
+problems, so make the algorithm applicable to more general stochastic
+policies methods, the crucial is to eliminate the <strong>step
+factor</strong> to extend the ineuqation (the guarantee) to practical
+problems.</p>
+<ul>
+<li>The <strong><em>third approximation</em></strong>: replace <span
+class="math inline">\(\alpha\)</span> with a distance measure between
+<span class="math inline">\(\pi\)</span> and <span
+class="math inline">\(\tilde{\pi}\)</span>. The paper uses the
+<strong>total variance divergence</strong> to replace <span
+class="math inline">\(\alpha\)</span>: <span
+class="math display">\[\begin{equation}
+\alpha=D_{TE}^{max}(\pi_{old},\pi_{new})
+\end{equation}\]</span></li>
+<li>The <strong><em>fourth approximation</em></strong>: replace the
+total variance divergence with the <strong>KL divergence</strong> based
+on their unequal relationship <span class="math inline">\(D_{TV}(p||q)^2
+\leq D_{K}(p||q)\)</span>: <span class="math display">\[\begin{equation}
+\alpha=D_{KL}^{max}(\pi_{old},\pi_{new})
+\end{equation}\]</span></li>
+</ul>
+<p>For now, based on the finally derived objective to be minimized, the
+algorithm can be shown as</p>
+<figure>
+<img src="/images/RLPapers/Model-Free/PolicyGradients/2-2.png"
+alt="Algorithm: Approximate policy iteration algorithm guaranteeing non-increasing expected cost" />
+<figcaption aria-hidden="true">Algorithm: Approximate policy iteration
+algorithm guaranteeing non-increasing expected cost</figcaption>
+</figure>
+<p>The algorithm provides the theorical formula to update the policies
+based on the assumption that we know all of the transition functions and
+we can directly compute the <span class="math inline">\(argmin\)</span>
+part. However, we usually have no exact form of the policies, which
+means we <strong>cannot directly compute the</strong> <span
+class="math inline">\(argmin\)</span>, so in the following sections, we
+consider the <strong>parameterized</strong> policy function <span
+class="math inline">\(\pi_{\theta}\)</span>.</p>
+<h2 id="optimization-of-parameterized-policies">Optimization of
+Parameterized Policies</h2>
+<p>In this section, we consider the <strong>parameterized</strong>
+policy function <span class="math inline">\(\pi_{\theta}\)</span> to see
+how can we directly update the parameters from <span
+class="math inline">\(\theta_{old}\)</span> to <span
+class="math inline">\(\theta\)</span>. To rewrite the objective in a
+parameterized form, we have:</p>
+<p><span class="math inline">\(\eta(\theta) &lt;
+L_{\theta_{old}}(\theta)+C
+D_{KL}^{max}(\theta_{old},\theta)\)</span></p>
+<ul>
+<li>The <strong><em>fifth approximation</em></strong>: to use a
+constraint on the KL divergence between the new policy and the old
+policy, i.e., a <strong>trust region constraint</strong>: <span
+class="math display">\[\begin{equation}
+\min_{\theta}[L_{\theta_{old}}(\theta)]
+\end{equation}\]</span> <span class="math display">\[\begin{equation}
+s.t. D_{KL}^{max}(\theta_{old},\theta)\leq \delta
+\end{equation}\]</span></li>
+<li>The <strong><em>sixth approximation</em></strong>: as the <span
+class="math inline">\(max\)</span> operator makes the optimizaion hard,
+so we can use the average KL divergence instead of the maximal: <span
+class="math display">\[\begin{equation}
+\min_{\theta}[L_{\theta_{old}}(\theta)]
+\end{equation}\]</span> <span class="math display">\[\begin{equation}
+s.t. D_{KL}^{\rho_{\theta_{old}}}(\theta_{old},\theta) \leq \delta
+\end{equation}\]</span></li>
+</ul>
+<h2 id="sample-based-estimation">Sample-Based Estimation</h2>
+<p>Now we have had the theoretical formula, but in practice, we cannot
+compute the exact value of the main objective and the constraint, we
+usually need to estimate these values by sampling, so in this section,
+the paper introduced how to use <strong><em>importance
+sampling</em></strong> to estimate the two values.</p>
+<ul>
+<li>The <strong><em>seventh approximation</em></strong>: to use
+importance sampling to estimate the expectation term: <span
+class="math display">\[\begin{equation}
+\sum_{a}{\pi_{\theta}(a│s_n)A_{\pi_{\theta}}(s_n,a)} \approx
+\mathbb{E}_{a \sim q} \Big[\frac{\pi_{\theta}(a│s)}{q(a│s)}
+A_{\theta_{old}}(s,a)\Big]
+\end{equation}\]</span></li>
+<li>The <strong><em>eighth approximation</em></strong>: to avoid
+computing the advantage functions, just replace it using the
+Q-functions, so the final objective to optimize is: <span
+class="math display">\[\begin{equation}
+\min_{\theta}⁡{\mathbb{E}_{s \sim \rho_{\theta_{old}}, a \sim
+q}\Big[\frac{\pi_{\theta}(a│s)}{q(a│s)} A_{\theta_{old}}(s,a)\Big]}
+\end{equation}\]</span> <span class="math display">\[\begin{equation}
+s.t. \mathbb{E}_{s \sim \rho_{\theta_{old}}} [D_{KL}
+(\pi_{\theta_{old}}(\cdot│s)||\pi_{\theta} (\cdot|s))] \leq \delta
+\end{equation}\]</span></li>
+</ul>
+<h2 id="two-variant-sampling-approaches">Two Variant Sampling
+Approaches</h2>
+<p>The paper further proposed two variant sampling approaches:</p>
+<ul>
+<li><strong>Single Path</strong>: typically used for policy estimation
+and is based on sampling individual trajectories.</li>
+<li><strong>Vine</strong>: construct a rollout set and then perform
+multiple actions from each sate in the rollout set.</li>
+</ul>
+<figure>
+<img src="/images/RLPapers/Model-Free/PolicyGradients/2-3.png"
+alt="Two variant sampling approaches" />
+<figcaption aria-hidden="true">Two variant sampling
+approaches</figcaption>
+</figure>
+<h1 id="reference">Reference</h1>
+<p>[1] Sham Kakade and John Langford. 2002. Approximately Optimal
+Approximate Reinforcement Learning. In Proceedings of the Nineteenth
+International Conference on Machine Learning (ICML ’02), Morgan Kaufmann
+Publishers Inc., San Francisco, CA, USA, 267–274.</p>
+]]></content>
+      <categories>
+        <category>RL Paper Notes</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Paper Notes</tag>
+        <tag>Model-Free RL</tag>
+        <tag>Policy Gradients</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[A3C] Asynchronous Methods for Deep Reinforcement Learning</title>
+    <url>/2022/15-RLPaper-MF-PG-1-A3C/</url>
+    <content><![CDATA[<blockquote>
+<p>Volodymyr Mnih, Adria Puigdomenech Badia, Mehdi Mirza, Alex Graves,
+Timothy Lillicrap, Tim Harley, David Silver, and Koray Kavukcuoglu.
+2016. Asynchronous Methods for Deep Reinforcement Learning. In
+Proceedings of The 33rd International Conference on Machine Learning,
+PMLR, 1928–1937. Retrieved October 4, 2022 from
+https://proceedings.mlr.press/v48/mniha16.html</p>
+</blockquote>
+<span id="more"></span>
+<figure>
+<img src="/images/RLPapers/Model-Free/PolicyGradients/1-1.png"
+alt="Asynchronous Methods for Deep Reinforcement Learning" />
+<figcaption aria-hidden="true">Asynchronous Methods for Deep
+Reinforcement Learning</figcaption>
+</figure>
+<h2 id="overview">Overview</h2>
+<p>The paper proposed a general framework to train RL agents
+asynchronously. The main idea is to initialize multiple learners on
+multiple threads of the multiple-core CPUs. There is a
+<strong>global</strong> learner and multiple <strong>actor</strong>
+learners. The actor learners push their parameters to the global learner
+and pull parameters from it. In this case, the samples from multiple
+learners can <strong>de-correlate</strong> the relations from the
+sequential trajectories, so that on-line learning can be conducted in
+deep RL domain, and save time and computing resources effectively. The
+paper implemented the asynchronous approach into four existing RL
+algorithms:</p>
+<ul>
+<li>Asynchronous one-step Q-learning</li>
+<li>Asynchronous one-step SARSA</li>
+<li>Asynchronous n-step Q-learning</li>
+<li><strong><em>Asynchronous Advantage Actor-Critic
+(A3C)</em></strong></li>
+</ul>
+<p>where the last one achieves best performance. The paper conducted
+some experiments on Atari games and show the A3C algorithm outperforms
+the best current baselines.</p>
+<h2 id="main-problems-to-solve">Main Problems to Solve</h2>
+<ol type="1">
+<li>Many deep reinforcement learning algorithms turns to off-policy
+approaches, as online learning cannot decorrelate the relations among
+the sequential transitions. So many techniques are proposed, e.g.,
+experience replay to <strong>aggregate over memory</strong>. In this
+case, they usually requires off-policy learning.</li>
+<li>The experience replay based algorithms or massively distributed
+architectures use more memory and computation per real interaction.</li>
+</ol>
+<h2 id="main-innovations">Main Innovations</h2>
+<p>The paper proposed a conceptually simple and lightweight framework
+for deep reinforcement learning that uses asynchronous gradient descent
+for optimization of deep neural network controllers. The algorithm
+instantiates multiple learners on multiple threads on multiple-core CPUs
+and one global learner. The workers parallelly learn in their own
+environment instances and share gradients or parameters with the global
+learner. In this case, there are several advantages:</p>
+<ol type="1">
+<li>The workers sample and learn by interacting with their own
+environments, so the samples are not correlated with each other, which
+solves the main problem of on-line RL approaches.</li>
+<li>Since the parallelism can decorrelates the data, then no experience
+replay is needed, which saves much time and computing resources, makes
+it possible to train agents on multiple-core CPUs but not GPUs, and even
+use much shorter time than training on GPUs.</li>
+<li>The main idea can make on-line algorithms to be implemented into
+deep RL domains, like actor-critic.</li>
+<li>Compared with the massively distributed approaches, the workers and
+the global learner are set on one single machine but multiple cores of
+CPU, so there is no need to cost time and resources on the communication
+between the machines.</li>
+<li>Different learners can have different exploration policies, so that
+better de-correlate the samples.</li>
+</ol>
+]]></content>
+      <categories>
+        <category>RL Paper Notes</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Paper Notes</tag>
+        <tag>Model-Free RL</tag>
+        <tag>Policy Gradients</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[DQN] Human-Level Control through Deep Reinforcement Learning</title>
     <url>/2022/9-RLPaper-MF-1-DQN/</url>
     <content><![CDATA[<blockquote>
@@ -2706,6 +2517,194 @@ video game.</li>
         <tag>Paper Notes</tag>
         <tag>Model-Free RL</tag>
         <tag>Deep Q-Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>First Order AutoRegression (AR(1)) - Expectation, Variance, Likelihood and Regression</title>
+    <url>/2022/6-ProbabilisticML-3-AR1/</url>
+    <content><![CDATA[<p>This blog aims to show the detailed derivation of the expectation,
+variance, likelihood and regression of <em>First-order autoregression
+(AR(1))</em> model.</p>
+<span id="more"></span>
+<h1 id="probability-density-formula">Probability Density Formula</h1>
+<p>The <em>first-order autoregression</em> (<em>AR(1)</em>) can model
+(weakly) stationary time series, if the series <span
+class="math inline">\(x_t\)</span> satisfy the following properties:</p>
+<ul>
+<li>The mean <span class="math inline">\(\mathrm{E}(x_t)\)</span> is the
+same for all <span class="math inline">\(t\)</span>.</li>
+<li>The variance <span class="math inline">\(\mathrm{Var}(x_t)\)</span>
+is the same for all <span class="math inline">\(t\)</span>.</li>
+<li>The covariance (and also correlation) between <span
+class="math inline">\(x_t\)</span> and <span
+class="math inline">\(x_{t-h}\)</span> is the same for all <span
+class="math inline">\(t\)</span> at each lag <span
+class="math inline">\(h=1,2,3\)</span>, etc.</li>
+</ul>
+<p>In the first-order autoregression model, the value of <span
+class="math inline">\(x\)</span> at time <span
+class="math inline">\(t\)</span> is a linear function of the value of
+<span class="math inline">\(x\)</span> at time <span
+class="math inline">\(t-1\)</span>, which can be written as:</p>
+<p><span class="math display">\[\begin{equation}
+x_t = \delta + \phi x_{t-1} + \omega_t
+\end{equation}\]</span></p>
+<p>with the following assumptions:</p>
+<ul>
+<li><span class="math inline">\(\omega_t \backsim
+N(0,\sigma_{\omega}^2)\)</span> i.i.d..</li>
+<li>Properties of the errors <span
+class="math inline">\(\omega_t\)</span> are independent of <span
+class="math inline">\(x_t\)</span>.</li>
+<li>The series <span class="math inline">\(x_t\)</span> is (weakly)
+stationary, which requires <span class="math inline">\(|\phi|\ &lt;
+1\)</span>.</li>
+</ul>
+<h1 id="expectation-and-variance">Expectation and Variance</h1>
+<h2 id="expectation">Expectation</h2>
+<p>The expectation of AR(1) model is:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(x_t)=\frac{\delta}{1-\phi}
+\end{equation}\]</span></p>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(x_t)=\mathrm{E}(\delta + \phi x_{t-1} +
+\omega_t)=\mathrm{E}(\delta) + \mathrm{E}(\phi x_{t-1})+
+\mathrm{E}(\omega_t) = \delta + \phi \mathrm{E}(x_{t-1})
+\end{equation}\]</span></p>
+<p>With the stationary assumption, <span
+class="math inline">\(\mathrm{E}(x_t) = \mathrm{E}(x_{t-1})\)</span>, we
+can solve the equation to get:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(x_t)=\frac{\delta}{1-\phi}
+\end{equation}\]</span>.</p>
+<h2 id="variance">Variance</h2>
+<p>The variance of AR(1) model is:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(x_t)=\frac{\sigma_{\omega}^2}{1-\phi^2}
+\end{equation}\]</span></p>
+<p>To proof:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(x_t)=\mathrm{Var}(\delta) + \mathrm{Var}(\phi x_{t-1})+
+\mathrm{Var}(\omega_t) = \phi^2 \mathrm{Var}(x_{t-1}) +
+\sigma_{\omega}^2
+\end{equation}\]</span></p>
+<p>With the stationary assumption, <span
+class="math inline">\(\mathrm{Var}(x_t) =
+\mathrm{Var}(x_{t-1})\)</span>, we can solve the equation to get:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(x_t)=\frac{\sigma_{\omega}^2}{1-\phi^2}
+\end{equation}\]</span>.</p>
+<h1 id="log-likelihood">Log-Likelihood</h1>
+<p>In this part, we will derive the log-likelihood of the AR(1) model,
+which can be used to estimate the parameters in the MLE approach.</p>
+<p>Firstly, we define the parameters: <span class="math inline">\(\theta
+= (\delta,\phi,\sigma_{\omega}^2)\)</span>.</p>
+<p>Based on the Bayesian theory:</p>
+<p><span class="math display">\[\begin{equation}
+P(x_t,x_{t-1},...,x_1;\theta) =
+P(x_t|x_{t-1},x_{t-2},...,x_1;\theta)P(x_{t-1}|x_{t-2},...,x_1;\theta)...P(x_2|x_1;\theta)P(x_1;\theta)
+\end{equation}\]</span></p>
+<p>As in the AR(1) model, we assume that the <span
+class="math inline">\(x_t\)</span> only directly conditional on <span
+class="math inline">\(x_{t-1}\)</span>, then the above equation can be
+simplified as:</p>
+<p><span class="math display">\[\begin{equation}
+P(x_t,x_{t-1},...,x_1;\theta) =
+P(x_t|x_{t-1};\theta)P(x_{t-1}|x_{t-2};\theta)...P(x_2|x_1;\theta)P(x_1;\theta)
+\end{equation}\]</span></p>
+<p>Then we can rewrite the log-likelihood as:</p>
+<p><span class="math display">\[\begin{equation}
+\ln{L(\theta|x)} =\sum_{t=2}^{T}{\ln{P(x_t|x_{t-1};\theta)}} +
+\ln{P(x_1;\theta)}
+\end{equation}\]</span></p>
+<p>Secondly, consider the (weakly) stationary AR(1) model, we have:</p>
+<p><span class="math display">\[\begin{equation}
+x_t = \delta + \phi x_{t-1} + \omega_t
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\omega_t \backsim i.i.d.
+N(0,\sigma_{\omega}^2)\)</span> and <span
+class="math inline">\(|\phi|&lt;1\)</span>.</p>
+<p>Based on this, we can rewrite it as:</p>
+<p><span class="math display">\[\begin{equation}
+x_t|x_{t-1} \backsim N(\delta +\phi x_{t-1},\sigma_{\omega}^2)
+\end{equation}\]</span></p>
+<p>which equals to:</p>
+<p><span class="math display">\[\begin{equation}
+P(x_t|x_{t-1};\theta) =
+\frac{1}{\sqrt{2\pi}\sigma_{\omega}}e^{-\frac{1}{2\sigma_{\omega}^2}(x_t-\delta-\phi
+x_{t-1})^2}
+\end{equation}\]</span></p>
+<p>Then we can derive:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\sum_{t=2}^{T}{\ln{P(x_t|x_{t-1};\theta)}} &amp;=
+\sum_{t=2}^{T}{-\frac{1}{2}\ln{2\pi
+\sigma_{\omega}^2}-\frac{1}{2\sigma_{\omega}^2}(x_t-\delta-\phi
+x_{t-1})^2} \\
+&amp;=
+-\frac{T-1}{2}\ln{2\pi}-\frac{T-1}{2}\ln{\sigma_{\omega}^2}-\frac{1}{2\sigma_{\omega}^2}\sum_{t=2}^{T}{(x_t-\delta-\phi
+x_{t-1})^2}
+\end{aligned}
+\end{equation*}\]</span></p>
+<p>Next, we have proven that for all <span
+class="math inline">\(t\in{1,2,...,T}\)</span>, the expectation and
+variance of <span class="math inline">\(x_t\)</span> is
+respectively:</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{E}(x_t)=\frac{\delta}{1-\phi}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{Var}(x_t)=\frac{\sigma_{\omega}^2}{1-\phi^2}
+\end{equation}\]</span></p>
+<p>So for <span class="math inline">\(x_1\)</span>, we have:</p>
+<p><span class="math display">\[\begin{equation}
+x_1 \backsim N(\frac{\delta}{1-\phi},\frac{\sigma_{\omega}^2}{1-\phi^2})
+\end{equation}\]</span></p>
+<p>which equals to:</p>
+<p><span class="math display">\[\begin{equation}
+P(x_1;\theta) =
+\frac{\sqrt{1-\phi^2}}{\sqrt{2\pi}\sigma_{\omega}}e^{-\frac{1-\phi^2}{2\sigma_{\omega}^2}(x_1-\frac{\delta}{1-\phi})^2}
+\end{equation}\]</span></p>
+<p>Then we can derive:</p>
+<p><span class="math display">\[\begin{equation}
+\ln{P(x_1;\theta)} =
+-\frac{1}{2}\ln{2\pi}-\frac{1}{2}\ln{\frac{\delta^2}{1-\phi^2}}-\frac{1-\phi^2}{2\sigma_{\omega}^2}(x_1-\frac{\delta}{1-\phi})^2
+\end{equation}\]</span></p>
+<p>Finally we can have the log-likelihood as:</p>
+<p><span class="math display">\[\begin{equation*}
+\begin{aligned}
+\ln{L(\theta|x)} &amp;= \sum_{t=2}^{T}{\ln{P(x_t|x_{t-1};\theta)}} +
+\ln{P(x_1;\theta)}\\
+&amp;= -\frac{T}{2}\ln{2\pi} - \frac{1}{2}
+\ln{\frac{\sigma_{\omega}^2}{1-\phi^2}}-\frac{1-\phi^2}{2\sigma_{\omega}^2}(x_1-\frac{\delta}{1-\phi})^2-\frac{T-1}{2}\ln{\sigma_{\omega}^2}-\frac{1}{2\sigma_{\omega}^2}\sum_{t=2}^{T}{(x_t-\delta-\phi
+x_{t-1})^2}
+\end{aligned}
+\end{equation*}\]</span></p>
+<h1 id="mle-regression">MLE Regression</h1>
+<p>We can learn the parameters based on <em>MLE</em> to do regression.
+The following codes are based on
+<code>scipy.optimize.minimize</code>:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize <span class="keyword">as</span> mm</span><br><span class="line"></span><br><span class="line">theta_real = [<span class="number">5</span>, <span class="number">0.6</span>, <span class="number">1</span>]  <span class="comment"># parameters \theta is defined as [\delta, \phi, \sigma]</span></span><br><span class="line">expectation_real = theta_real[<span class="number">0</span>] / (<span class="number">1</span> - theta_real[<span class="number">1</span>])  <span class="comment"># expectation</span></span><br><span class="line">variance_real = theta_real[<span class="number">2</span>] ** <span class="number">2</span> / (<span class="number">1</span> - theta_real[<span class="number">1</span>] ** <span class="number">2</span>)  <span class="comment"># variance</span></span><br><span class="line"></span><br><span class="line">T = <span class="number">100</span>  <span class="comment"># number of time points</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># generate x_1</span></span><br><span class="line">x_1 = np.random.normal(expectation_real, variance_real)</span><br><span class="line"><span class="comment"># generate x_t, t=2,3,...,T</span></span><br><span class="line">data = [x_1]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(T - <span class="number">1</span>):</span><br><span class="line">    x_next = theta_real[<span class="number">0</span>] + theta_real[<span class="number">1</span>] * data[-<span class="number">1</span>] + np.random.normal(<span class="number">0</span>, theta_real[<span class="number">2</span>] ** <span class="number">2</span>)</span><br><span class="line">    data.append(x_next)</span><br><span class="line"></span><br><span class="line">data = np.array(data)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># loss function (negative of log-likelihood)</span></span><br><span class="line"><span class="comment"># params: \theta = [\delta, \phi, \sigma]</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss_function</span>(<span class="params">params</span>):</span></span><br><span class="line">    <span class="keyword">assert</span> <span class="built_in">len</span>(params) == <span class="number">3</span>, <span class="string">&quot;incorrect shape of parameters&quot;</span></span><br><span class="line">    delta, phi, sigma = params</span><br><span class="line"></span><br><span class="line">    x_t = data[<span class="number">1</span>:]</span><br><span class="line">    x_t_1 = data[:-<span class="number">1</span>]</span><br><span class="line">    sum_2_T = np.<span class="built_in">sum</span>((x_t - delta - phi * x_t_1) ** <span class="number">2</span>)</span><br><span class="line">    log_likelihood = - <span class="number">0.5</span> * T * np.log(<span class="number">2</span> * <span class="number">3.14</span>) \</span><br><span class="line">                     - <span class="number">0.5</span> * np.log(sigma ** <span class="number">2</span> / (<span class="number">1</span> - phi ** <span class="number">2</span>)) \</span><br><span class="line">                     - <span class="number">0.5</span> * (<span class="number">1</span> - phi ** <span class="number">2</span>) / (sigma ** <span class="number">2</span>) * ((x_1 - delta / (<span class="number">1</span> - phi)) ** <span class="number">2</span>) \</span><br><span class="line">                     - (T - <span class="number">1</span>) / <span class="number">2</span> * np.log(sigma ** <span class="number">2</span>) \</span><br><span class="line">                     - <span class="number">0.5</span> / (sigma ** <span class="number">2</span>) * sum_2_T</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> -log_likelihood</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># optimize with scipy.optimize.minimize</span></span><br><span class="line">params_ini = np.random.rand(<span class="number">3</span>)  <span class="comment"># initialize params ([\delta, \phi, \sigma])</span></span><br><span class="line">params_bounds = ((<span class="number">0</span>, <span class="number">10</span>), (<span class="number">0</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">2</span>))  <span class="comment"># set some boundaries for the parameters</span></span><br><span class="line">result = mm(loss_function, params_ini, bounds=params_bounds, method=<span class="string">&#x27;Powell&#x27;</span>, tol=<span class="number">1e-10</span>)</span><br><span class="line">params_predicted = result.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># show results</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Real parameters [\delta, \phi, \sigma]: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(theta_real))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Predicted parameters [\delta, \phi, \sigma]: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(params_predicted))</span><br></pre></td></tr></table></figure>
+<p>One of the results of the above codes is:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Real parameters [\delta, \phi, \sigma]: [<span class="number">5</span>, <span class="number">0.6</span>, <span class="number">1</span>]</span><br><span class="line">Predicted parameters [\delta, \phi, \sigma]: [<span class="number">4.84142903</span> <span class="number">0.60249039</span> <span class="number">1.0670589</span>]</span><br></pre></td></tr></table></figure>
+<h1 id="main-reference">Main Reference</h1>
+<ul>
+<li>STAT 510 Course (1.1 &amp; 1.2) of Eberly College of Science of
+*PennState: <a href="https://online.stat.psu.edu/stat510/lesson/1"
+class="uri">https://online.stat.psu.edu/stat510/lesson/1</a></li>
+<li>Estimation of ARMA Models by Eric Zivot: <a
+href="https://faculty.washington.edu/ezivot/econ584/notes/armaestimation.pdf"
+class="uri">https://faculty.washington.edu/ezivot/econ584/notes/armaestimation.pdf</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Probabilistic Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Probability Theory</tag>
+        <tag>Machine Learning</tag>
+        <tag>Math</tag>
       </tags>
   </entry>
 </search>
